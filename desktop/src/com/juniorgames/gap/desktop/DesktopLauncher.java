@@ -5,8 +5,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.juniorgames.gap.GapGame;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new GapGame(), config);
-	}
+    public static void main(String[] arg) {
+        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+        cfg.width = 480 * 2;
+        cfg.height = 272 * 2;
+        cfg.fullscreen = false;
+        cfg.forceExit = false;// to prevent error exit value -1
+        new LwjglApplication(new GapGame(), cfg);
+    }
 }
