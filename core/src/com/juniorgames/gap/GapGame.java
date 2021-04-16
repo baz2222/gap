@@ -1,33 +1,23 @@
 package com.juniorgames.gap;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.juniorgames.gap.screens.PlayScreen;
 
-public class GapGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-	}
+public class GapGame extends Game {
+    //virtual screen width and height
+    public static final int GAME_WIDTH = 960;
+    public static final int GAME_HEIGHT = 544;
+    public static final float GAME_PPM = 100; //pixels per meter for Box2D
+    public SpriteBatch batch;
+    @Override
+    public void create() {
+    batch = new SpriteBatch();
+    setScreen(new PlayScreen(this));
+    }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+    @Override
+    public void render() {
+        super.render();
+    }
 }
