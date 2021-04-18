@@ -17,14 +17,14 @@ public class HUD implements Disposable {
     private Viewport viewport;
     private Integer levelTimer;
     private float timeCount;
-    private Integer score;
+    private static Integer score;
 
-    Label countdownLabel;
-    Label scoreLabel;
-    Label timeLabel;
-    Label levelNameLabel;
-    Label levelLabel;
-    Label characterLabel;
+    private Label countdownLabel;
+    private static Label scoreLabel;
+    private Label timeLabel;
+    private Label levelNameLabel;
+    private Label levelLabel;
+    private Label characterLabel;
     public HUD(SpriteBatch spriteBatch){
         levelTimer = 300;
         timeCount = 0;
@@ -53,6 +53,20 @@ public class HUD implements Disposable {
         tableHUD.add(countdownLabel).expandX().padTop(30);
 
         stage.addActor(tableHUD);
+    }
+
+    public void update(float dt){
+        timeCount += dt;
+        if (timeCount>=1){//one second
+            levelTimer--;
+            countdownLabel.setText(String.format("%03d",levelTimer));
+            timeCount = 0;
+        }
+    }
+
+    public static void addScore(int value){
+        score += value;
+        scoreLabel.setText(String.format("%06d",score));
     }
 
     @Override

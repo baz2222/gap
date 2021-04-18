@@ -3,12 +3,11 @@ package com.juniorgames.gap.sprites;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.juniorgames.gap.screens.PlayScreen;
+import com.juniorgames.gap.screens.LevelScreen;
 
-import static com.juniorgames.gap.GapGame.GAME_PPM;
+import static com.juniorgames.gap.GapGame.*;
 
 public class Player extends Sprite {
     public enum State {FALLING, JUMPING, STANDING, RUNNING, DIEING}
@@ -24,14 +23,14 @@ public class Player extends Sprite {
     private Animation playerJump;
     private Animation playerFall;
 
-    public Player(World world, PlayScreen screen) {
+    public Player(World world, LevelScreen screen) {
         super(screen.getAtlas().findRegion("player"));
         this.world = world;
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
-        Array<TextureRegion> frames = new Array<TextureRegion>();
+        Array<TextureRegion> frames = new Array<>();
         //run animation
         for (int i = 0; i < 13; i++) {
             frames.add(new TextureRegion(getTexture(), i * 64, 0, 64, 64));
@@ -56,7 +55,8 @@ public class Player extends Sprite {
         definePlayer();
         setBounds(0, 0, 64 / GAME_PPM, 64 / GAME_PPM);
         setRegion((TextureRegion) playerIdle.getKeyFrame(stateTimer, true));
-    }
+
+    }//constructor
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
@@ -85,8 +85,8 @@ public class Player extends Sprite {
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
             region.flip(true, false);
             runningRight = false;
-        } else if ((b2body.getLinearVelocity().x>0 || runningRight) && region.isFlipX()){
-            region.flip(true,false);
+        } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+            region.flip(true, false);
             runningRight = true;
         }
         stateTimer = currentState == previousState ? stateTimer + dt : 0;
@@ -109,17 +109,21 @@ public class Player extends Sprite {
         bdef.position.set(44 / GAME_PPM, 366 / GAME_PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
-
+        //fixture definition
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(30 / GAME_PPM);
+        fdef.filter.categoryBits = PLAYER_BIT;
+        fdef.filter.maskBits = DEFAULT_BIT | DOOR_BIT;//with what fixtures player can collide with
+
         fdef.shape = shape;
         b2body.createFixture(fdef);
-        //create head sensor
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-10/GAME_PPM,32/GAME_PPM),new Vector2(10/GAME_PPM,32/GAME_PPM));
-        fdef.shape = head;
+
+        //create sensor
+        CircleShape sensor = new CircleShape();
+        sensor.setRadius(34 / GAME_PPM);
+        fdef.shape = sensor;
         fdef.isSensor = true;
-        b2body.createFixture(fdef).setUserData("head");
+        b2body.createFixture(fdef).setUserData("playerSensor");
     }
 }

@@ -9,14 +9,16 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
-        if (fixA.getUserData() == "head" || fixB.getUserData() == "head"){
-            Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
-            Fixture object = head == fixA ? fixB : fixA;
-            //returns true if colideble object extends InteractiveTileObject class
+        if (fixA.getUserData() == "playerSensor" || fixB.getUserData() == "playerSensor"){
+            Fixture playerFixture = fixA.getUserData() == "playerSensor" ? fixA : fixB;
+            Fixture object = playerFixture == fixA ? fixB : fixA;
+            //returns true if colided object extends InteractiveTileObject class
             if (object.getUserData()!=null && InteractiveTileObject.class.isAssignableFrom(object.getUserData().getClass())){
-
+                ((InteractiveTileObject) object.getUserData()).onHit();
             }
         }
+
+
     }
 
     @Override

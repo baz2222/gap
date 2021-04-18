@@ -18,15 +18,15 @@
  <tileset firstgid="44" name="t2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t2-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <imagelayer id="2" name="bg">
+ <imagelayer id="2" name="bg" locked="1">
   <image source="bg1.png" width="960" height="544"/>
  </imagelayer>
- <layer id="1" name="pfm" width="30" height="17">
+ <layer id="1" name="pfm" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
    eJzV1NkKgkAUgOG5lTTKdtv3gvb1/d+sf8CBc6HjEmod+G5G8a8j6CilnB/QQQNN+GihHZ530Yu4nnS/n6I5Rh8DBBhiFJ5PMI24nnR/YGmbZlET1S66Gdcuoynbplv2FNk94FhB94RzBd0Lrjm7tl0lzQ33nF25qxnmGboPPFELufBQF115LkfuaoFlyqZ+3gtvZf8+SuY36JG7WmGdoudmaEXRY3alZ4OtpeV92ZP/2+xKv5Md9ir+Xf2LD9vJEX4=
   </data>
  </layer>
- <layer id="4" name="trees" width="30" height="17">
+ <layer id="4" name="trees" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUjIJRMApGwUgBAAf4AAE=
   </data>
@@ -54,7 +54,7 @@
   <object id="28" x="832" y="32" width="32" height="32"/>
   <object id="29" x="896" y="96" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="6" name="exito">
+ <objectgroup id="6" name="exito" locked="1">
   <object id="32" name="exit" x="841" y="319" width="44" height="64"/>
  </objectgroup>
 </map>

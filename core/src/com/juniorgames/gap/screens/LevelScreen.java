@@ -3,6 +3,8 @@ package com.juniorgames.gap.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -11,24 +13,23 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.scenes.HUD;
 import com.juniorgames.gap.sprites.Player;
+import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.B2WorldCreator;
 import com.juniorgames.gap.tools.WorldContactListener;
 
 import static com.juniorgames.gap.GapGame.GAME_PPM;
 
-public class PlayScreen extends ScreenAdapter {
+public class LevelScreen extends ScreenAdapter {
     private GapGame game;
     private TextureAtlas atlas;
     private OrthographicCamera camera;
     private Viewport viewport;
-    private HUD hud;
+    //private HUD hud;
     //tiled map values
     private TmxMapLoader maploader;
     private TiledMap map;
@@ -36,19 +37,25 @@ public class PlayScreen extends ScreenAdapter {
     //box2d values
     private World world;
     private Box2DDebugRenderer b2dr;
+    //sprites
     private Player player;
+    //sfx
+    private Music music;
+    private Sound jumpSound;
+    private Sound stepSound;
+    private float timeCount;//to make delay for stepping sounds
 
-    public PlayScreen(GapGame game) {
+    public LevelScreen(GapGame game) {
         atlas = new TextureAtlas("player.pack");
         this.game = game;
         camera = new OrthographicCamera();
         //viewport = new StretchViewport(480*2,272*2, camera);
         viewport = new FitViewport(GapGame.GAME_WIDTH / GAME_PPM, GapGame.GAME_HEIGHT / GAME_PPM, camera);
         //viewport = new ScreenViewport(camera);
-        hud = new HUD(game.batch);
+        //hud = new HUD(game.batch);
 
         maploader = new TmxMapLoader();
-        map = maploader.load("level1.tmx");
+        map = maploader.load("level1-0.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -58,6 +65,15 @@ public class PlayScreen extends ScreenAdapter {
         new B2WorldCreator(world, map);
         player = new Player(world, this);
         world.setContactListener(new WorldContactListener());
+
+        //music and sounds
+        music = GapGame.manager.get("audio/music/world1-music.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.2f);//0-1 range
+        music.play();
+        jumpSound = GapGame.manager.get("audio/sounds/jump.mp3", Sound.class);
+        stepSound = GapGame.manager.get("audio/sounds/step.mp3", Sound.class);
+
     }//constructor
 
     public void update(float dt) {
@@ -65,10 +81,13 @@ public class PlayScreen extends ScreenAdapter {
         world.step(1 / 60f, 6, 2);//60 times per second
         //camera.position.x = player.b2body.getPosition().x; //move camera with the character
         player.update(dt);
+        //hud.update(dt);
+
         camera.update();
         renderer.setView(camera);
     }
-    public TextureAtlas getAtlas(){
+
+    public TextureAtlas getAtlas() {
         return atlas;
     }
 
@@ -76,14 +95,15 @@ public class PlayScreen extends ScreenAdapter {
         //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            jumpSound.setLooping(jumpSound.play(), false);
         }
         //move right
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2){
-            player.b2body.applyLinearImpulse(new Vector2(0.2f,0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
+            player.b2body.applyLinearImpulse(new Vector2(0.2f, 0), player.b2body.getWorldCenter(), true);
         }
         //move left
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2){
-            player.b2body.applyLinearImpulse(new Vector2(-0.2f,0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
+            player.b2body.applyLinearImpulse(new Vector2(-0.2f, 0), player.b2body.getWorldCenter(), true);
         }
     }
 
@@ -102,8 +122,14 @@ public class PlayScreen extends ScreenAdapter {
         player.draw(game.batch);
         game.batch.end();
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        //hud.stage.draw();
+
+        timeCount += delta;
+        if (timeCount >= 0.3 && player.getSate() == State.RUNNING) {
+            stepSound.setLooping(stepSound.play(), false);
+            timeCount = 0;
+        }
     }
 
     @Override
@@ -118,6 +144,10 @@ public class PlayScreen extends ScreenAdapter {
         b2dr.dispose();
         renderer.dispose();
         world.dispose();
-        hud.dispose();
+        //dispose sounds and music
+        music.dispose();
+        jumpSound.dispose();
+        stepSound.dispose();
+        //hud.dispose();
     }
 }
