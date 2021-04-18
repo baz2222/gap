@@ -18,6 +18,8 @@ public class GapGame extends Game {
     public static final short DOOR_BIT = 4;
     public static final short DESTROYED_BIT = 8;
 
+    public static final int SPRITES_MULTIPLIER = 2; // multiplier for all sprites and textures - DEPENDS ON QUALITY AND SCREEN SIZE!
+
     public SpriteBatch batch;
 
     //using asset manager in a stataic way can cause issues, especially on Android!!!
