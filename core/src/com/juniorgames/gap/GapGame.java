@@ -18,6 +18,9 @@ public class GapGame extends Game {
     public static final short DOOR_BIT = 4;
     public static final short DESTROYED_BIT = 8;
 
+    public boolean soundsMuted = true;//sound off
+    public boolean musicMuted = true;//music off
+
     public static final int SPRITES_MULTIPLIER = 2; // multiplier for all sprites and textures - DEPENDS ON QUALITY AND SCREEN SIZE!
 
     public SpriteBatch batch;

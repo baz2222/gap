@@ -51,6 +51,7 @@ public class LevelScreen extends ScreenAdapter {
     //move this values to GAME STATE CLASS!!!!!!
     private int currentWorld;
     private int currentLevel;
+    private LevelData currentLevelData;
 
     public LevelScreen(GapGame game) {
         //define values by default when LevelScreen instance created
@@ -66,7 +67,7 @@ public class LevelScreen extends ScreenAdapter {
         //hud = new HUD(game.batch);
 
         maploader = new TmxMapLoader();
-        map = maploader.load("level1-0.tmx");
+        map = maploader.load("level1-1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -81,11 +82,13 @@ public class LevelScreen extends ScreenAdapter {
         music = GapGame.manager.get("audio/music/world1-music.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.2f);//0-1 range
-        music.play();
+        if (!game.musicMuted) {
+            music.play();
+        }//end if
         jumpSound = GapGame.manager.get("audio/sounds/jump.mp3", Sound.class);
         stepSound = GapGame.manager.get("audio/sounds/step.mp3", Sound.class);
 
-        loadLevel(currentWorld, currentLevel);
+        currentLevelData = loadLevel(currentWorld, currentLevel);
     }//constructor
 
     public LevelData loadLevel(int world, int level) {
@@ -93,9 +96,11 @@ public class LevelScreen extends ScreenAdapter {
         JsonReader reader = new JsonReader();
         JsonValue value;
         JsonValue json = reader.parse(Gdx.files.internal("level" + world + "-" + level + ".json"));
+
         //int
         data.world = json.getInt("world");
         data.level = json.getInt("level");
+
         //Vector2
         value = json.getChild("start");
         data.start.x = value.asFloat();
@@ -106,20 +111,70 @@ public class LevelScreen extends ScreenAdapter {
         value = json.getChild("tutorial");
         data.tutorial.x = value.asFloat();
         data.tutorial.y = value.next.asFloat();
+
         //Array<Vector2> plant1s
         value = json.getChild("plant1s");
         while (value != null) {
             data.plant1s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
             value = value.next;
         }//end while
-        System.out.println(data.plant1s);
+
         //Array<Vector2> plant2s
         value = json.getChild("plant2s");
         while (value != null) {
-            data.plant1s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            data.plant2s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
             value = value.next;
         }//end while
-        System.out.println(data.plant2s);
+
+        //Array<Vector2> switches
+        value = json.getChild("switches");
+        while (value != null) {
+            data.switches.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> enemies
+        value = json.getChild("enemies");
+        while (value != null) {
+            data.enemies.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> spikeEnemies
+        value = json.getChild("spikeEnemies");
+        while (value != null) {
+            data.spikeEnemies.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> bumps
+        value = json.getChild("bumps");
+        while (value != null) {
+            data.bumps.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> buffBombs
+        value = json.getChild("buffBombs");
+        while (value != null) {
+            data.buffBombs.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> buffJumps
+        value = json.getChild("buffJumps");
+        while (value != null) {
+            data.buffJumps.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
+        //Array<Vector2> buffShields
+        value = json.getChild("buffShields");
+        while (value != null) {
+            data.buffShields.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+
         return data;
     }
 
@@ -142,7 +197,9 @@ public class LevelScreen extends ScreenAdapter {
         //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-            jumpSound.setLooping(jumpSound.play(), false);
+            if (!game.soundsMuted) {
+                jumpSound.setLooping(jumpSound.play(), false);
+            }
         }
         //move right
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
@@ -173,7 +230,7 @@ public class LevelScreen extends ScreenAdapter {
         //hud.stage.draw();
 
         timeCount += delta;
-        if (timeCount >= 0.3 && player.getSate() == State.RUNNING) {
+        if (timeCount >= 0.3 && player.getSate() == State.RUNNING && !game.soundsMuted) {
             stepSound.setLooping(stepSound.play(), false);
             timeCount = 0;
         }

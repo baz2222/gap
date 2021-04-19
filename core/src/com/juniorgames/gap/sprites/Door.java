@@ -19,6 +19,6 @@ public class Door extends InteractiveTileObject {
 
     @Override
     public void onHit() {
-        doorSound.setLooping(doorSound.play(),false);// dos not work!!!!!!!
+        doorSound.setLooping(doorSound.play(),false);
     }
 }
