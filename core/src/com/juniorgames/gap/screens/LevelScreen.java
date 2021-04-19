@@ -14,12 +14,15 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.B2WorldCreator;
+import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.WorldContactListener;
 
 import static com.juniorgames.gap.GapGame.GAME_PPM;
@@ -45,7 +48,15 @@ public class LevelScreen extends ScreenAdapter {
     private Sound stepSound;
     private float timeCount;//to make delay for stepping sounds
 
+    //move this values to GAME STATE CLASS!!!!!!
+    private int currentWorld;
+    private int currentLevel;
+
     public LevelScreen(GapGame game) {
+        //define values by default when LevelScreen instance created
+        currentWorld = 1;
+        currentLevel = 0;
+
         atlas = new TextureAtlas("player.pack");
         this.game = game;
         camera = new OrthographicCamera();
@@ -74,7 +85,43 @@ public class LevelScreen extends ScreenAdapter {
         jumpSound = GapGame.manager.get("audio/sounds/jump.mp3", Sound.class);
         stepSound = GapGame.manager.get("audio/sounds/step.mp3", Sound.class);
 
+        loadLevel(currentWorld, currentLevel);
     }//constructor
+
+    public LevelData loadLevel(int world, int level) {
+        LevelData data = new LevelData();
+        JsonReader reader = new JsonReader();
+        JsonValue value;
+        JsonValue json = reader.parse(Gdx.files.internal("level" + world + "-" + level + ".json"));
+        //int
+        data.world = json.getInt("world");
+        data.level = json.getInt("level");
+        //Vector2
+        value = json.getChild("start");
+        data.start.x = value.asFloat();
+        data.start.y = value.next.asFloat();
+        value = json.getChild("exit");
+        data.exit.x = value.asFloat();
+        data.exit.y = value.next.asFloat();
+        value = json.getChild("tutorial");
+        data.tutorial.x = value.asFloat();
+        data.tutorial.y = value.next.asFloat();
+        //Array<Vector2> plant1s
+        value = json.getChild("plant1s");
+        while (value != null) {
+            data.plant1s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+        System.out.println(data.plant1s);
+        //Array<Vector2> plant2s
+        value = json.getChild("plant2s");
+        while (value != null) {
+            data.plant1s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
+            value = value.next;
+        }//end while
+        System.out.println(data.plant2s);
+        return data;
+    }
 
     public void update(float dt) {
         handleInput(dt);
