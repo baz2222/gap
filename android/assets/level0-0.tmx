@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="33">
- <tileset firstgid="1" name="gnd" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="gnd-tile.png" trans="ff00ff" width="32" height="32"/>
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="41">
+ <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
+  <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
- <tileset firstgid="2" name="grass" tilewidth="32" tileheight="32" tilecount="5" columns="5">
+ <tileset firstgid="8" name="Grass" tilewidth="32" tileheight="32" tilecount="5" columns="5">
   <image source="grass-tile-set.png" trans="ff00ff" width="160" height="32"/>
  </tileset>
- <tileset firstgid="7" name="lp1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
-  <image source="lp1-tile-set.png" trans="ff00ff" width="544" height="32"/>
- </tileset>
- <tileset firstgid="24" name="t1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="13" name="Tree1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t1-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <tileset firstgid="36" name="t2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="25" name="Tree2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t2-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <imagelayer id="2" name="bg" visible="0" locked="1">
+ <tileset firstgid="37" name="Lumps1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+  <image source="lp1-tile-set.png" trans="ff00ff" width="544" height="32"/>
+ </tileset>
+ <tileset firstgid="54" name="Lumps2" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+  <image source="lp2-tile-set.png" trans="ff00ff" width="544" height="32"/>
+ </tileset>
+ <tileset firstgid="71" name="Lumps3" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+  <image source="lp3-tile-set.png" trans="ff00ff" width="544" height="32"/>
+ </tileset>
+ <imagelayer id="2" name="BackgroundImageLayer" locked="1">
   <image source="bg1.png" width="960" height="544"/>
  </imagelayer>
- <layer id="1" name="pfm" width="30" height="17" visible="0" locked="1">
+ <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzV1NkKgkAUgOGRNMp22/eC9vX9365/wIFzoeMSah34bkbxryPoKKWcH9BBA034aKEdnnfRi7iedL+fojlGHwMEGGIUnk8wjbiedH9gaZtmURPVLroZ1y6jKdumW/YU2T3gWEH3hHMF3QuuObu2XSXNDfecXbmrGeYZug88UQu58FAXXXkuR+5qgWXKpn7eC29l/z5K5jfokbtaYZ2i52ZoRdFjdqVng62l5X3Zk//b7Eq/kx32Kv5d/YsPsjgJRg==
+   eJzt1SsSgDAMRdGIGj7r4A+lBfa/NS6iHtPWvMwckYm4Ms7MXCUDRkyYsWDFhj3DPXUPeJwIiLhw48lwT93So6666qqr7r9ugxYd+gJ7rb/7eQHjVQxz
   </data>
  </layer>
- <objectgroup id="3" name="gndo" locked="1">
-  <object id="9" x="0" y="416" width="128" height="32"/>
-  <object id="11" x="0" y="448" width="192" height="64"/>
-  <object id="13" x="0" y="512" width="960" height="32"/>
-  <object id="14" x="512" y="480" width="448" height="32"/>
-  <object id="15" x="608" y="448" width="352" height="32"/>
-  <object id="18" x="672" y="416" width="288" height="32"/>
-  <object id="19" x="768" y="384" width="192" height="32"/>
-  <object id="20" x="0" y="0" width="32" height="416"/>
-  <object id="21" x="928" y="0" width="32" height="384"/>
-  <object id="22" x="32" y="0" width="896" height="32"/>
-  <object id="23" x="32" y="32" width="64" height="64"/>
-  <object id="25" x="96" y="32" width="32" height="32"/>
-  <object id="26" x="32" y="96" width="32" height="32"/>
-  <object id="27" x="864" y="32" width="64" height="64"/>
-  <object id="28" x="832" y="32" width="32" height="32"/>
-  <object id="29" x="896" y="96" width="32" height="32"/>
+ <objectgroup id="7" name="GroundObjectsLayer" locked="1">
+  <object id="37" x="0" y="0" width="960" height="32"/>
+  <object id="38" x="0" y="512" width="960" height="32"/>
+  <object id="39" x="0" y="32" width="32" height="480"/>
+  <object id="40" x="928" y="32" width="32" height="480"/>
  </objectgroup>
 </map>

@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.scenes.HUD;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.B2WorldCreator;
@@ -32,7 +33,7 @@ public class LevelScreen extends ScreenAdapter {
     private TextureAtlas atlas;
     private OrthographicCamera camera;
     private Viewport viewport;
-    //private HUD hud;
+    private HUD hud;
     //tiled map values
     private TmxMapLoader maploader;
     private TiledMap map;
@@ -55,7 +56,7 @@ public class LevelScreen extends ScreenAdapter {
 
     public LevelScreen(GapGame game) {
         //define values by default when LevelScreen instance created
-        currentWorld = 1;
+        currentWorld = 0;
         currentLevel = 0;
 
         atlas = new TextureAtlas("player.pack");
@@ -64,10 +65,10 @@ public class LevelScreen extends ScreenAdapter {
         //viewport = new StretchViewport(480*2,272*2, camera);
         viewport = new FitViewport(GapGame.GAME_WIDTH / GAME_PPM, GapGame.GAME_HEIGHT / GAME_PPM, camera);
         //viewport = new ScreenViewport(camera);
-        //hud = new HUD(game.batch);
+        hud = new HUD(game.batch);
 
         maploader = new TmxMapLoader();
-        map = maploader.load("level1-1.tmx");
+        map = maploader.load("level0-0.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -183,7 +184,7 @@ public class LevelScreen extends ScreenAdapter {
         world.step(1 / 60f, 6, 2);//60 times per second
         //camera.position.x = player.b2body.getPosition().x; //move camera with the character
         player.update(dt);
-        //hud.update(dt);
+        hud.update(dt);
 
         camera.update();
         renderer.setView(camera);
@@ -226,8 +227,8 @@ public class LevelScreen extends ScreenAdapter {
         player.draw(game.batch);
         game.batch.end();
 
-        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        //hud.stage.draw();
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
 
         timeCount += delta;
         if (timeCount >= 0.3 && player.getSate() == State.RUNNING && !game.soundsMuted) {
@@ -252,6 +253,6 @@ public class LevelScreen extends ScreenAdapter {
         music.dispose();
         jumpSound.dispose();
         stepSound.dispose();
-        //hud.dispose();
+        hud.dispose();
     }
 }

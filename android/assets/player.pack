@@ -5,7 +5,7 @@ filter: Nearest,Nearest
 repeat: none
 player
   rotate: false
-  xy: 1, 1
+  xy: 0, 0
   size: 960, 192
   orig: 960, 192
   offset: 0, 0

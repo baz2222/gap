@@ -17,16 +17,16 @@ public class B2WorldCreator {
         FixtureDef fdef = new FixtureDef();
         Body body;
         //ground platform
-        for (MapObject object : map.getLayers().get("gndo").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get("GroundObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             new Ground(world, map, rect);
         }
         //door
-        for (MapObject object : map.getLayers().get("exito").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+        //for (MapObject object : map.getLayers().get("exito").getObjects().getByType(RectangleMapObject.class)) {
+        //    Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Door(world, map, rect);
-        }
+        //    new Door(world, map, rect);
+        //}
     }
 }

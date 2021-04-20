@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.juniorgames.gap.screens.LevelScreen;
 
@@ -18,7 +19,7 @@ public class GapGame extends Game {
     public static final short DOOR_BIT = 4;
     public static final short DESTROYED_BIT = 8;
 
-    public boolean soundsMuted = true;//sound off
+    public boolean soundsMuted = false;//sound off
     public boolean musicMuted = true;//music off
 
     public static final int SPRITES_MULTIPLIER = 2; // multiplier for all sprites and textures - DEPENDS ON QUALITY AND SCREEN SIZE!
@@ -37,6 +38,7 @@ public class GapGame extends Game {
     manager.load("audio/sounds/exit.mp3", Sound.class);
     manager.load("audio/sounds/step.mp3", Sound.class);
     manager.load("audio/sounds/land.mp3", Sound.class);
+    manager.load("fonts/pacifico-regular.fnt", BitmapFont.class);
     manager.finishLoading();
 
     setScreen(new LevelScreen(this));

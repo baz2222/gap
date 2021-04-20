@@ -32,7 +32,7 @@ public class HUD implements Disposable {
         viewport = new FitViewport(GapGame.GAME_WIDTH, GapGame.GAME_WIDTH, new OrthographicCamera());
         stage = new Stage(viewport,spriteBatch);
 
-        BitmapFont HUDFont = new BitmapFont();
+        BitmapFont HUDFont = GapGame.manager.get("fonts/pacifico-regular.fnt", BitmapFont.class);
         Table tableHUD = new Table();
         tableHUD.top();
         tableHUD.setFillParent(true);
