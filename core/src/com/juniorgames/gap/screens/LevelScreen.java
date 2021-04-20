@@ -3,6 +3,7 @@ package com.juniorgames.gap.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.scenes.HUD;
+import com.juniorgames.gap.scenes.LevelHUD;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.B2WorldCreator;
@@ -33,7 +34,7 @@ public class LevelScreen extends ScreenAdapter {
     private TextureAtlas atlas;
     private OrthographicCamera camera;
     private Viewport viewport;
-    private HUD hud;
+    private LevelHUD levelHud;
     //tiled map values
     private TmxMapLoader maploader;
     private TiledMap map;
@@ -54,7 +55,7 @@ public class LevelScreen extends ScreenAdapter {
     private int currentLevel;
     private LevelData currentLevelData;
 
-    public LevelScreen(GapGame game) {
+    public LevelScreen(GapGame game, AssetManager manager) {
         //define values by default when LevelScreen instance created
         currentWorld = 0;
         currentLevel = 0;
@@ -65,7 +66,7 @@ public class LevelScreen extends ScreenAdapter {
         //viewport = new StretchViewport(480*2,272*2, camera);
         viewport = new FitViewport(GapGame.GAME_WIDTH / GAME_PPM, GapGame.GAME_HEIGHT / GAME_PPM, camera);
         //viewport = new ScreenViewport(camera);
-        hud = new HUD(game.batch);
+        levelHud = new LevelHUD(game, manager);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
@@ -80,14 +81,14 @@ public class LevelScreen extends ScreenAdapter {
         world.setContactListener(new WorldContactListener());
 
         //music and sounds
-        music = GapGame.manager.get("audio/music/world1-music.mp3", Music.class);
+        music = manager.get("audio/music/world1-music.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.2f);//0-1 range
         if (!game.musicMuted) {
             music.play();
         }//end if
-        jumpSound = GapGame.manager.get("audio/sounds/jump.mp3", Sound.class);
-        stepSound = GapGame.manager.get("audio/sounds/step.mp3", Sound.class);
+        jumpSound = manager.get("audio/sounds/jump.mp3", Sound.class);
+        stepSound = manager.get("audio/sounds/step.mp3", Sound.class);
 
         currentLevelData = loadLevel(currentWorld, currentLevel);
     }//constructor
@@ -184,7 +185,7 @@ public class LevelScreen extends ScreenAdapter {
         world.step(1 / 60f, 6, 2);//60 times per second
         //camera.position.x = player.b2body.getPosition().x; //move camera with the character
         player.update(dt);
-        hud.update(dt);
+        levelHud.update(dt);
 
         camera.update();
         renderer.setView(camera);
@@ -227,8 +228,8 @@ public class LevelScreen extends ScreenAdapter {
         player.draw(game.batch);
         game.batch.end();
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        game.batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
+        levelHud.stage.draw();
 
         timeCount += delta;
         if (timeCount >= 0.3 && player.getSate() == State.RUNNING && !game.soundsMuted) {
@@ -253,6 +254,6 @@ public class LevelScreen extends ScreenAdapter {
         music.dispose();
         jumpSound.dispose();
         stepSound.dispose();
-        hud.dispose();
+        levelHud.dispose();
     }
 }

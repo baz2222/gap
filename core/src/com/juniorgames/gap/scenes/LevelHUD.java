@@ -1,5 +1,6 @@
 package com.juniorgames.gap.scenes;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 
-public class HUD implements Disposable {
+public class LevelHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private Integer levelTimer;
@@ -25,14 +26,14 @@ public class HUD implements Disposable {
     private Label levelNameLabel;
     private Label levelLabel;
     private Label characterLabel;
-    public HUD(SpriteBatch spriteBatch){
+    public LevelHUD(GapGame game, AssetManager manager){
         levelTimer = 300;
         timeCount = 0;
         score = 0;
-        viewport = new FitViewport(GapGame.GAME_WIDTH, GapGame.GAME_WIDTH, new OrthographicCamera());
-        stage = new Stage(viewport,spriteBatch);
+        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_WIDTH, new OrthographicCamera());
+        stage = new Stage(viewport,game.batch);
 
-        BitmapFont HUDFont = GapGame.manager.get("fonts/pacifico-regular.fnt", BitmapFont.class);
+        BitmapFont HUDFont = manager.get("fonts/pacifico-regular.fnt", BitmapFont.class);
         Table tableHUD = new Table();
         tableHUD.top();
         tableHUD.setFillParent(true);

@@ -4,9 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.juniorgames.gap.screens.LevelScreen;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.juniorgames.gap.screens.MenuScreen;
 
 public class GapGame extends Game {
     //virtual screen width and height
@@ -27,22 +29,24 @@ public class GapGame extends Game {
     public SpriteBatch batch;
 
     //using asset manager in a stataic way can cause issues, especially on Android!!!
-    public static AssetManager manager;
+    public AssetManager manager;
 
     @Override
     public void create() {
-    batch = new SpriteBatch();
-    manager = new AssetManager();
-    manager.load("audio/music/world1-music.mp3", Music.class);
-    manager.load("audio/sounds/jump.mp3", Sound.class);
-    manager.load("audio/sounds/exit.mp3", Sound.class);
-    manager.load("audio/sounds/step.mp3", Sound.class);
-    manager.load("audio/sounds/land.mp3", Sound.class);
-    manager.load("fonts/pacifico-regular.fnt", BitmapFont.class);
-    manager.finishLoading();
+        batch = new SpriteBatch();
+        manager = new AssetManager();
+        manager.load("audio/music/world1-music.mp3", Music.class);
+        manager.load("audio/sounds/jump.mp3", Sound.class);
+        manager.load("audio/sounds/exit.mp3", Sound.class);
+        manager.load("audio/sounds/step.mp3", Sound.class);
+        manager.load("audio/sounds/land.mp3", Sound.class);
+        manager.load("fonts/pacifico-regular.fnt", BitmapFont.class);
+        manager.load("menu-btn.png", Texture.class);
+        manager.finishLoading();
 
-    setScreen(new LevelScreen(this));
-    }
+        setScreen(new MenuScreen(this, manager));
+    }//create()
+
 
     @Override
     public void dispose() {
