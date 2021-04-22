@@ -13,18 +13,17 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.scenes.MenuHUD;
+import com.juniorgames.gap.scenes.PlayMenuHUD;
 
 import static com.juniorgames.gap.GapGame.GAME_PPM;
 
-public class MenuScreen extends ScreenAdapter {
+public class PlayMenuScreen extends ScreenAdapter {
     private GapGame game;
     private AssetManager manager;
-
     private SpriteBatch batch;
     private OrthographicCamera camera;
-    private MenuHUD menuHud;
     private Viewport viewport;
+    private PlayMenuHUD playMenuHud;
     //tiled map values
     private TmxMapLoader maploader;
     private TiledMap map;
@@ -32,33 +31,39 @@ public class MenuScreen extends ScreenAdapter {
     //sfx
     private Music music;
 
-    public MenuScreen(GapGame game, AssetManager manager) {
+    public PlayMenuScreen(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
+        initScreen();
+        initScreenSFX();
+    }//constructor
 
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(this.game.GAME_WIDTH / GAME_PPM, this.game.GAME_HEIGHT / GAME_PPM, camera);
-
-        menuHud = new MenuHUD(this.game, this.manager);
-
-        maploader = new TmxMapLoader();
-        map = maploader.load("level0-0.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
-
-        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-
+    private void initScreenSFX() {
         music = manager.get("audio/music/world1-music.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.2f);//0-1 range
         if (!game.musicMuted) {
             music.play();
         }//end if
-    }//constructor
+    }
+
+    private void initScreen() {
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(this.game.GAME_WIDTH / GAME_PPM, this.game.GAME_HEIGHT / GAME_PPM, camera);
+
+        playMenuHud = new PlayMenuHUD(this.game, this.manager);
+
+        maploader = new TmxMapLoader();
+        map = maploader.load("level0-0.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
+
+        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+    }
 
     public void update(float dt) {
         handleInput(dt);
-        menuHud.update(dt);
+        playMenuHud.update(dt);
         camera.update();
         renderer.setView(camera);
     }
@@ -75,15 +80,15 @@ public class MenuScreen extends ScreenAdapter {
         renderer.render();
         //render HUD
         batch.setProjectionMatrix(camera.combined);
-        batch.setProjectionMatrix(menuHud.stage.getCamera().combined);
-        menuHud.stage.draw();
+        batch.setProjectionMatrix(playMenuHud.stage.getCamera().combined);
+        playMenuHud.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        menuHud.resize(width, height);
-        Gdx.app.log("MenuScreen", "Resizing screen to: " + width + " x " + height);
+        Gdx.app.log("PlayMenuScreen", "Resizing screen to: " + width + " x " + height);
+
     }
 
     @Override
@@ -91,7 +96,7 @@ public class MenuScreen extends ScreenAdapter {
         map.dispose();
         renderer.dispose();
         music.dispose();
-        menuHud.dispose();
+        playMenuHud.dispose();
         manager.dispose();
     }
 }

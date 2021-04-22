@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -31,6 +32,9 @@ import static com.juniorgames.gap.GapGame.GAME_PPM;
 
 public class LevelScreen extends ScreenAdapter {
     private GapGame game;
+    private AssetManager manager;
+    private SpriteBatch batch;
+
     private TextureAtlas atlas;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -56,17 +60,18 @@ public class LevelScreen extends ScreenAdapter {
     private LevelData currentLevelData;
 
     public LevelScreen(GapGame game, AssetManager manager) {
+        this.game = game;
+        this.manager = manager;
+        batch = new SpriteBatch();
+
         //define values by default when LevelScreen instance created
         currentWorld = 0;
         currentLevel = 0;
 
         atlas = new TextureAtlas("player.pack");
-        this.game = game;
         camera = new OrthographicCamera();
-        //viewport = new StretchViewport(480*2,272*2, camera);
-        viewport = new FitViewport(GapGame.GAME_WIDTH / GAME_PPM, GapGame.GAME_HEIGHT / GAME_PPM, camera);
-        //viewport = new ScreenViewport(camera);
-        levelHud = new LevelHUD(game, manager);
+        viewport = new FitViewport(this.game.GAME_WIDTH / GAME_PPM, this.game.GAME_HEIGHT / GAME_PPM, camera);
+        levelHud = new LevelHUD(this.game, this.manager);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
@@ -186,7 +191,6 @@ public class LevelScreen extends ScreenAdapter {
         //camera.position.x = player.b2body.getPosition().x; //move camera with the character
         player.update(dt);
         levelHud.update(dt);
-
         camera.update();
         renderer.setView(camera);
     }
@@ -223,12 +227,12 @@ public class LevelScreen extends ScreenAdapter {
         //render Box2DDebugLines
         b2dr.render(world, camera.combined);
 
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
-        player.draw(game.batch);
-        game.batch.end();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        player.draw(batch);
+        batch.end();
 
-        game.batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
+        batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
         levelHud.stage.draw();
 
         timeCount += delta;
@@ -240,8 +244,8 @@ public class LevelScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        //super.resize(width, height);
         viewport.update(width, height);
+        Gdx.app.log("LevelScreen", "Resizing screen to: " + width + " x " + height);
     }
 
     @Override
