@@ -63,6 +63,10 @@ public class LevelHUD implements Disposable {
         stage.addActor(tableHUD);
     }
 
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
     public void update(float dt) {
         timeCount += dt;
         if (timeCount >= 1) {//one second

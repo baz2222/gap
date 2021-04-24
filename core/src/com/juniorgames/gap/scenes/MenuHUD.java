@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -54,13 +56,28 @@ public class MenuHUD implements Disposable {
         tasksButton = new TextButton("TASKS", menuButtonStyle);
         gameNameLabel = new Label("GAP", new Label.LabelStyle(bigFont, Color.WHITE));
         byLabel = new Label("by Junior Games", new Label.LabelStyle(midFont, Color.WHITE));
+        playButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onPlayButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
         initTable();
     }//constructor
 
+    private void onPlayButtonClicked() {
+        this.game.setScreen(new PlayMenuScreen(game, manager));
+    }
+
     private void initTable() {
         table = new Table();
-        //table.center();
-        table.debug();
+        table.center();
         table.setFillParent(true);
         table.add(gameNameLabel).colspan(3).pad(20);
         table.row();
@@ -73,9 +90,6 @@ public class MenuHUD implements Disposable {
     }
 
     public void update(float dt) {
-        if (playButton.isPressed()) {
-            this.game.setScreen(new PlayMenuScreen(game, manager));
-        }//end if
     }
 
     @Override
@@ -84,9 +98,6 @@ public class MenuHUD implements Disposable {
     }
 
     public void resize(int width, int height) {
-        if (table!=null){
-            table.setSize(width, height);
-        }
-
+        stage.getViewport().update(width, height, true);
     }
 }

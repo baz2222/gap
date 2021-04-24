@@ -245,7 +245,7 @@ public class LevelScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        Gdx.app.log("LevelScreen", "Resizing screen to: " + width + " x " + height);
+        levelHud.resize(width, height);
     }
 
     @Override

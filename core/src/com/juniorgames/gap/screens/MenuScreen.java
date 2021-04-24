@@ -83,7 +83,6 @@ public class MenuScreen extends ScreenAdapter {
     public void resize(int width, int height) {
         viewport.update(width, height);
         menuHud.resize(width, height);
-        Gdx.app.log("MenuScreen", "Resizing screen to: " + width + " x " + height);
     }
 
     @Override

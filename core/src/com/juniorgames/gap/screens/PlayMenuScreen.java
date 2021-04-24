@@ -35,20 +35,7 @@ public class PlayMenuScreen extends ScreenAdapter {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
-        initScreen();
-        initScreenSFX();
-    }//constructor
 
-    private void initScreenSFX() {
-        music = manager.get("audio/music/world1-music.mp3", Music.class);
-        music.setLooping(true);
-        music.setVolume(0.2f);//0-1 range
-        if (!game.musicMuted) {
-            music.play();
-        }//end if
-    }
-
-    private void initScreen() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(this.game.GAME_WIDTH / GAME_PPM, this.game.GAME_HEIGHT / GAME_PPM, camera);
 
@@ -59,7 +46,14 @@ public class PlayMenuScreen extends ScreenAdapter {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-    }
+
+        music = manager.get("audio/music/world1-music.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.2f);//0-1 range
+        if (!game.musicMuted) {
+            music.play();
+        }//end if
+    }//constructor
 
     public void update(float dt) {
         handleInput(dt);
@@ -87,8 +81,7 @@ public class PlayMenuScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        Gdx.app.log("PlayMenuScreen", "Resizing screen to: " + width + " x " + height);
-
+        playMenuHud.resize(width, height);
     }
 
     @Override

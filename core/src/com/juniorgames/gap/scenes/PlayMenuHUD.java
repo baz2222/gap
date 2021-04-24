@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
+import com.juniorgames.gap.screens.PlayMenuScreen;
 
 public class PlayMenuHUD implements Disposable {
     public Stage stage;
@@ -38,8 +41,7 @@ public class PlayMenuHUD implements Disposable {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
-        //stage = new Stage();
-        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_WIDTH, new OrthographicCamera());
+        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(this.stage);
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
@@ -55,33 +57,49 @@ public class PlayMenuHUD implements Disposable {
         tasksButton = new TextButton("TASKS", menuButtonStyle);
         gameNameLabel = new Label("GAP", new Label.LabelStyle(bigFont, Color.WHITE));
         byLabel = new Label("by Junior Games", new Label.LabelStyle(midFont, Color.WHITE));
+        playButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onPlayButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+
         initTable();
     }//constructor
+
+    private void onPlayButtonClicked() {
+        this.game.setScreen(new LevelScreen(game, manager));
+    }
 
     private void initTable() {
         table = new Table();
         table.center();
         table.setFillParent(true);
-        table.add(gameNameLabel).colspan(3).padBottom(100).padTop(100);
+        table.add(gameNameLabel).colspan(3).pad(20);
         table.row();
         table.add(playButton).pad(20);
         table.add(keysButton).pad(20);
         table.add(tasksButton).pad(20);
         table.row();
-        table.add(byLabel).colspan(3).padTop(160);
-
+        table.add(byLabel).colspan(3).padTop(40);
         stage.addActor(table);
-
     }
 
     public void update(float dt) {
-        if (playButton.isPressed()) {
-            this.game.setScreen(new LevelScreen(game, manager));
-        }//end if
     }
 
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, false);
     }
 }
