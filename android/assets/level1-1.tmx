@@ -22,7 +22,7 @@
   <image source="lp3-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
  <imagelayer id="2" name="BackgroundImageLayer" locked="1">
-  <image source="bg1.png" width="960" height="544"/>
+  <image source="bg2.png" width="960" height="544"/>
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">

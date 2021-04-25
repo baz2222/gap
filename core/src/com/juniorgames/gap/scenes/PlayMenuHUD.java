@@ -20,22 +20,23 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
+import com.juniorgames.gap.screens.MenuScreen;
 import com.juniorgames.gap.screens.PlayMenuScreen;
 
 public class PlayMenuHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
-    private BitmapFont midFont, bigFont;
+    private BitmapFont midFont;
     private Table table;
-    private Texture menuButtonTexture;
-    private TextButtonStyle menuButtonStyle;
-    private TextButton playButton;
-    private TextButton keysButton;
-    private TextButton tasksButton;
-    private Label gameNameLabel, byLabel;
+    private Texture playMenuButtonTexture, backButtonTexture;
+    private TextButtonStyle playMenuButtonStyle, backButtonStyle;
+    private TextButton newGameButton;
+    private TextButton loadGameButton;
+    private TextButton backButton;
     private GapGame game;
     private AssetManager manager;
+    private InputListener newGameButtonInputListener, loadGameButtonInputListener, backButtonInputListener;
 
     public PlayMenuHUD(GapGame game, AssetManager manager) {
         this.game = game;
@@ -43,24 +44,33 @@ public class PlayMenuHUD implements Disposable {
         batch = new SpriteBatch();
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
+
         Gdx.input.setInputProcessor(this.stage);
+
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
-        bigFont = manager.get("fonts/big-font.fnt", BitmapFont.class);
-        menuButtonTexture = manager.get("menu-btn.png", Texture.class);
-        menuButtonStyle = new TextButtonStyle();
-        menuButtonStyle.font = midFont;
-        menuButtonStyle.down = new TextureRegionDrawable(menuButtonTexture);
-        menuButtonStyle.up = new TextureRegionDrawable(menuButtonTexture);
-        menuButtonStyle.checked = new TextureRegionDrawable(menuButtonTexture);
-        playButton = new TextButton("PLAY", menuButtonStyle);
-        keysButton = new TextButton("KEYS", menuButtonStyle);
-        tasksButton = new TextButton("TASKS", menuButtonStyle);
-        gameNameLabel = new Label("GAP", new Label.LabelStyle(bigFont, Color.WHITE));
-        byLabel = new Label("by Junior Games", new Label.LabelStyle(midFont, Color.WHITE));
-        playButton.addListener(new InputListener() {
+
+        playMenuButtonTexture = manager.get("play-menu-btn.png", Texture.class);
+        playMenuButtonStyle = new TextButtonStyle();
+        playMenuButtonStyle.font = midFont;
+        playMenuButtonStyle.down = new TextureRegionDrawable(playMenuButtonTexture);
+        playMenuButtonStyle.up = new TextureRegionDrawable(playMenuButtonTexture);
+        playMenuButtonStyle.checked = new TextureRegionDrawable(playMenuButtonTexture);
+
+        backButtonTexture = manager.get("back-btn.png", Texture.class);
+        backButtonStyle = new TextButtonStyle();
+        backButtonStyle.font = midFont;
+        backButtonStyle.down = new TextureRegionDrawable(backButtonTexture);
+        backButtonStyle.up = new TextureRegionDrawable(backButtonTexture);
+        backButtonStyle.checked = new TextureRegionDrawable(backButtonTexture);
+
+        newGameButton = new TextButton("NEW GAME", playMenuButtonStyle);
+        loadGameButton = new TextButton("LOAD GAME", playMenuButtonStyle);
+        backButton = new TextButton("BACK", backButtonStyle);
+
+        newGameButtonInputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onPlayButtonClicked();
+                onNewGameButtonClicked();
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -68,26 +78,62 @@ public class PlayMenuHUD implements Disposable {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
             }
-        });
+        };//newGameButtonInputListener
+        newGameButton.addListener(newGameButtonInputListener);//listener - newGameButton
+
+        loadGameButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onLoadGameButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//ladGameButtonInputListener
+        loadGameButton.addListener(loadGameButtonInputListener);//listener - loadGameButton
+
+        backButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onBackButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//backButtonInputListener
+        backButton.addListener(backButtonInputListener);//listener - backButton
 
         initTable();
     }//constructor
 
-    private void onPlayButtonClicked() {
+    private void onBackButtonClicked() {
+        this.game.setScreen(new MenuScreen(game, manager));
+    }
+
+    private void onNewGameButtonClicked() {
+        this.game.setScreen(new LevelScreen(game, manager));
+    }
+
+    private void onLoadGameButtonClicked() {
+        game.savedGame.load();
         this.game.setScreen(new LevelScreen(game, manager));
     }
 
     private void initTable() {
         table = new Table();
-        table.center();
+        table.bottom();
         table.setFillParent(true);
-        table.add(gameNameLabel).colspan(3).pad(20);
+        table.add(newGameButton).pad(40).padLeft(250).padBottom(160);
+        table.add(loadGameButton).pad(40).padRight(250).padBottom(160);
         table.row();
-        table.add(playButton).pad(20);
-        table.add(keysButton).pad(20);
-        table.add(tasksButton).pad(20);
-        table.row();
-        table.add(byLabel).colspan(3).padTop(40);
+        table.add(backButton).colspan(2).right();
+
         stage.addActor(table);
     }
 
@@ -96,6 +142,9 @@ public class PlayMenuHUD implements Disposable {
 
     @Override
     public void dispose() {
+        newGameButton.removeListener(newGameButtonInputListener);
+        loadGameButton.removeListener(loadGameButtonInputListener);
+        backButton.removeListener(backButtonInputListener);
         stage.dispose();
     }
 

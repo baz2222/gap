@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
 
 import static com.juniorgames.gap.GapGame.*;
@@ -22,10 +23,12 @@ public class Player extends Sprite {
     private Animation playerRun;
     private Animation playerJump;
     private Animation playerFall;
+    private GapGame game;
 
-    public Player(World world, LevelScreen screen) {
+    public Player(World world, LevelScreen screen, GapGame game) {
         super(screen.getAtlas().findRegion("player"));
         this.world = world;
+        this.game = game;
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -53,7 +56,7 @@ public class Player extends Sprite {
         frames.clear();
 
         definePlayer();
-        setBounds(0, 0, 64 / GAME_PPM, 64 / GAME_PPM);
+        setBounds(0, 0, 64 / game.GAME_PPM, 64 / game.GAME_PPM);
         setRegion((TextureRegion) playerIdle.getKeyFrame(stateTimer, true));
 
     }//constructor
@@ -106,22 +109,22 @@ public class Player extends Sprite {
 
     private void definePlayer() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(44 / GAME_PPM, 366 / GAME_PPM);
+        bdef.position.set(44 / game.GAME_PPM, 366 / game.GAME_PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
         //fixture definition
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(30 / GAME_PPM);
-        fdef.filter.categoryBits = PLAYER_BIT;
-        fdef.filter.maskBits = DEFAULT_BIT | DOOR_BIT;//with what fixtures player can collide with
+        shape.setRadius(30 / game.GAME_PPM);
+        fdef.filter.categoryBits = game.PLAYER_BIT;
+        fdef.filter.maskBits = (short) (game.DEFAULT_BIT | game.DOOR_BIT);//with what fixtures player can collide with
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
         //create sensor
         CircleShape sensor = new CircleShape();
-        sensor.setRadius(34 / GAME_PPM);
+        sensor.setRadius(34 / game.GAME_PPM);
         fdef.shape = sensor;
         fdef.isSensor = true;
         b2body.createFixture(fdef).setUserData("playerSensor");

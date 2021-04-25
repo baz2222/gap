@@ -1,26 +1,31 @@
 package com.juniorgames.gap;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.juniorgames.gap.screens.MenuScreen;
+import com.juniorgames.gap.tools.SavedGame;
 
 public class GapGame extends Game {
     //virtual screen width and height
-    public static final int GAME_WIDTH = 960;
-    public static final int GAME_HEIGHT = 544;
-    public static final float GAME_PPM = 100; //pixels per meter for Box2D
+    public final int GAME_WIDTH = 960;
+    public final int GAME_HEIGHT = 544;
+    public final float GAME_PPM = 100; //pixels per meter for Box2D
 
-    public static final short DEFAULT_BIT = 1;
-    public static final short PLAYER_BIT = 2;//must be power of two for binary operations with fixtures filters
-    public static final short DOOR_BIT = 4;
-    public static final short DESTROYED_BIT = 8;
+    public final short DEFAULT_BIT = 1;
+    public final short PLAYER_BIT = 2;//must be power of two for binary operations with fixtures filters
+    public final short DOOR_BIT = 4;
+    public final short DESTROYED_BIT = 8;
+
+    public SavedGame savedGame;
 
     public boolean soundsMuted = false;//sound off
     public boolean musicMuted = true;//music off
+    public boolean gamePaused = false;//game paused
 
     public static final int SPRITES_MULTIPLIER = 2; // multiplier for all sprites and textures - DEPENDS ON QUALITY AND SCREEN SIZE!
 
@@ -38,11 +43,22 @@ public class GapGame extends Game {
         manager.load("fonts/big-font.fnt", BitmapFont.class);
         manager.load("fonts/mid-font.fnt", BitmapFont.class);
         manager.load("menu-btn.png", Texture.class);
+        manager.load("play-menu-btn.png", Texture.class);
+        manager.load("back-btn.png", Texture.class);
+        manager.load("left-arrow-btn.png", Texture.class);
+        manager.load("right-arrow-btn.png", Texture.class);
+        manager.load("bg1.png", Texture.class);
+        manager.load("bg2.png", Texture.class);
+        manager.load("bg3.png", Texture.class);
         manager.finishLoading();
+
+        savedGame = new SavedGame();
+
+        //Gdx.graphics.setContinuousRendering(false);
+        //Gdx.graphics.requestRendering();
 
         this.setScreen(new MenuScreen(this, manager));
     }//create()
-
 
     @Override
     public void dispose() {

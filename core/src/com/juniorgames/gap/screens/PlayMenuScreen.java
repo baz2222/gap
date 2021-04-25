@@ -15,8 +15,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.PlayMenuHUD;
 
-import static com.juniorgames.gap.GapGame.GAME_PPM;
-
 public class PlayMenuScreen extends ScreenAdapter {
     private GapGame game;
     private AssetManager manager;
@@ -37,13 +35,13 @@ public class PlayMenuScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(this.game.GAME_WIDTH / GAME_PPM, this.game.GAME_HEIGHT / GAME_PPM, camera);
+        viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
         playMenuHud = new PlayMenuHUD(this.game, this.manager);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / GAME_PPM);//scaling map with PPM
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 

@@ -35,6 +35,7 @@ public class MenuHUD implements Disposable {
     private Label gameNameLabel, byLabel;
     private GapGame game;
     private AssetManager manager;
+    private InputListener playButtonListener;
 
     public MenuHUD(GapGame game, AssetManager manager) {
         this.game = game;
@@ -56,7 +57,8 @@ public class MenuHUD implements Disposable {
         tasksButton = new TextButton("TASKS", menuButtonStyle);
         gameNameLabel = new Label("GAP", new Label.LabelStyle(bigFont, Color.WHITE));
         byLabel = new Label("by Junior Games", new Label.LabelStyle(midFont, Color.WHITE));
-        playButton.addListener(new InputListener() {
+
+        playButtonListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 onPlayButtonClicked();
@@ -67,7 +69,9 @@ public class MenuHUD implements Disposable {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
             }
-        });
+        };
+        playButton.addListener(playButtonListener);
+
         initTable();
     }//constructor
 
@@ -94,6 +98,7 @@ public class MenuHUD implements Disposable {
 
     @Override
     public void dispose() {
+        playButton.removeListener(playButtonListener);
         stage.dispose();
     }
 

@@ -6,13 +6,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.juniorgames.gap.GapGame;
 
-import static com.juniorgames.gap.GapGame.DOOR_BIT;
-
 public class Door extends InteractiveTileObject {
-    public Door(World world, TiledMap map, Rectangle bounds) {
-        super(world, map, bounds);
+    protected GapGame game;
+    public Door(World world, TiledMap map, Rectangle bounds, GapGame game) {
+        super(world, map, bounds, game);
+        this.game = game;
         fixture.setUserData(this);
-        setCategoryFilter(DOOR_BIT);
+        setCategoryFilter(game.DOOR_BIT);
     }
 
     @Override

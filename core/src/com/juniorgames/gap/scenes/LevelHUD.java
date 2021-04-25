@@ -1,17 +1,27 @@
 package com.juniorgames.gap.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.LevelScreen;
+import com.juniorgames.gap.screens.MenuScreen;
 
 public class LevelHUD implements Disposable {
     public Stage stage;
@@ -25,46 +35,134 @@ public class LevelHUD implements Disposable {
 
     private Label countdownLabel;
     private static Label scoreLabel;
-    private Label timeLabel;
     private Label levelNameLabel;
-    private Label levelLabel;
-    private Label characterLabel;
+    private ImageButton backButton;
+    private TextButton continueButton, exitButton;
+    private ImageButton.ImageButtonStyle backButtonStyle;
+    private Texture backButtonTexture, pauseButtonTexture;
+    private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener;
+    private int currentWorld;
+    private int currentLevel;
+    private BitmapFont midFont;
 
-    public LevelHUD(GapGame game, AssetManager manager) {
+    private Table pauseTable;
+    private TextButton.TextButtonStyle pauseButtonStyle;
+
+    public LevelHUD(GapGame game, AssetManager manager, int currentWorld, int currentLevel) {
         this.game = game;
         this.manager = manager;
+        this.currentWorld = currentWorld;
+        this.currentLevel = currentLevel;
         batch = new SpriteBatch();
         levelTimer = 300;
         timeCount = 0;
         score = 0;
+
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
-        BitmapFont levelHUDFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
+        Gdx.input.setInputProcessor(this.stage);
+
+        midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
+
+        countdownLabel = new Label(String.format("%03d", levelTimer), new Label.LabelStyle(midFont, Color.WHITE));
+        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(midFont, Color.WHITE));
+        levelNameLabel = new Label("World " + currentWorld + "-" + currentLevel, new Label.LabelStyle(midFont, Color.WHITE));
+
+        backButtonTexture = manager.get("left-arrow-btn.png", Texture.class);
+        pauseButtonTexture = manager.get("menu-btn.png", Texture.class);
+
+        backButtonStyle = new ImageButton.ImageButtonStyle();
+        backButtonStyle.down = new TextureRegionDrawable(backButtonTexture);
+        backButtonStyle.up = new TextureRegionDrawable(backButtonTexture);
+        backButtonStyle.checked = new TextureRegionDrawable(backButtonTexture);
+        backButton = new ImageButton(backButtonStyle);
+
+        backButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onBackButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//newGameButtonInputListener
+        backButton.addListener(backButtonInputListener);//listener - newGameButton
+
+        pauseButtonStyle = new TextButton.TextButtonStyle();
+        pauseButtonStyle.font = midFont;
+        pauseButtonStyle.down = new TextureRegionDrawable(pauseButtonTexture);
+        pauseButtonStyle.up = new TextureRegionDrawable(pauseButtonTexture);
+        pauseButtonStyle.checked = new TextureRegionDrawable(pauseButtonTexture);
+        continueButton = new TextButton("CONTINUE", pauseButtonStyle);
+        exitButton = new TextButton("EXIT TO MENU", pauseButtonStyle);
+
+        continueButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onContinueButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//continueButtonInputListener
+        continueButton.addListener(continueButtonInputListener);//listener - continueButton
+
+        exitButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onExitButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//exitButtonInputListener
+        exitButton.addListener(exitButtonInputListener);//listener - exitButton
+
         Table tableHUD = new Table();
         tableHUD.top();
         tableHUD.setFillParent(true);
-        countdownLabel = new Label(String.format("%03d", levelTimer), new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        timeLabel = new Label("TIME", new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        //level name. In future will be World-Level name...
-        levelLabel = new Label("LEVEL", new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        levelNameLabel = new Label("World 1-1", new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        //character name = RED, BLUE, WHITE...
-        characterLabel = new Label("Player Name", new Label.LabelStyle(levelHUDFont, Color.WHITE));
-        tableHUD.add(characterLabel).expandX().padTop(50);
-        tableHUD.add(levelLabel).expandX().padTop(50);
-        tableHUD.add(timeLabel).expandX().padTop(50);
-        tableHUD.row();
-        tableHUD.add(scoreLabel).expandX().padTop(30);
-        tableHUD.add(levelNameLabel).expandX().padTop(30);
-        tableHUD.add(countdownLabel).expandX().padTop(30);
+        tableHUD.add(backButton).padRight(150);
+        tableHUD.add(scoreLabel).padRight(150);
+        tableHUD.add(levelNameLabel).padRight(150);
+        tableHUD.add(countdownLabel).padRight(120);
 
         stage.addActor(tableHUD);
+
+        pauseTable = new Table();
+        pauseTable.setFillParent(true);
+        pauseTable.center();
+        pauseTable.add(continueButton).pad(20);
+        pauseTable.row();
+        pauseTable.add(exitButton).pad(20);
+    }//constructor
+
+    private void onBackButtonClicked() {
+        stage.addActor(pauseTable);
+        game.gamePaused = true;
+    }
+
+    private void onContinueButtonClicked() {
+        pauseTable.remove();
+        game.gamePaused = false;
+    }
+
+    private void onExitButtonClicked() {
+        game.gamePaused = false;
+        this.game.setScreen(new MenuScreen(game, manager));
     }
 
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, false);
     }
 
     public void update(float dt) {
