@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.juniorgames.gap.screens.MenuScreen;
 import com.juniorgames.gap.tools.SavedGame;
+import com.juniorgames.gap.tools.TasksTracker;
 
 public class GapGame extends Game {
     //virtual screen width and height
@@ -22,6 +23,7 @@ public class GapGame extends Game {
     public final short DESTROYED_BIT = 8;
 
     public SavedGame savedGame;
+    public TasksTracker tasksTracker;
 
     public boolean soundsMuted = false;//sound off
     public boolean musicMuted = true;//music off
@@ -34,6 +36,11 @@ public class GapGame extends Game {
 
     @Override
     public void create() {
+        savedGame = new SavedGame();
+        savedGame.load();
+        tasksTracker = new TasksTracker();
+        tasksTracker.update(savedGame);
+
         manager = new AssetManager();
         manager.load("audio/music/world1-music.mp3", Music.class);
         manager.load("audio/sounds/jump.mp3", Sound.class);
@@ -50,12 +57,11 @@ public class GapGame extends Game {
         manager.load("bg1.png", Texture.class);
         manager.load("bg2.png", Texture.class);
         manager.load("bg3.png", Texture.class);
+        for (int i = 0; i < 12; i++) {
+            manager.load(tasksTracker.tasks.get(i).taskStripImagePath, Texture.class);
+            manager.load(tasksTracker.tasks.get(i).taskImagePath, Texture.class);
+        }
         manager.finishLoading();
-
-        savedGame = new SavedGame();
-
-        //Gdx.graphics.setContinuousRendering(false);
-        //Gdx.graphics.requestRendering();
 
         this.setScreen(new MenuScreen(this, manager));
     }//create()

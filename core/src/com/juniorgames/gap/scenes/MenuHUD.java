@@ -19,7 +19,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.KeysMenuScreen;
 import com.juniorgames.gap.screens.PlayMenuScreen;
+import com.juniorgames.gap.screens.TasksMenuScreen;
 
 public class MenuHUD implements Disposable {
     public Stage stage;
@@ -35,7 +37,7 @@ public class MenuHUD implements Disposable {
     private Label gameNameLabel, byLabel;
     private GapGame game;
     private AssetManager manager;
-    private InputListener playButtonListener;
+    private InputListener playButtonListener, keysButtonListener, tasksButtonListener;
 
     public MenuHUD(GapGame game, AssetManager manager) {
         this.game = game;
@@ -72,11 +74,48 @@ public class MenuHUD implements Disposable {
         };
         playButton.addListener(playButtonListener);
 
+        keysButtonListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onKeysButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };
+        keysButton.addListener(keysButtonListener);
+
+        tasksButtonListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onTasksButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };
+        tasksButton.addListener(tasksButtonListener);
+
         initTable();
     }//constructor
 
     private void onPlayButtonClicked() {
+        game.savedGame.load();
         this.game.setScreen(new PlayMenuScreen(game, manager));
+    }
+
+    private void onKeysButtonClicked() {
+        this.game.setScreen(new KeysMenuScreen(game, manager));
+    }
+
+    private void onTasksButtonClicked() {
+        this.game.setScreen(new TasksMenuScreen(game, manager));
     }
 
     private void initTable() {
@@ -99,6 +138,8 @@ public class MenuHUD implements Disposable {
     @Override
     public void dispose() {
         playButton.removeListener(playButtonListener);
+        keysButton.removeListener(keysButtonListener);
+        tasksButton.removeListener(tasksButtonListener);
         stage.dispose();
     }
 
