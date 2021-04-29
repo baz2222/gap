@@ -1,8 +1,7 @@
 package com.juniorgames.gap.tools;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.Preferences;
 
 public class SavedGame {
     public int world;
@@ -12,28 +11,40 @@ public class SavedGame {
     public int killed;
     public int completed;
 
+    private Preferences prefs;
+
     public SavedGame() {
-        initialize();
+        prefs = Gdx.app.getPreferences("GapGame");
+        load();
         //constructor
     }
 
-    private void initialize() {
+    public void reset() {
         world = 1;
         level = 1;
         wrapped = 0;
         died = 0;
         killed = 0;
         completed = 0;
+        save();
     }
 
     public void load() {
-        JsonReader reader = new JsonReader();
-        JsonValue json = reader.parse(Gdx.files.internal("saved-game.json"));
-        world = json.getInt("world");
-        level = json.getInt("level");
-        wrapped = json.getInt("wrapped");
-        died = json.getInt("died");
-        killed = json.getInt("killed");
-        completed = json.getInt("completed");
+        world = prefs.getInteger("world", 1);
+        level = prefs.getInteger("level", 1);
+        wrapped = prefs.getInteger("wrapped", 0);
+        died = prefs.getInteger("died", 0);
+        killed = prefs.getInteger("killed", 0);
+        completed = prefs.getInteger("completed", 0);
+    }
+
+    public void save() {
+        prefs.putInteger("world", world);
+        prefs.putInteger("level", level);
+        prefs.putInteger("wrapped", wrapped);
+        prefs.putInteger("died", died);
+        prefs.putInteger("killed", killed);
+        prefs.putInteger("completed", completed);
+        prefs.flush();
     }
 }

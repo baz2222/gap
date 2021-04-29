@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="41">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="60">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
@@ -22,17 +22,29 @@
   <image source="lp3-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
  <imagelayer id="2" name="BackgroundImageLayer" locked="1">
-  <image source="bg2.png" width="960" height="544"/>
+  <image source="bg1.png" width="960" height="544"/>
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzt1SsSgDAMRdGIGj7r4A+lBfa/NS6iHtPWvMwckYm4Ms7MXCUDRkyYsWDFhj3DPXUPeJwIiLhw48lwT93So6666qqr7r9ugxYd+gJ7rb/7eQHjVQxz
+   eJzVlccKwzAQRHXwJb33Xkh3ev7/1zICCwazksCNZOFhbFnzGPngQCkV/ABHcAJncAEh2IE9OKRYdzn1Ox/wBC/wju6v4Abu4JFw3eYOo/W8RnKbnnlP3F2Ek93GW/SwtwbqGeX6stjbAM2MvL4s9rZAO4FD6ubLYm8HdIV3RmDsyJC62bIkbw/0BdcETB0Z3M3s46wSKNO1Ql79bACGgmsG5g4vdzP7TBY7fJRirgVYKvt5czezL+0/Qs8KrJX9vJN086GzNmBLXapK/lb/whdxvhLj
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
   <object id="37" x="0" y="0" width="960" height="32"/>
   <object id="38" x="0" y="512" width="960" height="32"/>
-  <object id="39" x="0" y="32" width="32" height="480"/>
-  <object id="40" x="928" y="32" width="32" height="480"/>
+  <object id="39" x="0" y="32" width="32" height="384"/>
+  <object id="40" x="928" y="32" width="32" height="352"/>
+  <object id="42" x="32" y="32" width="64" height="64"/>
+  <object id="43" x="96" y="32" width="32" height="32"/>
+  <object id="44" x="32" y="96" width="32" height="32"/>
+  <object id="45" x="864" y="32" width="64" height="64"/>
+  <object id="46" x="832" y="32" width="32" height="32"/>
+  <object id="47" x="896" y="96" width="32" height="32"/>
+  <object id="50" x="672" y="416" width="288" height="96"/>
+  <object id="54" x="768" y="384" width="192" height="32"/>
+  <object id="55" x="608" y="448" width="64" height="64"/>
+  <object id="56" x="512" y="480" width="96" height="32"/>
+  <object id="57" x="0" y="416" width="128" height="96"/>
+  <object id="58" x="128" y="448" width="96" height="64"/>
  </objectgroup>
 </map>

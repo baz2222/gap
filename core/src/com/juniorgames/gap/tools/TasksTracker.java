@@ -16,7 +16,7 @@ public class TasksTracker {
         for (int i = 0; i < 12; i++) {
             tasks.add(new Task("tasks/task"+(i+1)+".png", "tasks/task-strip"+(i+1)+".png", false, taskNames[i]));
         }
-    }
+    }//constructor
 
     public Task update(SavedGame s) {
         if (s.completed >= 10 && !tasks.get(0).completed){

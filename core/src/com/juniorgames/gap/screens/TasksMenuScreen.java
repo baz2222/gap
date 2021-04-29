@@ -3,7 +3,6 @@ package com.juniorgames.gap.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.scenes.KeysMenuHUD;
-import com.juniorgames.gap.scenes.PlayMenuHUD;
 import com.juniorgames.gap.scenes.TasksMenuHUD;
 
 public class TasksMenuScreen extends ScreenAdapter {
@@ -28,8 +25,6 @@ public class TasksMenuScreen extends ScreenAdapter {
     private TmxMapLoader maploader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
-    //sfx
-    private Music music;
 
     public TasksMenuScreen(GapGame game, AssetManager manager) {
         this.game = game;
@@ -47,12 +42,6 @@ public class TasksMenuScreen extends ScreenAdapter {
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
-        music = manager.get("audio/music/world1-music.mp3", Music.class);
-        music.setLooping(true);
-        music.setVolume(0.2f);//0-1 range
-        if (!game.musicMuted) {
-            music.play();
-        }//end if
     }//constructor
 
     public void update(float dt) {
@@ -88,7 +77,6 @@ public class TasksMenuScreen extends ScreenAdapter {
     public void dispose() {
         map.dispose();
         renderer.dispose();
-        music.dispose();
         tasksMenuHud.dispose();
         manager.dispose();
     }

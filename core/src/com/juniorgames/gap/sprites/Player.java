@@ -1,22 +1,21 @@
 package com.juniorgames.gap.sprites;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.screens.LevelScreen;
-
-import static com.juniorgames.gap.GapGame.*;
 
 public class Player extends Sprite {
     public enum State {FALLING, JUMPING, STANDING, RUNNING, DIEING}
 
     public State previousState;
     public State currentState;
-    public World world;
     public Body b2body;
+    private Filter filter;
+    private Fixture fixture, sensorFixture;
     private Animation playerIdle;
     private float stateTimer;
     private boolean runningRight;
@@ -24,11 +23,13 @@ public class Player extends Sprite {
     private Animation playerJump;
     private Animation playerFall;
     private GapGame game;
+    private AssetManager manager;
 
-    public Player(World world, LevelScreen screen, GapGame game) {
-        super(screen.getAtlas().findRegion("player"));
-        this.world = world;
+    public Player(GapGame game) {
+        super(game.playerAtlas.findRegion("player"));
         this.game = game;
+        this.manager = game.manager;
+        filter = new Filter();
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -63,7 +64,6 @@ public class Player extends Sprite {
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        //setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y);
         setRegion(getFrame(dt));
     }
 
@@ -109,24 +109,31 @@ public class Player extends Sprite {
 
     private void definePlayer() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(44 / game.GAME_PPM, 366 / game.GAME_PPM);
+        bdef.position.set(game.levelData.start.x / game.GAME_PPM, game.levelData.start.y / game.GAME_PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef);
+        b2body = game.world.createBody(bdef);
         //fixture definition
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(30 / game.GAME_PPM);
-        fdef.filter.categoryBits = game.PLAYER_BIT;
-        fdef.filter.maskBits = (short) (game.DEFAULT_BIT | game.DOOR_BIT);//with what fixtures player can collide with
+        fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT);//with what fixtures player can collide with
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        fixture = b2body.createFixture(fdef);
 
         //create sensor
         CircleShape sensor = new CircleShape();
         sensor.setRadius(34 / game.GAME_PPM);
         fdef.shape = sensor;
         fdef.isSensor = true;
-        b2body.createFixture(fdef).setUserData("playerSensor");
+        sensorFixture = b2body.createFixture(fdef);
+        sensorFixture.setUserData(this);
+        setFilter(game.PLAYER_BIT);
     }
+
+    public void setFilter(short bit) {
+        filter.categoryBits = bit;
+        sensorFixture.setFilterData(filter);
+    }
+
 }

@@ -7,26 +7,23 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
-import com.juniorgames.gap.screens.PlayMenuScreen;
 
-public class TasksMenuHUD implements Disposable {
+import java.util.ArrayList;
+
+public class GameOverHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
@@ -38,8 +35,10 @@ public class TasksMenuHUD implements Disposable {
     private AssetManager manager;
     private InputListener backButtonInputListener;
     private TextButtonStyle backButtonStyle;
+    private Label label;
+    private Label.LabelStyle labelStyle;
 
-    public TasksMenuHUD(GapGame game, AssetManager manager) {
+    public GameOverHUD(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
@@ -50,14 +49,14 @@ public class TasksMenuHUD implements Disposable {
 
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
 
-        backButtonTexture = manager.get("back-btn.png", Texture.class);
+        backButtonTexture = manager.get("menu-btn.png", Texture.class);
         backButtonStyle = new TextButtonStyle();
         backButtonStyle.font = midFont;
         backButtonStyle.down = new TextureRegionDrawable(backButtonTexture);
         backButtonStyle.up = new TextureRegionDrawable(backButtonTexture);
         backButtonStyle.checked = new TextureRegionDrawable(backButtonTexture);
 
-        backButton = new TextButton("BACK", backButtonStyle);
+        backButton = new TextButton("BACK TO MENU", backButtonStyle);
 
         backButtonInputListener = new InputListener() {
             @Override
@@ -81,26 +80,14 @@ public class TasksMenuHUD implements Disposable {
     }
 
     private void initTable() {
-        Image image;
+        labelStyle = new Label.LabelStyle(midFont, Color.WHITE);
+        label = new Label("Congratulations! You are finish the game!", labelStyle);
         table = new Table();
-        table.bottom();
-        table.padTop(75);
+        table.center();
         table.setFillParent(true);
-        for (int i = 1; i <= 12; i++) {
-            Texture texture = manager.get(game.tasksTracker.tasks.get(i - 1).taskStripImagePath, Texture.class);
-            int width = texture.getWidth() / 2;
-            if (game.tasksTracker.tasks.get(i - 1).completed == false) {
-                image = new Image(new TextureRegion(texture, 0, 0, width, 96));
-            } else {
-                image = new Image(new TextureRegion(texture, 0 + width, 0, width, 96));
-            }//if else
-            if (i > 1 && i % 2 != 0) {
-                table.row();
-            }
-            table.add(image).padTop(5).padBottom(5).padLeft(30).padRight(40);
-        }
+        table.add(label).padLeft(90).padRight(90).padTop(20);
         table.row();
-        table.add(backButton).colspan(2).right();
+        table.add(backButton).padTop(100);
 
         stage.addActor(table);
     }

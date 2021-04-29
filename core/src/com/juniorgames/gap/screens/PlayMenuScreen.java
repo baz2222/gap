@@ -27,8 +27,6 @@ public class PlayMenuScreen extends ScreenAdapter {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     //sfx
-    private Music music;
-
     public PlayMenuScreen(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
@@ -45,12 +43,6 @@ public class PlayMenuScreen extends ScreenAdapter {
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
-        music = manager.get("audio/music/world1-music.mp3", Music.class);
-        music.setLooping(true);
-        music.setVolume(0.2f);//0-1 range
-        if (!game.musicMuted) {
-            music.play();
-        }//end if
     }//constructor
 
     public void update(float dt) {
@@ -86,7 +78,6 @@ public class PlayMenuScreen extends ScreenAdapter {
     public void dispose() {
         map.dispose();
         renderer.dispose();
-        music.dispose();
         playMenuHud.dispose();
         manager.dispose();
     }

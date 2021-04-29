@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 public class LevelData {
-    public int world = 0;// world number
-    public int level = 0;// level number
+    public int world = 1;// world number
+    public int level = 1;// level number
     public Vector2 start = new Vector2();// coords where player appears at start
     public Vector2 exit = new Vector2();// coords of exit doors
     public Array<Vector2> plant1s = new Array<>();// array of plants version 1 coords to put on current map

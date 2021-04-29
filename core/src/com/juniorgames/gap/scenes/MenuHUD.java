@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.KeysMenuScreen;
 import com.juniorgames.gap.screens.PlayMenuScreen;
 import com.juniorgames.gap.screens.TasksMenuScreen;

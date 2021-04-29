@@ -1,21 +1,87 @@
 package com.juniorgames.gap.sprites;
 
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.juniorgames.gap.GapGame;
 
-public class Door extends InteractiveTileObject {
-    protected GapGame game;
-    public Door(World world, TiledMap map, Rectangle bounds, GapGame game) {
-        super(world, map, bounds, game);
+public class Door extends Sprite {
+    private GapGame game;
+    private AssetManager manager;
+    private Array<TextureRegion> doorFramesRegion;
+    private Animation doorAnimation;
+
+    private BodyDef bdef;
+    public Body b2body;
+    private FixtureDef fdef;
+    private PolygonShape doorShape;
+    private PolygonShape sensor;
+    private Fixture fixture, sensorFixture;
+    private Filter filter;
+
+    private float stateTimer = 0;
+
+    public Door(GapGame game) {
+        super(game.doorAtlas.findRegion("door"));
         this.game = game;
-        fixture.setUserData(this);
-        setCategoryFilter(game.DOOR_BIT);
+        this.manager = game.manager;
+        filter = new Filter();
+        defineDoor();
+        doorFramesRegion = new Array<>();
+        for (int i = 0; i < 8; i++) {
+            doorFramesRegion.add(new TextureRegion(getTexture(), i * 64, 0, 64, 96));
+        }//for
+        doorAnimation = new Animation(0.08f, doorFramesRegion);
+        doorFramesRegion.clear();
+
+        setBounds(0, 0, 64 / game.GAME_PPM, 96 / game.GAME_PPM);
+        setRegion((TextureRegion) doorAnimation.getKeyFrame(stateTimer, true));//looping = true
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+    }//constructor
+
+    public void update(float dt) {
+        setRegion(getFrame(dt));
     }
 
-    @Override
+    public TextureRegion getFrame(float dt) {
+        stateTimer = stateTimer + dt;
+        return new TextureRegion((TextureRegion) doorAnimation.getKeyFrame(stateTimer, true));
+    }
+
+    private void defineDoor() {
+        bdef = new BodyDef();
+        bdef.position.set(game.levelData.exit.x / game.GAME_PPM, game.levelData.exit.y / game.GAME_PPM);
+        bdef.type = BodyDef.BodyType.StaticBody;
+        b2body = game.world.createBody(bdef);
+
+        doorShape = new PolygonShape();
+        doorShape.setAsBox(20 / game.GAME_PPM, 45 / game.GAME_PPM);
+        fdef = new FixtureDef();
+        fdef.filter.maskBits = (short) (game.PLAYER_BIT);//with what fixtures door can collide with
+
+        fdef.shape = doorShape;
+        fixture = b2body.createFixture(fdef);
+
+        //create sensor
+        sensor = new PolygonShape();
+        sensor.setAsBox(22 / game.GAME_PPM, 47 / game.GAME_PPM);
+        fdef.shape = sensor;
+        fdef.isSensor = true;
+        sensorFixture = b2body.createFixture(fdef);
+        sensorFixture.setUserData(this);
+        setFilter(game.DOOR_BIT);
+
+    }
+
     public void onHit() {
+        setFilter(game.DESTROYED_BIT);
+    }
+
+    public void setFilter(short bit){
+        filter.categoryBits = bit;
+        sensorFixture.setFilterData(filter);
     }
 }

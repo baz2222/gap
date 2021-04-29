@@ -19,9 +19,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
-import com.juniorgames.gap.screens.PlayMenuScreen;
+
+import java.util.ArrayList;
 
 public class KeysMenuHUD implements Disposable {
     public Stage stage;
@@ -35,6 +35,10 @@ public class KeysMenuHUD implements Disposable {
     private AssetManager manager;
     private InputListener backButtonInputListener;
     private TextButtonStyle backButtonStyle;
+    private Label label;
+    private Label.LabelStyle labelStyle;
+
+    private ArrayList<String> labelsText;
 
     public KeysMenuHUD(GapGame game, AssetManager manager) {
         this.game = game;
@@ -70,21 +74,31 @@ public class KeysMenuHUD implements Disposable {
         };//backButtonInputListener
         backButton.addListener(backButtonInputListener);//listener - backButton
 
+        initLabelsText();
         initTable();
     }//constructor
+
+    private void initLabelsText() {
+        labelsText = new ArrayList<>();
+        labelsText.add("LEFT/RIGHT ARROW or LEFT/RIGHT SWIPE - Move");
+        labelsText.add("UP ARROW or TAP - Jump");
+    }
 
     private void onBackButtonClicked() {
         this.game.setScreen(new MenuScreen(game, manager));
     }
 
     private void initTable() {
+        labelStyle = new Label.LabelStyle(midFont, Color.WHITE);
         table = new Table();
         table.bottom();
         table.setFillParent(true);
-        table.add().pad(40).padLeft(250).padBottom(160);
-        table.add().pad(40).padRight(250).padBottom(160);
-        table.row();
-        table.add(backButton).colspan(2).right();
+        for (String s : labelsText) {
+            label = new Label(s, labelStyle);
+            table.add(label).padLeft(90).padRight(90).padTop(20).left();
+            table.row();
+        }
+        table.add(backButton).right().padTop(300);
 
         stage.addActor(table);
     }

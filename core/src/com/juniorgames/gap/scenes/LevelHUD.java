@@ -15,12 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
 
 public class LevelHUD implements Disposable {
@@ -41,18 +39,14 @@ public class LevelHUD implements Disposable {
     private ImageButton.ImageButtonStyle backButtonStyle;
     private Texture backButtonTexture, pauseButtonTexture;
     private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener;
-    private int currentWorld;
-    private int currentLevel;
     private BitmapFont midFont;
 
     private Table pauseTable;
     private TextButton.TextButtonStyle pauseButtonStyle;
 
-    public LevelHUD(GapGame game, AssetManager manager, int currentWorld, int currentLevel) {
+    public LevelHUD(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
-        this.currentWorld = currentWorld;
-        this.currentLevel = currentLevel;
         batch = new SpriteBatch();
         levelTimer = 300;
         timeCount = 0;
@@ -67,7 +61,7 @@ public class LevelHUD implements Disposable {
 
         countdownLabel = new Label(String.format("%03d", levelTimer), new Label.LabelStyle(midFont, Color.WHITE));
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(midFont, Color.WHITE));
-        levelNameLabel = new Label("World " + currentWorld + "-" + currentLevel, new Label.LabelStyle(midFont, Color.WHITE));
+        levelNameLabel = new Label("World " + game.savedGame.world + "-" + game.savedGame.level, new Label.LabelStyle(midFont, Color.WHITE));
 
         backButtonTexture = manager.get("left-arrow-btn.png", Texture.class);
         pauseButtonTexture = manager.get("menu-btn.png", Texture.class);
@@ -147,6 +141,7 @@ public class LevelHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
+        game.stopMusic();
         stage.addActor(pauseTable);
         game.gamePaused = true;
     }
@@ -154,10 +149,14 @@ public class LevelHUD implements Disposable {
     private void onContinueButtonClicked() {
         pauseTable.remove();
         game.gamePaused = false;
+        game.playMusic(game.savedGame.world);
     }
 
     private void onExitButtonClicked() {
         game.gamePaused = false;
+        game.savedGame.save();
+        game.stopMusic();
+        game.playMusic(0);
         this.game.setScreen(new MenuScreen(game, manager));
     }
 

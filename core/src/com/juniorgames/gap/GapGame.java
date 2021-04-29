@@ -1,15 +1,22 @@
 package com.juniorgames.gap;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.World;
 import com.juniorgames.gap.screens.MenuScreen;
+import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.SavedGame;
 import com.juniorgames.gap.tools.TasksTracker;
+import com.juniorgames.gap.tools.WorldContactListener;
 
 public class GapGame extends Game {
     //virtual screen width and height
@@ -21,28 +28,49 @@ public class GapGame extends Game {
     public final short PLAYER_BIT = 2;//must be power of two for binary operations with fixtures filters
     public final short DOOR_BIT = 4;
     public final short DESTROYED_BIT = 8;
+    public final short GROUND_BIT = 16;
+
+    public TextureAtlas playerAtlas;
+    public TextureAtlas doorAtlas;
+
+    public World world;
+    public WorldContactListener contactListener;
 
     public SavedGame savedGame;
     public TasksTracker tasksTracker;
+    public LevelData levelData;
 
+    public TmxMapLoader maploader;
+    public TiledMap platformMap;
+    public OrthogonalTiledMapRenderer renderer;
+    public Rectangle bounds;
+
+    private Music music;
     public boolean soundsMuted = false;//sound off
-    public boolean musicMuted = true;//music off
+    public boolean musicMuted = false;//music off
     public boolean gamePaused = false;//game paused
 
-    public static final int SPRITES_MULTIPLIER = 2; // multiplier for all sprites and textures - DEPENDS ON QUALITY AND SCREEN SIZE!
-
-    //using asset manager in a stataic way can cause issues, especially on Android!!!
     public AssetManager manager;
 
     @Override
     public void create() {
         savedGame = new SavedGame();
         savedGame.load();
+        levelData = new LevelData();
         tasksTracker = new TasksTracker();
         tasksTracker.update(savedGame);
 
+        maploader = new TmxMapLoader();
+        bounds = new Rectangle();
+        platformMap = maploader.load("level" + savedGame.world + "-" + savedGame.level + ".tmx");
+        renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / GAME_PPM);//scaling map with PPM
+
+
         manager = new AssetManager();
         manager.load("audio/music/world1-music.mp3", Music.class);
+        manager.load("audio/music/world2-music.mp3", Music.class);
+        manager.load("audio/music/world3-music.mp3", Music.class);
+        manager.load("audio/music/menu-music.mp3", Music.class);
         manager.load("audio/sounds/jump.mp3", Sound.class);
         manager.load("audio/sounds/exit.mp3", Sound.class);
         manager.load("audio/sounds/step.mp3", Sound.class);
@@ -62,13 +90,35 @@ public class GapGame extends Game {
             manager.load(tasksTracker.tasks.get(i).taskImagePath, Texture.class);
         }
         manager.finishLoading();
+        playMusic(0);
 
         this.setScreen(new MenuScreen(this, manager));
     }//create()
 
+    public void playMusic(int world) {
+        if (world > 0) {
+            music = manager.get("audio/music/world" + world + "-music.mp3", Music.class);
+        } else {
+            music = manager.get("audio/music/menu-music.mp3", Music.class);
+        }
+        music.setLooping(true);
+        music.setVolume(0.2f);//0-1 range
+        if (!musicMuted) {
+            music.play();
+        }//end if
+    }
+
+    public void stopMusic() {
+        music.stop();
+    }
+
     @Override
     public void dispose() {
+        music.dispose();
+        world.dispose();
         manager.dispose();
+        platformMap.dispose();
+        renderer.dispose();
     }
 
     @Override
