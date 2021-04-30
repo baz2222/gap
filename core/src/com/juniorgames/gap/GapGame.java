@@ -46,6 +46,11 @@ public class GapGame extends Game {
     public Rectangle bounds;
 
     private Music music;
+    public Sound jumpSound;
+    public Sound stepSound;
+    public Sound warpSound;
+    public Sound exitSound;
+
     public boolean soundsMuted = false;//sound off
     public boolean musicMuted = false;//music off
     public boolean gamePaused = false;//game paused
@@ -56,15 +61,8 @@ public class GapGame extends Game {
     public void create() {
         savedGame = new SavedGame();
         savedGame.load();
-        levelData = new LevelData();
         tasksTracker = new TasksTracker();
         tasksTracker.update(savedGame);
-
-        maploader = new TmxMapLoader();
-        bounds = new Rectangle();
-        platformMap = maploader.load("level" + savedGame.world + "-" + savedGame.level + ".tmx");
-        renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / GAME_PPM);//scaling map with PPM
-
 
         manager = new AssetManager();
         manager.load("audio/music/world1-music.mp3", Music.class);
@@ -73,6 +71,7 @@ public class GapGame extends Game {
         manager.load("audio/music/menu-music.mp3", Music.class);
         manager.load("audio/sounds/jump.mp3", Sound.class);
         manager.load("audio/sounds/exit.mp3", Sound.class);
+        manager.load("audio/sounds/warp.mp3", Sound.class);
         manager.load("audio/sounds/step.mp3", Sound.class);
         manager.load("audio/sounds/land.mp3", Sound.class);
         manager.load("fonts/big-font.fnt", BitmapFont.class);
@@ -90,10 +89,25 @@ public class GapGame extends Game {
             manager.load(tasksTracker.tasks.get(i).taskImagePath, Texture.class);
         }
         manager.finishLoading();
+
+        jumpSound = manager.get("audio/sounds/jump.mp3", Sound.class);
+        stepSound = manager.get("audio/sounds/step.mp3", Sound.class);
+        warpSound = manager.get("audio/sounds/warp.mp3", Sound.class);
+        exitSound = manager.get("audio/sounds/exit.mp3", Sound.class);
         playMusic(0);
 
         this.setScreen(new MenuScreen(this, manager));
     }//create()
+
+    public void gameOver() {
+
+    }
+
+    public void playSound(Sound sound) {
+        if (!soundsMuted) {
+            sound.setLooping(sound.play(), false);
+        }//if
+    }
 
     public void playMusic(int world) {
         if (world > 0) {

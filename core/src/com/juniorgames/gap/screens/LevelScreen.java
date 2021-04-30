@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,9 +21,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.LevelHUD;
 import com.juniorgames.gap.sprites.Door;
+import com.juniorgames.gap.sprites.Ground;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.sprites.Player.State;
-import com.juniorgames.gap.tools.B2WorldCreator;
+import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.WorldContactListener;
 
 public class LevelScreen extends ScreenAdapter {
@@ -36,24 +38,29 @@ public class LevelScreen extends ScreenAdapter {
     private LevelHUD levelHud;
 
     private Box2DDebugRenderer b2dr;
-    private B2WorldCreator b2wc;
     //sprites
     private Player player;
     private Door door;
     //sfx
-    private Sound jumpSound;
-    private Sound stepSound;
     private float timeCount;//to make delay for stepping sounds
 
     public LevelScreen(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
+        game.savedGame.load();
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
+        game.levelData = new LevelData();
         game.levelData.loadLevel(game.savedGame.world, game.savedGame.level);
+
+        game.maploader = new TmxMapLoader();
+        game.bounds = new Rectangle();
+        game.platformMap = game.maploader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
+        game.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
+
         levelHud = new LevelHUD(this.game, this.manager);
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -67,13 +74,13 @@ public class LevelScreen extends ScreenAdapter {
         //===================================================================
         b2dr = new Box2DDebugRenderer();
         //===================================================================
-        b2wc = new B2WorldCreator(game);
+        for (MapObject object : game.platformMap.getLayers().get("GroundObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
+            game.bounds = ((RectangleMapObject) object).getRectangle();
+            new Ground(game);
+        }//for
         //===================================================================
         door = new Door(game);
         player = new Player(game);
-
-        jumpSound = manager.get("audio/sounds/jump.mp3", Sound.class);
-        stepSound = manager.get("audio/sounds/step.mp3", Sound.class);
         game.playMusic(game.savedGame.world);
     }//constructor
 
@@ -93,7 +100,7 @@ public class LevelScreen extends ScreenAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
             if (!game.soundsMuted) {
-                jumpSound.setLooping(jumpSound.play(), false);
+                game.playSound(game.jumpSound);
             }
         }
         //move right
@@ -128,7 +135,7 @@ public class LevelScreen extends ScreenAdapter {
 
             timeCount += delta;
             if (timeCount >= 0.3 && player.getSate() == State.RUNNING && !game.soundsMuted) {
-                stepSound.setLooping(stepSound.play(), false);
+                game.playSound(game.stepSound);
                 timeCount = 0;
             }//end if
         } else {//if game paused
@@ -145,8 +152,6 @@ public class LevelScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         b2dr.dispose();
-        jumpSound.dispose();
-        stepSound.dispose();
         levelHud.dispose();
     }
 }

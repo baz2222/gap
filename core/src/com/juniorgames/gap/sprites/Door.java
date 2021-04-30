@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.LevelScreen;
 
 public class Door extends Sprite {
     private GapGame game;
@@ -78,9 +79,25 @@ public class Door extends Sprite {
 
     public void onHit() {
         setFilter(game.DESTROYED_BIT);
+        game.playSound(game.exitSound);
+        if (game.savedGame.level == 10) {
+            if (game.savedGame.world == 3) {
+                game.gameOver();
+            } else {
+                game.savedGame.world++;
+            }//else
+            game.savedGame.level = 1;
+        } else {
+            game.savedGame.level++;
+            game.savedGame.completed++;
+        }//else
+        game.savedGame.save();
+        game.tasksTracker.update(game.savedGame);
+        game.stopMusic();
+        game.setScreen(new LevelScreen(game, manager));
     }
 
-    public void setFilter(short bit){
+    public void setFilter(short bit) {
         filter.categoryBits = bit;
         sensorFixture.setFilterData(filter);
     }

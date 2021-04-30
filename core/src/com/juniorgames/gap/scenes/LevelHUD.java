@@ -156,8 +156,7 @@ public class LevelHUD implements Disposable {
         game.gamePaused = false;
         game.savedGame.save();
         game.stopMusic();
-        game.playMusic(0);
-        this.game.setScreen(new MenuScreen(game, manager));
+        game.setScreen(new MenuScreen(game, manager));
     }
 
     public void resize(int width, int height) {

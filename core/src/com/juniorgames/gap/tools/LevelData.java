@@ -30,8 +30,8 @@ public class LevelData {
         JsonValue json = reader.parse(Gdx.files.internal("level" + world + "-" + level + ".json"));
 
         //int
-        this.world = json.getInt("world");
-        this.level = json.getInt("level");
+        //this.world = json.getInt("world");
+        //this.level = json.getInt("level");
 
         //Vector2
         value = json.getChild("start");
