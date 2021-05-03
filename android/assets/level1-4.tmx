@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="41">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="107">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
@@ -26,13 +26,40 @@
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzt1SsSgDAMRdGIGj7r4A+lBfa/NS6iHtPWvMwckYm4Ms7MXCUDRkyYsWDFhj3DPXUPeJwIiLhw48lwT93So6666qqr7r9ugxYd+gJ7rb/7eQHjVQxz
+   eJy1lFlvwkAMhPPAy1KgLYVy9HiEcqVc/f9/jVl1RxpZ3k0ixEifFHBsrx17e1VV9R6Aqs37G7AFO7AHB7ACa/BTsKv/weSlfy5nfP8EzuACruAP1OAXHAt2xjil/1T01/NpTvu+1RCMMjavv9avltzsVS7nAizT8zN4MfaQYN7gxFA/5mav7NmoD/CZnl/B2MRsminPr244W9QX+AZ98AYmYNCQ19ZMv5K61pSb1ZDOGjUF74WcoUNNFGc1tyMx5gzMU0yNm4tva9L9bfJte6eU8nr7G6UzeE9eW1eU7pGVzqD6ernUbmXritI9stIZVF/vu6jdE+fwqfqfAe4Rf6u8/WB/vO+S653eO6X5pLz9KPVHbbzn+i1y2t3kfmiP2B9bTxDboEOurqg8+w22CxlQ
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
-  <object id="37" x="0" y="0" width="960" height="32"/>
-  <object id="38" x="0" y="512" width="960" height="32"/>
-  <object id="39" x="0" y="32" width="32" height="480"/>
-  <object id="40" x="928" y="32" width="32" height="480"/>
+  <object id="37" x="0" y="0" width="704" height="32"/>
+  <object id="38" x="-103.28" y="512" width="807.28" height="32"/>
+  <object id="39" x="0" y="32" width="64" height="96"/>
+  <object id="40" x="928" y="32" width="32" height="96"/>
+  <object id="42" x="800" y="0" width="160" height="32"/>
+  <object id="44" x="800" y="512" width="252.753" height="32"/>
+  <object id="45" x="576" y="160" width="96" height="192"/>
+  <object id="46" x="512" y="160" width="64" height="64"/>
+  <object id="47" x="576" y="32" width="64" height="128"/>
+  <object id="48" x="672" y="256" width="96" height="128"/>
+  <object id="49" x="768" y="288" width="64" height="96"/>
+  <object id="51" x="672" y="224" width="32" height="32"/>
+  <object id="52" x="288" y="224" width="160" height="64"/>
+  <object id="53" x="96" y="288" width="128" height="64"/>
+  <object id="54" x="64" y="32" width="32" height="64"/>
+  <object id="55" x="96" y="32" width="32" height="32"/>
+  <object id="56" x="96" y="480" width="320" height="32"/>
+  <object id="57" x="128" y="448" width="256" height="32"/>
+  <object id="58" x="832" y="288" width="96" height="64"/>
+  <object id="59" x="864" y="32" width="64" height="32"/>
+  <object id="60" x="896" y="64" width="32" height="32"/>
+  <object id="61" x="1041.92" y="188.335"/>
+ </objectgroup>
+ <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
+  <object id="83" x="1041.92" y="188.335"/>
+ </objectgroup>
+ <objectgroup id="9" name="CrumbleObjectsLayer" locked="1">
+  <object id="105" x="1041.92" y="188.335"/>
+ </objectgroup>
+ <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1">
+  <object id="106" x="1041.92" y="188.335"/>
  </objectgroup>
 </map>

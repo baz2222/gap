@@ -24,6 +24,7 @@ public class Player extends Sprite {
     private Animation playerFall;
     private GapGame game;
     private AssetManager manager;
+    private BodyDef bdef;
 
     public Player(GapGame game) {
         super(game.playerAtlas.findRegion("player"));
@@ -65,6 +66,34 @@ public class Player extends Sprite {
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
+
+        //=======================WRAP===========================
+        if (b2body.getPosition().x * game.GAME_PPM < 0) {
+            b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
+            game.savedGame.wrapped++;
+            game.playSound(game.warpSound);
+            game.tasksTracker.update(game.savedGame);
+        }//if -x
+        if (b2body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
+            b2body.setTransform((b2body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
+            game.savedGame.wrapped++;
+            game.playSound(game.warpSound);
+            game.tasksTracker.update(game.savedGame);
+        }//if +x
+        if (b2body.getPosition().y * game.GAME_PPM < 0) {
+            b2body.setTransform( b2body.getPosition().x,(b2body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
+            game.savedGame.wrapped++;
+            game.playSound(game.warpSound);
+            game.tasksTracker.update(game.savedGame);
+        }//if -y
+        if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
+            b2body.setTransform( b2body.getPosition().x,(b2body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
+            game.savedGame.wrapped++;
+            game.playSound(game.warpSound);
+            game.tasksTracker.update(game.savedGame);
+        }//if +y
+        //======================================================
+
     }
 
     public TextureRegion getFrame(float dt) {
@@ -108,7 +137,7 @@ public class Player extends Sprite {
     }
 
     private void definePlayer() {
-        BodyDef bdef = new BodyDef();
+        bdef = new BodyDef();
         bdef.position.set(game.levelData.start.x / game.GAME_PPM, game.levelData.start.y / game.GAME_PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = game.world.createBody(bdef);

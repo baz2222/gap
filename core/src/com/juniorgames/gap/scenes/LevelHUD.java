@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
 
 public class LevelHUD implements Disposable {
@@ -35,10 +36,10 @@ public class LevelHUD implements Disposable {
     private static Label scoreLabel;
     private Label levelNameLabel;
     private ImageButton backButton;
-    private TextButton continueButton, exitButton;
+    private TextButton continueButton, exitButton, restartButton;
     private ImageButton.ImageButtonStyle backButtonStyle;
     private Texture backButtonTexture, pauseButtonTexture;
-    private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener;
+    private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener, restartButtonListener;
     private BitmapFont midFont;
 
     private Table pauseTable;
@@ -92,6 +93,7 @@ public class LevelHUD implements Disposable {
         pauseButtonStyle.up = new TextureRegionDrawable(pauseButtonTexture);
         pauseButtonStyle.checked = new TextureRegionDrawable(pauseButtonTexture);
         continueButton = new TextButton("CONTINUE", pauseButtonStyle);
+        restartButton = new TextButton("RESTART LEVEL", pauseButtonStyle);
         exitButton = new TextButton("EXIT TO MENU", pauseButtonStyle);
 
         continueButtonInputListener = new InputListener() {
@@ -107,6 +109,20 @@ public class LevelHUD implements Disposable {
             }
         };//continueButtonInputListener
         continueButton.addListener(continueButtonInputListener);//listener - continueButton
+
+        restartButtonListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onRestartButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//restartButtonInputListener
+        restartButton.addListener(restartButtonListener);//listener - continueButton
 
         exitButtonInputListener = new InputListener() {
             @Override
@@ -135,9 +151,11 @@ public class LevelHUD implements Disposable {
         pauseTable = new Table();
         pauseTable.setFillParent(true);
         pauseTable.center();
-        pauseTable.add(continueButton).pad(20);
+        pauseTable.add(continueButton).pad(10);
         pauseTable.row();
-        pauseTable.add(exitButton).pad(20);
+        pauseTable.add(restartButton).pad(10);
+        pauseTable.row();
+        pauseTable.add(exitButton).pad(10);
     }//constructor
 
     private void onBackButtonClicked() {
@@ -157,6 +175,12 @@ public class LevelHUD implements Disposable {
         game.savedGame.save();
         game.stopMusic();
         game.setScreen(new MenuScreen(game, manager));
+    }
+
+    private void onRestartButtonClicked() {
+        game.gamePaused = false;
+        game.stopMusic();
+        game.setScreen(new LevelScreen(game, manager));
     }
 
     public void resize(int width, int height) {
