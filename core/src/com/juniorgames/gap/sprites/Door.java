@@ -83,6 +83,7 @@ public class Door extends Sprite {
         if (game.savedGame.level == 10) {
             if (game.savedGame.world == 3) {
                 game.gameOver();
+                return;
             } else {
                 game.savedGame.world++;
             }//else

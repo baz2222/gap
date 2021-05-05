@@ -19,25 +19,26 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
-import com.juniorgames.gap.screens.SelectWorldMenuScreen;
+import com.juniorgames.gap.screens.PlayMenuScreen;
+import com.juniorgames.gap.screens.SelectLevelMenuScreen;
 
-public class PlayMenuHUD implements Disposable {
+public class SelectWorldMenuHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
     private BitmapFont midFont;
     private Table table;
-    private Texture playMenuButtonTexture, backButtonTexture;
-    private TextButtonStyle playMenuButtonStyle, backButtonStyle;
-    private TextButton newGameButton;
-    private TextButton selectLevelButton;
-    private TextButton loadGameButton;
+    private Texture selectWorldMenuButtonTexture, backButtonTexture;
+    private TextButtonStyle selectWorldMenuButtonStyle, backButtonStyle;
+    private TextButton world1Button;
+    private TextButton world2Button;
+    private TextButton world3Button;
     private TextButton backButton;
     private GapGame game;
     private AssetManager manager;
-    private InputListener newGameButtonInputListener, selectLevelButtonInputListener, loadGameButtonInputListener, backButtonInputListener;
+    private InputListener world1ButtonInputListener, world2ButtonInputListener, world3ButtonInputListener, backButtonInputListener;
 
-    public PlayMenuHUD(GapGame game, AssetManager manager) {
+    public SelectWorldMenuHUD(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
@@ -48,12 +49,12 @@ public class PlayMenuHUD implements Disposable {
 
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
 
-        playMenuButtonTexture = manager.get("play-menu-btn.png", Texture.class);
-        playMenuButtonStyle = new TextButtonStyle();
-        playMenuButtonStyle.font = midFont;
-        playMenuButtonStyle.down = new TextureRegionDrawable(playMenuButtonTexture);
-        playMenuButtonStyle.up = new TextureRegionDrawable(playMenuButtonTexture);
-        playMenuButtonStyle.checked = new TextureRegionDrawable(playMenuButtonTexture);
+        selectWorldMenuButtonTexture = manager.get("select-world-btn.png", Texture.class);
+        selectWorldMenuButtonStyle = new TextButtonStyle();
+        selectWorldMenuButtonStyle.font = midFont;
+        selectWorldMenuButtonStyle.down = new TextureRegionDrawable(selectWorldMenuButtonTexture);
+        selectWorldMenuButtonStyle.up = new TextureRegionDrawable(selectWorldMenuButtonTexture);
+        selectWorldMenuButtonStyle.checked = new TextureRegionDrawable(selectWorldMenuButtonTexture);
 
         backButtonTexture = manager.get("back-btn.png", Texture.class);
         backButtonStyle = new TextButtonStyle();
@@ -62,15 +63,15 @@ public class PlayMenuHUD implements Disposable {
         backButtonStyle.up = new TextureRegionDrawable(backButtonTexture);
         backButtonStyle.checked = new TextureRegionDrawable(backButtonTexture);
 
-        newGameButton = new TextButton("NEW GAME", playMenuButtonStyle);
-        selectLevelButton = new TextButton("  SELECT LEVEL  ", playMenuButtonStyle);
-        loadGameButton = new TextButton("CONTINUE", playMenuButtonStyle);
+        world1Button = new TextButton("   WORLD 1   ", selectWorldMenuButtonStyle);
+        world2Button = new TextButton("   WORLD 2   ", selectWorldMenuButtonStyle);
+        world3Button = new TextButton("   WORLD 3   ", selectWorldMenuButtonStyle);
         backButton = new TextButton("BACK", backButtonStyle);
 
-        newGameButtonInputListener = new InputListener() {
+        world1ButtonInputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onNewGameButtonClicked();
+                onWorld1ButtonClicked();
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -79,12 +80,12 @@ public class PlayMenuHUD implements Disposable {
                 super.touchUp(event, x, y, pointer, button);
             }
         };//newGameButtonInputListener
-        newGameButton.addListener(newGameButtonInputListener);//listener - newGameButton
+        world1Button.addListener(world1ButtonInputListener);//listener - newGameButton
 
-        selectLevelButtonInputListener = new InputListener() {
+        world2ButtonInputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onSelectLevelButtonClicked();
+                onWorld2ButtonClicked();
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -93,12 +94,12 @@ public class PlayMenuHUD implements Disposable {
                 super.touchUp(event, x, y, pointer, button);
             }
         };//newGameButtonInputListener
-        selectLevelButton.addListener(selectLevelButtonInputListener);//listener - newGameButton
+        world2Button.addListener(world2ButtonInputListener);//listener - newGameButton
 
-        loadGameButtonInputListener = new InputListener() {
+        world3ButtonInputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onLoadGameButtonClicked();
+                onWorld3ButtonClicked();
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -107,7 +108,7 @@ public class PlayMenuHUD implements Disposable {
                 super.touchUp(event, x, y, pointer, button);
             }
         };//ladGameButtonInputListener
-        loadGameButton.addListener(loadGameButtonInputListener);//listener - loadGameButton
+        world3Button.addListener(world3ButtonInputListener);//listener - loadGameButton
 
         backButtonInputListener = new InputListener() {
             @Override
@@ -127,34 +128,31 @@ public class PlayMenuHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new MenuScreen(game, manager));
+        this.game.setScreen(new PlayMenuScreen(game, manager));
     }
 
-    private void onNewGameButtonClicked() {
-        game.savedGame.reset();
-        game.tasksTracker.update(game.savedGame);
-        game.stopMusic();
-        this.game.setScreen(new LevelScreen(game, manager));
+    private void onWorld1ButtonClicked() {
+        game.selectedWorld = 1;
+        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
     }
 
-    private void onSelectLevelButtonClicked() {
-        //game.savedGame.reset();
-        //game.tasksTracker.update(game.savedGame);
-        this.game.setScreen(new SelectWorldMenuScreen(game, manager));
+    private void onWorld2ButtonClicked() {
+        game.selectedWorld = 2;
+        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
     }
 
-    private void onLoadGameButtonClicked() {
-        game.stopMusic();
-        this.game.setScreen(new LevelScreen(game, manager));
+    private void onWorld3ButtonClicked() {
+        game.selectedWorld = 3;
+        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
     }
 
     private void initTable() {
         table = new Table();
         table.bottom();
         table.setFillParent(true);
-        table.add(newGameButton).pad(20).padBottom(160).padLeft(115);
-        table.add(selectLevelButton).pad(20).padBottom(160);
-        table.add(loadGameButton).pad(20).padBottom(160).padRight(115);
+        table.add(world1Button).pad(20).padBottom(160).padLeft(145);
+        table.add(world2Button).pad(20).padBottom(160);
+        table.add(world3Button).pad(20).padBottom(160).padRight(145);
         table.row();
         table.add(backButton).colspan(3).right();
 
@@ -166,9 +164,9 @@ public class PlayMenuHUD implements Disposable {
 
     @Override
     public void dispose() {
-        newGameButton.removeListener(newGameButtonInputListener);
-        selectLevelButton.removeListener(selectLevelButtonInputListener);
-        loadGameButton.removeListener(loadGameButtonInputListener);
+        world1Button.removeListener(world1ButtonInputListener);
+        world2Button.removeListener(world2ButtonInputListener);
+        world3Button.removeListener(world3ButtonInputListener);
         backButton.removeListener(backButtonInputListener);
         stage.dispose();
     }

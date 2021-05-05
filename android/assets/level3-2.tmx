@@ -1,56 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="53">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="111">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
- <tileset firstgid="8" name="Grass" tilewidth="32" tileheight="32" tilecount="5" columns="5">
-  <image source="grass-tile-set.png" trans="ff00ff" width="160" height="32"/>
- </tileset>
- <tileset firstgid="13" name="Tree1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="8" name="Tree1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t1-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <tileset firstgid="25" name="Tree2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="20" name="Tree2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t2-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <tileset firstgid="37" name="Lumps1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="32" name="Lumps1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp1-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
- <tileset firstgid="54" name="Lumps2" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="49" name="Lumps2" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp2-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
- <tileset firstgid="71" name="Lumps3" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="66" name="Lumps3" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp3-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
- <imagelayer id="2" name="BackgroundImageLayer" locked="1">
-  <image source="bg1.png" width="960" height="544"/>
+ <tileset firstgid="83" name="Fungus1" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="fungus1.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="107" name="Fungus2" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="fungus2.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="131" name="Shrooms" tilewidth="32" tileheight="32" tilecount="5" columns="5">
+  <image source="shrooms-tile-set.png" trans="ff00ff" width="160" height="32"/>
+ </tileset>
+ <tileset firstgid="136" name="Rose1" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="rose1.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="160" name="Rose2" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="rose2.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="184" name="Vines" tilewidth="32" tileheight="32" tilecount="5" columns="5">
+  <image source="vines-tile-set.png" trans="ff00ff" width="160" height="32"/>
+ </tileset>
+ <imagelayer id="2" name="BackgroundImageLayer">
+  <image source="bg3.png" width="960" height="544"/>
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzt1SsSgDAMRdGIGj7r4A+lBfa/NS6iHtPWvMwckYm4Ms7MXCUDRkyYsWDFhj3DPXUPeJwIiLhw48lwT93So6666qqr7r9ugxYd+gJ7rb/7eQHjVQxz
+   eJxjYBgFo2AUjIJRMApGwUgBAAf4AAE=
   </data>
  </layer>
- <objectgroup id="7" name="GroundObjectsLayer" locked="1">
-  <object id="37" x="0" y="0" width="960" height="32"/>
-  <object id="38" x="0" y="512" width="960" height="32"/>
-  <object id="39" x="0" y="32" width="32" height="480"/>
-  <object id="40" x="928" y="32" width="32" height="480"/>
- </objectgroup>
- <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
-  <object id="41" x="0" y="0" width="960" height="32"/>
-  <object id="42" x="0" y="512" width="960" height="32"/>
-  <object id="43" x="0" y="32" width="32" height="480"/>
-  <object id="44" x="928" y="32" width="32" height="480"/>
- </objectgroup>
- <objectgroup id="9" name="CrumbleObjectsLayer" locked="1">
-  <object id="45" x="0" y="0" width="960" height="32"/>
-  <object id="46" x="0" y="512" width="960" height="32"/>
-  <object id="47" x="0" y="32" width="32" height="480"/>
-  <object id="48" x="928" y="32" width="32" height="480"/>
- </objectgroup>
- <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1">
-  <object id="49" x="0" y="0" width="960" height="32"/>
-  <object id="50" x="0" y="512" width="960" height="32"/>
-  <object id="51" x="0" y="32" width="32" height="480"/>
-  <object id="52" x="928" y="32" width="32" height="480"/>
- </objectgroup>
+ <objectgroup id="7" name="GroundObjectsLayer" locked="1"/>
+ <objectgroup id="8" name="SpikesObjectsLayer" locked="1"/>
+ <objectgroup id="9" name="CrumbleObjectsLayer" locked="1"/>
+ <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1"/>
 </map>

@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="53">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="111">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
- <tileset firstgid="8" name="Grass" tilewidth="32" tileheight="32" tilecount="5" columns="5">
-  <image source="grass-tile-set.png" trans="ff00ff" width="160" height="32"/>
- </tileset>
- <tileset firstgid="13" name="Tree1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="8" name="Tree1" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t1-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <tileset firstgid="25" name="Tree2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
+ <tileset firstgid="20" name="Tree2" tilewidth="32" tileheight="32" tilecount="12" columns="2">
   <image source="t2-tile-set.png" trans="ff00ff" width="64" height="192"/>
  </tileset>
- <tileset firstgid="37" name="Lumps1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="32" name="Lumps1" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp1-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
- <tileset firstgid="54" name="Lumps2" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="49" name="Lumps2" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp2-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
- <tileset firstgid="71" name="Lumps3" tilewidth="32" tileheight="32" tilecount="17" columns="17">
+ <tileset firstgid="66" name="Lumps3" tilewidth="32" tileheight="32" tilecount="17" columns="17">
   <image source="lp3-tile-set.png" trans="ff00ff" width="544" height="32"/>
  </tileset>
+ <tileset firstgid="83" name="Fungus1" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="fungus1.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="107" name="Fungus2" tilewidth="32" tileheight="32" tilecount="24" columns="4">
+  <image source="fungus2.png" trans="ff00ff" width="128" height="192"/>
+ </tileset>
+ <tileset firstgid="131" name="Shrooms" tilewidth="32" tileheight="32" tilecount="5" columns="5">
+  <image source="shrooms-tile-set.png" trans="ff00ff" width="160" height="32"/>
+ </tileset>
  <imagelayer id="2" name="BackgroundImageLayer" locked="1">
-  <image source="bg1.png" width="960" height="544"/>
+  <image source="bg2.png" width="960" height="544"/>
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJzt1SsSgDAMRdGIGj7r4A+lBfa/NS6iHtPWvMwckYm4Ms7MXCUDRkyYsWDFhj3DPXUPeJwIiLhw48lwT93So6666qqr7r9ugxYd+gJ7rb/7eQHjVQxz
+   eJy91elOAjEQwPGN2ScC8QMiL6EoKp4IXoAncnhwRPG1+W+yTZph2i2b6CS/L912ZrYtSxxFUZyTibzrQxVQxCZKVl17PG+uLce8cmobFexYde1xXw/2M5mr6uglNFw9lMSzrLWmFzu+8YMFflMheWSY9aHhu2PrhG+t9m7a/uUJk8fXk7xj9v7J3rTQnpk8oXWz5vjyhEbWHXPVle/n21MTu9hDDfu4Rwdd9JT52vdEvp/cU+1sDlDHIY7wgEc84Vmpq/1eTC+us9f26BgNnOAUL3hFH29KXS1ML6Hf9CTOcI4LXGKAIUYYB9b15XeNN3GFFtp4xwc+8fVHdZMzuMYNbnGHCaaYYR6tntWGh8zvGv+v/98l3vU56g==
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
-  <object id="37" x="0" y="0" width="960" height="32"/>
-  <object id="38" x="0" y="512" width="960" height="32"/>
-  <object id="39" x="0" y="32" width="32" height="480"/>
-  <object id="40" x="928" y="32" width="32" height="480"/>
+  <object id="91" x="0" y="0" width="480" height="32"/>
+  <object id="94" x="0" y="32" width="352" height="32"/>
+  <object id="95" x="160" y="64" width="160" height="32"/>
+  <object id="96" x="32" y="192" width="64" height="32"/>
+  <object id="97" x="256" y="224" width="160" height="64"/>
+  <object id="98" x="416" y="160" width="160" height="32"/>
+  <object id="99" x="544" y="0" width="416" height="32"/>
+  <object id="100" x="640" y="32" width="320" height="32"/>
+  <object id="101" x="736" y="64" width="128" height="32"/>
+  <object id="102" x="544" y="256" width="128" height="64"/>
+  <object id="103" x="704" y="320" width="64" height="32"/>
+  <object id="104" x="832" y="256" width="64" height="32"/>
+  <object id="105" x="768" y="384" width="128" height="128"/>
+  <object id="106" x="544" y="512" width="416" height="32"/>
+  <object id="107" x="0" y="384" width="128" height="128"/>
+  <object id="108" x="0" y="512" width="480" height="32"/>
  </objectgroup>
  <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
-  <object id="41" x="0" y="0" width="960" height="32"/>
-  <object id="42" x="0" y="512" width="960" height="32"/>
-  <object id="43" x="0" y="32" width="32" height="480"/>
-  <object id="44" x="928" y="32" width="32" height="480"/>
+  <object id="109" x="544" y="480" width="224" height="32"/>
+  <object id="110" x="896" y="480" width="64" height="32"/>
  </objectgroup>
- <objectgroup id="9" name="CrumbleObjectsLayer" locked="1">
-  <object id="45" x="0" y="0" width="960" height="32"/>
-  <object id="46" x="0" y="512" width="960" height="32"/>
-  <object id="47" x="0" y="32" width="32" height="480"/>
-  <object id="48" x="928" y="32" width="32" height="480"/>
- </objectgroup>
- <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1">
-  <object id="49" x="0" y="0" width="960" height="32"/>
-  <object id="50" x="0" y="512" width="960" height="32"/>
-  <object id="51" x="0" y="32" width="32" height="480"/>
-  <object id="52" x="928" y="32" width="32" height="480"/>
- </objectgroup>
+ <objectgroup id="9" name="CrumbleObjectsLayer" locked="1"/>
+ <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1"/>
 </map>

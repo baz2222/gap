@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.MenuScreen;
 import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.SavedGame;
@@ -39,6 +40,9 @@ public class GapGame extends Game {
     public SavedGame savedGame;
     public TasksTracker tasksTracker;
     public LevelData levelData;
+
+    public int selectedWorld;
+    public int selectedLevel;
 
     public TmxMapLoader maploader;
     public TiledMap platformMap;
@@ -78,6 +82,8 @@ public class GapGame extends Game {
         manager.load("fonts/mid-font.fnt", BitmapFont.class);
         manager.load("menu-btn.png", Texture.class);
         manager.load("play-menu-btn.png", Texture.class);
+        manager.load("select-world-btn.png", Texture.class);
+        manager.load("select-level-btn.png", Texture.class);
         manager.load("back-btn.png", Texture.class);
         manager.load("left-arrow-btn.png", Texture.class);
         manager.load("right-arrow-btn.png", Texture.class);
@@ -100,7 +106,8 @@ public class GapGame extends Game {
     }//create()
 
     public void gameOver() {
-
+        savedGame.reset();
+        this.setScreen(new GameOverScreen(this, manager));
     }
 
     public void playSound(Sound sound) {
