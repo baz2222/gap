@@ -76,6 +76,7 @@ public class GameOverHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
+        game.stopMusic();
         this.game.setScreen(new MenuScreen(game, manager));
     }
 

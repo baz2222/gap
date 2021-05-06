@@ -82,6 +82,7 @@ public class Door extends Sprite {
         game.playSound(game.exitSound);
         if (game.savedGame.level == 10) {
             if (game.savedGame.world == 3) {
+                game.stopMusic();
                 game.gameOver();
                 return;
             } else {

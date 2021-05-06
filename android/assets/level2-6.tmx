@@ -32,7 +32,7 @@
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJy11NtOAjEQgOEN4YkQIUFE9ylARBAUOdwAchCVczy8tj/JNpk0belWneS7odMZOrvbbBRFWU8qfH/3lcMZ8jhHAUWUcOHRV+XZ6ph6xmJfGZeo4Aof+MRXUj/W9kVajq3OtaGnK1wzdeWYIvbMs9VUs0zbV+b65sm56M885Bxp8+Sz/P5FvUzKvqe+I1dkLHvlujpP2r5qn+k8tr229dB7w1XX9B39V1/5/smZHmOEMSZ4DuhbRQ03qCdrcva2/zfFDHMsAvreooE7NB2z0Gu8YIlXvAX0beEebXQcfeX9eYx3rLDGJqDvAx7RxVOyZrqj9Xtgix32OAT07aGPAYaG+qdm/hfvs80PbK8tCA==
+   eJy11OlOAjEQwPEN4YlQIUGufQoRUBEBxS+AnB54xeO1/W+yTSZkWroFJ/l9odMZOrvbfBRFeU8mfH/3VcARjnGCIkoo41TUj8WeWPxu8mx1tJ6x2FdBFTXU8YVv/ChnMyFzbHUaSk9XuGbqytEi9syz1TSzzNpX5vrmac/SRMg5subJZ/m7R71cxr67viNX5Cx75bo5T9a+Zp92Htte23roveGqq31H/9VXvn9ypkmMMcEUDwF9z9DEOVrpmpy97f/NMMcCy4C+bXRwgUvHLLZrrLDGI54C+l6hi2v0HH3l/ZnEM16wwWtA3xv0McAwXdPu6O174A3v+MBnQN9b3GGEe6X+rpkf4n22+QNvby0A
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
@@ -51,8 +51,8 @@
   <object id="123" x="288" y="352" width="64" height="160"/>
   <object id="124" x="608" y="512" width="352" height="32"/>
   <object id="125" x="416" y="224" width="128" height="320"/>
-  <object id="126" x="416" y="0" width="128" height="64"/>
-  <object id="127" x="448" y="64" width="64" height="64"/>
+  <object id="126" x="416" y="0" width="128" height="32"/>
+  <object id="127" x="448" y="32" width="64" height="96"/>
   <object id="128" x="576" y="96" width="96" height="64"/>
   <object id="129" x="608" y="160" width="64" height="128"/>
   <object id="130" x="608" y="288" width="160" height="64"/>

@@ -44,6 +44,7 @@ public class GameOverScreen extends ScreenAdapter {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        game.playMusic(0);
 
     }//constructor
 
