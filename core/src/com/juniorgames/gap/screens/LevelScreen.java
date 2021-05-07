@@ -24,6 +24,7 @@ import com.juniorgames.gap.sprites.Door;
 import com.juniorgames.gap.sprites.Ground;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.sprites.Player.State;
+import com.juniorgames.gap.sprites.Spikes;
 import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.WorldContactListener;
 
@@ -69,7 +70,8 @@ public class LevelScreen extends ScreenAdapter {
         game.doorAtlas = new TextureAtlas("door.pack");
 
         game.world = new World(new Vector2(0, -10), true);
-        game.contactListener = new WorldContactListener();
+
+        game.contactListener = new WorldContactListener(game);
         game.world.setContactListener(game.contactListener);
         //===================================================================
         b2dr = new Box2DDebugRenderer();
@@ -77,6 +79,11 @@ public class LevelScreen extends ScreenAdapter {
         for (MapObject object : game.platformMap.getLayers().get("GroundObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
             game.bounds = ((RectangleMapObject) object).getRectangle();
             new Ground(game);
+        }//for
+        //===================================================================
+        for (MapObject object : game.platformMap.getLayers().get("SpikesObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
+            game.bounds = ((RectangleMapObject) object).getRectangle();
+            new Spikes(game);
         }//for
         //===================================================================
         door = new Door(game);

@@ -30,6 +30,7 @@ public class GapGame extends Game {
     public final short DOOR_BIT = 4;
     public final short DESTROYED_BIT = 8;
     public final short GROUND_BIT = 16;
+    public final short SPIKES_BIT = 32;
 
     public TextureAtlas playerAtlas;
     public TextureAtlas doorAtlas;

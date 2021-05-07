@@ -4,9 +4,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.screens.LevelScreen;
 
 public class Player extends Sprite {
     public enum State {FALLING, JUMPING, STANDING, RUNNING, DIEING}
@@ -15,16 +17,18 @@ public class Player extends Sprite {
     public State currentState;
     public Body b2body;
     private Filter filter;
-    private Fixture fixture, sensorFixture;
+    private Fixture fixture;
     private Animation playerIdle;
     private float stateTimer;
     private boolean runningRight;
     private Animation playerRun;
     private Animation playerJump;
     private Animation playerFall;
+    private Animation playerDie;
     private GapGame game;
     private AssetManager manager;
     private BodyDef bdef;
+    private FixtureDef fdef;
 
     public Player(GapGame game) {
         super(game.playerAtlas.findRegion("player"));
@@ -56,6 +60,12 @@ public class Player extends Sprite {
         }//for
         playerIdle = new Animation(0.1f, frames);
         frames.clear();
+        //die animation
+        for (int i = 0; i < 6; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 64, 128, 64, 64));
+        }//for
+        playerDie = new Animation(0.1f, frames);
+        frames.clear();
 
         definePlayer();
         setBounds(0, 0, 64 / game.GAME_PPM, 64 / game.GAME_PPM);
@@ -67,102 +77,121 @@ public class Player extends Sprite {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
 
-        //=======================WRAP===========================
-        if (b2body.getPosition().x * game.GAME_PPM < 0) {
-            b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
-            game.savedGame.wrapped++;
-            game.playSound(game.warpSound);
-            game.tasksTracker.update(game.savedGame);
-        }//if -x
-        if (b2body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
-            b2body.setTransform((b2body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
-            game.savedGame.wrapped++;
-            game.playSound(game.warpSound);
-            game.tasksTracker.update(game.savedGame);
-        }//if +x
-        if (b2body.getPosition().y * game.GAME_PPM < 0) {
-            b2body.setTransform( b2body.getPosition().x,(b2body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
-            game.savedGame.wrapped++;
-            game.playSound(game.warpSound);
-            game.tasksTracker.update(game.savedGame);
-        }//if -y
-        if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
-            b2body.setTransform( b2body.getPosition().x,(b2body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
-            game.savedGame.wrapped++;
-            game.playSound(game.warpSound);
-            game.tasksTracker.update(game.savedGame);
-        }//if +y
-        //======================================================
-
+        //=======================DIE============================
+        if (getFilterBit() == game.DESTROYED_BIT) {
+            filter.maskBits = game.DEFAULT_BIT;
+            fixture.setFilterData(filter);
+            if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
+                game.stopMusic();
+                game.savedGame.died++;
+                game.savedGame.save();
+                game.tasksTracker.update(game.savedGame);
+                game.setScreen(new LevelScreen(game, manager));
+            } else {// else flying up the screen
+                game.world.setGravity(new Vector2(0,0));
+                b2body.setActive(false);
+                b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y + dt * 2, 0);
+            }//else
+        }//if
+        else {// if not dieing
+            //=======================WRAP===========================
+            if (b2body.getPosition().x * game.GAME_PPM < 0) {
+                b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
+                game.savedGame.wrapped++;
+                game.playSound(game.warpSound);
+                game.tasksTracker.update(game.savedGame);
+            }//if -x
+            if (b2body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
+                b2body.setTransform((b2body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
+                game.savedGame.wrapped++;
+                game.playSound(game.warpSound);
+                game.tasksTracker.update(game.savedGame);
+            }//if +x
+            if (b2body.getPosition().y * game.GAME_PPM < 0) {
+                b2body.setTransform(b2body.getPosition().x, (b2body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
+                game.savedGame.wrapped++;
+                game.playSound(game.warpSound);
+                game.tasksTracker.update(game.savedGame);
+            }//if -y
+            if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
+                b2body.setTransform(b2body.getPosition().x, (b2body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
+                game.savedGame.wrapped++;
+                game.playSound(game.warpSound);
+                game.tasksTracker.update(game.savedGame);
+            }//if +y
+        }//else
     }
 
-    public TextureRegion getFrame(float dt) {
-        currentState = getSate();
-        TextureRegion region;
-        switch (currentState) {
-            case JUMPING:
-                region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
-                break;
-            case RUNNING:
-                region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
-                break;
-            case FALLING:
-                region = (TextureRegion) playerFall.getKeyFrame(stateTimer);
-                break;
-            case STANDING:
-            default:
-                region = (TextureRegion) playerIdle.getKeyFrame(stateTimer, true);
-                break;
-        }//switch
-        if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = false;
-        } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = true;
+        public TextureRegion getFrame ( float dt){
+            currentState = getSate();
+            TextureRegion region;
+            switch (currentState) {
+                case JUMPING:
+                    region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
+                    break;
+                case RUNNING:
+                    region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+                    break;
+                case FALLING:
+                    region = (TextureRegion) playerFall.getKeyFrame(stateTimer);
+                    break;
+                case DIEING:
+                    region = (TextureRegion) playerDie.getKeyFrame(stateTimer, true);
+                    break;
+                case STANDING:
+                default:
+                    region = (TextureRegion) playerIdle.getKeyFrame(stateTimer, true);
+                    break;
+            }//switch
+            if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+                region.flip(true, false);
+                runningRight = false;
+            } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+                region.flip(true, false);
+                runningRight = true;
+            }
+            stateTimer = currentState == previousState ? stateTimer + dt : 0;
+            previousState = currentState;
+            return region;
         }
-        stateTimer = currentState == previousState ? stateTimer + dt : 0;
-        previousState = currentState;
-        return region;
+
+        public State getSate () {
+            if (getFilterBit() == game.DESTROYED_BIT)
+                return State.DIEING;
+            if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
+                return State.JUMPING;
+            else if (b2body.getLinearVelocity().y < 0)
+                return State.FALLING;
+            else if (b2body.getLinearVelocity().x != 0)
+                return State.RUNNING;
+            else return State.STANDING;
+        }
+
+        private void definePlayer () {
+            bdef = new BodyDef();
+            bdef.position.set(game.levelData.start.x / game.GAME_PPM, game.levelData.start.y / game.GAME_PPM);
+            bdef.type = BodyDef.BodyType.DynamicBody;
+            b2body = game.world.createBody(bdef);
+            //fixture definition
+            fdef = new FixtureDef();
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(20 / game.GAME_PPM,28 / game.GAME_PPM);
+            //CircleShape shape = new CircleShape();
+            //shape.setRadius(26 / game.GAME_PPM);
+            fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
+            fdef.shape = shape;
+            fixture = b2body.createFixture(fdef);
+            setFilterBit(game.PLAYER_BIT);
+            fixture.setUserData(this);
+        }
+
+        public void setFilterBit ( short bit){
+            filter.categoryBits = bit;
+            fixture.setFilterData(filter);
+        }
+
+        public short getFilterBit () {
+            return fixture.getFilterData().categoryBits;
+        }
+
     }
-
-    public State getSate() {
-        if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
-            return State.JUMPING;
-        else if (b2body.getLinearVelocity().y < 0)
-            return State.FALLING;
-        else if (b2body.getLinearVelocity().x != 0)
-            return State.RUNNING;
-        else return State.STANDING;
-    }
-
-    private void definePlayer() {
-        bdef = new BodyDef();
-        bdef.position.set(game.levelData.start.x / game.GAME_PPM, game.levelData.start.y / game.GAME_PPM);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = game.world.createBody(bdef);
-        //fixture definition
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(30 / game.GAME_PPM);
-        fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT);//with what fixtures player can collide with
-
-        fdef.shape = shape;
-        fixture = b2body.createFixture(fdef);
-
-        //create sensor
-        CircleShape sensor = new CircleShape();
-        sensor.setRadius(34 / game.GAME_PPM);
-        fdef.shape = sensor;
-        fdef.isSensor = true;
-        sensorFixture = b2body.createFixture(fdef);
-        sensorFixture.setUserData(this);
-        setFilter(game.PLAYER_BIT);
-    }
-
-    public void setFilter(short bit) {
-        filter.categoryBits = bit;
-        sensorFixture.setFilterData(filter);
-    }
-
-}

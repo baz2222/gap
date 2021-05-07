@@ -1,12 +1,19 @@
 package com.juniorgames.gap.tools;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.sprites.Door;
 import com.juniorgames.gap.sprites.Player;
+import com.juniorgames.gap.sprites.Spikes;
 
 public class WorldContactListener implements ContactListener {
     private Fixture fixA;
     private Fixture fixB;
+    private GapGame game;
+
+    public WorldContactListener(GapGame game) {
+        this.game = game;
+    }
 
     @Override
     public void beginContact(Contact contact) {
@@ -20,6 +27,16 @@ public class WorldContactListener implements ContactListener {
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Door.class) {
                 ((Door) fixA.getUserData()).onHit();
+            }
+        }//if=================================================================================================
+
+        //==================HANDLE PLAYER COLLISION WITH SPIKES=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Spikes.class) {
+            ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Spikes.class) {
+                ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
             }
         }//if=================================================================================================
 
