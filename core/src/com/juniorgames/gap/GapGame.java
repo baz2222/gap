@@ -24,15 +24,19 @@ public class GapGame extends Game {
     public final int GAME_WIDTH = 960;
     public final int GAME_HEIGHT = 544;
     public final float GAME_PPM = 100; //pixels per meter for Box2D
+    public final float MUSIC_VOLUME = 0.2f;
+    public final float SOUND_VOLUME = 0.2f;
 
     public final short DEFAULT_BIT = 1;
     public final short PLAYER_BIT = 2;//must be power of two for binary operations with fixtures filters
     public final short DOOR_BIT = 4;
     public final short DESTROYED_BIT = 8;
     public final short GROUND_BIT = 16;
+    public final short CRUMBLES_BIT = 512;
     public final short SPIKES_BIT = 32;
     public final short ENEMY_BIT = 64;
     public final short CHANGE_DIRECTION_BOX_BIT = 128;
+    public final short SPIKE_ENEMY_BIT = 256;
 
     public TextureAtlas spikeEnemyAtlas;
     public TextureAtlas playerAtlas;
@@ -117,7 +121,7 @@ public class GapGame extends Game {
 
     public void playSound(Sound sound) {
         if (!soundsMuted) {
-            sound.setLooping(sound.play(), false);
+            sound.setLooping(sound.play(SOUND_VOLUME), false);
         }//if
     }
 
@@ -128,7 +132,7 @@ public class GapGame extends Game {
             music = manager.get("audio/music/menu-music.mp3", Music.class);
         }
         music.setLooping(true);
-        music.setVolume(0.2f);//0-1 range
+        music.setVolume(MUSIC_VOLUME);//0-1 range
         if (!musicMuted) {
             music.play();
         }//end if

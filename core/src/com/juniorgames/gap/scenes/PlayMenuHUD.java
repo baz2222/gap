@@ -138,8 +138,6 @@ public class PlayMenuHUD implements Disposable {
     }
 
     private void onSelectLevelButtonClicked() {
-        //game.savedGame.reset();
-        //game.tasksTracker.update(game.savedGame);
         this.game.setScreen(new SelectWorldMenuScreen(game, manager));
     }
 

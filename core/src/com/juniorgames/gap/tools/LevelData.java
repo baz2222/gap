@@ -11,8 +11,6 @@ public class LevelData {
     public int level = 1;// level number
     public Vector2 start = new Vector2();// coords where player appears at start
     public Vector2 exit = new Vector2();// coords of exit doors
-    public Array<Vector2> plant1s = new Array<>();// array of plants version 1 coords to put on current map
-    public Array<Vector2> plant2s = new Array<>();// array of plants version 2 coords to put on current map
     public Array<Vector2> switches = new Array<>();// array of switches coords to put on current map
     public Array<Vector2> enemies = new Array<>();
     public Array<Vector2> spikeEnemies = new Array<>();
@@ -20,7 +18,7 @@ public class LevelData {
     public Array<Vector2> buffBombs = new Array<>();
     public Array<Vector2> buffJumps = new Array<>();
     public Array<Vector2> buffShields = new Array<>();
-    public Vector2 tutorial = new Vector2();// position of tutorial image IF IT EXIST FOR CURRENT LEVEL!
+    public String tutorial = new String();// position of tutorial image IF IT EXIST FOR CURRENT LEVEL!
 
     public void loadLevel(int world, int level) {
         this.world = world;
@@ -40,23 +38,7 @@ public class LevelData {
         value = json.getChild("exit");
         this.exit.x = value.asFloat();
         this.exit.y = value.next.asFloat();
-        value = json.getChild("tutorial");
-        this.tutorial.x = value.asFloat();
-        this.tutorial.y = value.next.asFloat();
-
-        //Array<Vector2> plant1s
-        value = json.getChild("plant1s");
-        while (value != null) {
-            this.plant1s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
-            value = value.next;
-        }//end while
-
-        //Array<Vector2> plant2s
-        value = json.getChild("plant2s");
-        while (value != null) {
-            this.plant2s.add(new Vector2(value.get("x").asFloat(), value.get("y").asFloat()));
-            value = value.next;
-        }//end while
+        this.tutorial = json.getString("tutorial");
 
         //Array<Vector2> switches
         value = json.getChild("switches");

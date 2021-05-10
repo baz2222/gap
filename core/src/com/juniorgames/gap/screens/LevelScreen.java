@@ -86,6 +86,11 @@ public class LevelScreen extends ScreenAdapter {
             new Ground(game);
         }//for
         //===================================================================
+        for (MapObject object : game.platformMap.getLayers().get("CrumbleObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
+            game.bounds = ((RectangleMapObject) object).getRectangle();
+            new Crumbles(game);
+        }//for
+        //===================================================================
         for (MapObject object : game.platformMap.getLayers().get("SpikesObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
             game.bounds = ((RectangleMapObject) object).getRectangle();
             new Spikes(game);
@@ -179,7 +184,6 @@ public class LevelScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        levelHud.resize(width, height);
     }//resize
 
     @Override

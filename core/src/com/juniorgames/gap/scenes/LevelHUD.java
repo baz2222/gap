@@ -41,14 +41,16 @@ public class LevelHUD implements Disposable {
     private Texture backButtonTexture, pauseButtonTexture;
     private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener, restartButtonListener;
     private BitmapFont midFont;
+    private Table tableHUD, pauseTable;
 
-    private Table pauseTable;
     private TextButton.TextButtonStyle pauseButtonStyle;
 
     public LevelHUD(GapGame game, AssetManager manager) {
         this.game = game;
         this.manager = manager;
         batch = new SpriteBatch();
+        tableHUD = new Table();
+        pauseTable = new Table();
         levelTimer = 300;
         timeCount = 0;
         score = 0;
@@ -138,7 +140,6 @@ public class LevelHUD implements Disposable {
         };//exitButtonInputListener
         exitButton.addListener(exitButtonInputListener);//listener - exitButton
 
-        Table tableHUD = new Table();
         tableHUD.top();
         tableHUD.setFillParent(true);
         tableHUD.add(backButton).padRight(150);
@@ -148,7 +149,6 @@ public class LevelHUD implements Disposable {
 
         stage.addActor(tableHUD);
 
-        pauseTable = new Table();
         pauseTable.setFillParent(true);
         pauseTable.center();
         pauseTable.add(continueButton).pad(10);
@@ -156,16 +156,21 @@ public class LevelHUD implements Disposable {
         pauseTable.add(restartButton).pad(10);
         pauseTable.row();
         pauseTable.add(exitButton).pad(10);
+
+        //tutorial label
+
     }//constructor
 
     private void onBackButtonClicked() {
         game.stopMusic();
+        tableHUD.remove();
         stage.addActor(pauseTable);
         game.gamePaused = true;
     }
 
     private void onContinueButtonClicked() {
         pauseTable.remove();
+        stage.addActor(tableHUD);
         game.gamePaused = false;
         game.playMusic(game.savedGame.world);
     }
@@ -181,10 +186,6 @@ public class LevelHUD implements Disposable {
         game.gamePaused = false;
         game.stopMusic();
         game.setScreen(new LevelScreen(game, manager));
-    }
-
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, false);
     }
 
     public void update(float dt) {

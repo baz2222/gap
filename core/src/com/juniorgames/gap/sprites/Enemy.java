@@ -95,27 +95,19 @@ public class Enemy extends Sprite {
             //=======================WRAP===========================
             if (body.getPosition().x * game.GAME_PPM < 0) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
-                game.savedGame.wrapped++;
                 game.playSound(game.warpSound);
-                game.tasksTracker.update(game.savedGame);
             }//if -x
             if (body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
-                game.savedGame.wrapped++;
                 game.playSound(game.warpSound);
-                game.tasksTracker.update(game.savedGame);
             }//if +x
             if (body.getPosition().y * game.GAME_PPM < 0) {
                 body.setTransform(body.getPosition().x, (body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
-                game.savedGame.wrapped++;
                 game.playSound(game.warpSound);
-                game.tasksTracker.update(game.savedGame);
             }//if -y
             if (body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
                 body.setTransform(body.getPosition().x, (body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
-                game.savedGame.wrapped++;
                 game.playSound(game.warpSound);
-                game.tasksTracker.update(game.savedGame);
             }//if +y
         }//else
     }//update

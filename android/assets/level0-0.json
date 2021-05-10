@@ -1,1 +1,1 @@
-{"world":0,"level":0,"start":{"x":41.0,"y":230.216751},"exit":{"x":413.5,"y":232.5},"plant1s":[],"plant2s":[],"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":{"x":0.0,"y":0.0}}
+{"world":0,"level":0,"start":{"x":41.0,"y":230.216751},"exit":{"x":413.5,"y":232.5},"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":""}

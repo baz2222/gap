@@ -50,6 +50,16 @@ public class WorldContactListener implements ContactListener {
             }
         }//if=================================================================================================
 
+        //==================HANDLE SPIKE_ENEMY COLLISION WITH CHANGE_DIRECTION_BOX=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == SpikeEnemy.class && fixB.getUserData().getClass() == ChangeDirectionBox.class) {
+                ((SpikeEnemy) fixA.getUserData()).runRight = !((SpikeEnemy) fixA.getUserData()).runRight;
+            }
+            if (fixB.getUserData().getClass() == SpikeEnemy.class && fixA.getUserData().getClass() == ChangeDirectionBox.class) {
+                ((SpikeEnemy) fixB.getUserData()).runRight = !((SpikeEnemy) fixB.getUserData()).runRight;
+            }
+        }//if=================================================================================================
+
     }//begin contact
 
     @Override
@@ -67,8 +77,31 @@ public class WorldContactListener implements ContactListener {
             contact.setEnabled(false);
         }//if
 
+        //prevent collision for crumbles and player
+        if ((firstBit | secondBit) == (game.PLAYER_BIT | game.CRUMBLES_BIT)) {
+            contact.setEnabled(false);
+        }//if
+
         //prevent collision between enemies
         if ((firstBit | secondBit) == (game.ENEMY_BIT | game.ENEMY_BIT)) {
+            contact.setEnabled(false);
+        }//if
+
+        if ((firstBit | secondBit) == (game.SPIKE_ENEMY_BIT | game.ENEMY_BIT)) {
+            contact.setEnabled(false);
+        }//if
+
+        if ((firstBit | secondBit) == (game.SPIKE_ENEMY_BIT | game.PLAYER_BIT)) {
+            contact.setEnabled(false);
+        }//if
+
+        //prevent collision between enemies and spikes
+        if ((firstBit | secondBit) == (game.SPIKES_BIT | game.ENEMY_BIT)) {
+            contact.setEnabled(false);
+        }//if
+
+        //prevent collision between spike enemies and spikes
+        if ((firstBit | secondBit) == (game.SPIKES_BIT | game.SPIKE_ENEMY_BIT)) {
             contact.setEnabled(false);
         }//if
 
