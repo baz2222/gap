@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,15 +17,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.LevelHUD;
-import com.juniorgames.gap.sprites.Door;
-import com.juniorgames.gap.sprites.Ground;
-import com.juniorgames.gap.sprites.Player;
+import com.juniorgames.gap.sprites.*;
 import com.juniorgames.gap.sprites.Player.State;
-import com.juniorgames.gap.sprites.Spikes;
 import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.WorldContactListener;
 
@@ -40,8 +39,10 @@ public class LevelScreen extends ScreenAdapter {
 
     private Box2DDebugRenderer b2dr;
     //sprites
-    private Player player;
-    private Door door;
+    public Player player;
+    public Door door;
+    public Array<Enemy> enemies;
+    public Array<SpikeEnemy> spikeEnemies;
     //sfx
     private float timeCount;//to make delay for stepping sounds
 
@@ -50,6 +51,8 @@ public class LevelScreen extends ScreenAdapter {
         this.manager = manager;
         game.savedGame.load();
         batch = new SpriteBatch();
+        enemies = new Array<>();
+        spikeEnemies = new Array<>();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
@@ -67,6 +70,8 @@ public class LevelScreen extends ScreenAdapter {
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         game.playerAtlas = new TextureAtlas("player.pack");
+        game.enemyAtlas = new TextureAtlas("enemy.pack");
+        game.spikeEnemyAtlas = new TextureAtlas("senemy.pack");
         game.doorAtlas = new TextureAtlas("door.pack");
 
         game.world = new World(new Vector2(0, -10), true);
@@ -86,8 +91,20 @@ public class LevelScreen extends ScreenAdapter {
             new Spikes(game);
         }//for
         //===================================================================
+        for (MapObject object : game.platformMap.getLayers().get("ChangeEnemyDirectionObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
+            game.bounds = ((RectangleMapObject) object).getRectangle();
+            new ChangeDirectionBox(game);
+        }//for
+        //===================================================================
         door = new Door(game);
-        player = new Player(game);
+        player = new Player(game, game.levelData.start.x, game.levelData.start.y);
+        for(Vector2 v : game.levelData.enemies){
+            enemies.add(new Enemy(game, v.x, v.y));
+        }//for
+        for(Vector2 v : game.levelData.spikeEnemies){
+            spikeEnemies.add(new SpikeEnemy(game, v.x, v.y));
+        }//for
+
         game.playMusic(game.savedGame.world);
     }//constructor
 
@@ -97,6 +114,12 @@ public class LevelScreen extends ScreenAdapter {
         game.world.step(1 / 60f, 6, 4);//60 times per second 60 6 4
         door.update(dt);
         player.update(dt);
+        for (Enemy enemy : enemies) {
+            enemy.update(dt);
+        }
+        for (SpikeEnemy enemy : spikeEnemies) {
+            enemy.update(dt);
+        }
         levelHud.update(dt);
         camera.update();
         game.renderer.setView(camera);
@@ -105,20 +128,17 @@ public class LevelScreen extends ScreenAdapter {
     private void handleInput(float dt) {
         //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || (Gdx.input.isTouched() && Gdx.input.getDeltaY() < -20 && Math.abs(Gdx.input.getDeltaX()) < 30)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-            if (!game.soundsMuted) {
-                game.playSound(game.jumpSound);
-            }
+            player.jump();
         }
         //move right
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 0)) && player.b2body.getLinearVelocity().x <= 2) {
-            player.b2body.applyLinearImpulse(new Vector2(0.4f, 0), player.b2body.getWorldCenter(), true);
+            player.moveRight();
         }
         //move left
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() < 0)) && player.b2body.getLinearVelocity().x >= -2) {
-            player.b2body.applyLinearImpulse(new Vector2(-0.4f, 0), player.b2body.getWorldCenter(), true);
+            player.moveLeft();
         }
-    }
+    }//handleInput
 
     @Override
     public void render(float delta) {
@@ -135,13 +155,19 @@ public class LevelScreen extends ScreenAdapter {
             batch.begin();
             door.draw(batch);
             player.draw(batch);
+            for (Enemy enemy : enemies) {
+                enemy.draw(batch);
+            }//for
+            for (SpikeEnemy enemy : spikeEnemies) {
+                enemy.draw(batch);
+            }//for
             batch.end();
 
             batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
             levelHud.stage.draw();
 
             timeCount += delta;
-            if (timeCount >= 0.3 && player.getSate() == State.RUNNING && !game.soundsMuted) {
+            if (timeCount >= 0.3 && player.getState() == State.RUNNING && !game.soundsMuted) {
                 game.playSound(game.stepSound);
                 timeCount = 0;
             }//end if

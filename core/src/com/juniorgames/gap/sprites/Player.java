@@ -29,8 +29,9 @@ public class Player extends Sprite {
     private AssetManager manager;
     private BodyDef bdef;
     private FixtureDef fdef;
+    private TextureRegion region;
 
-    public Player(GapGame game) {
+    public Player(GapGame game, float playerX, float playerY) {
         super(game.playerAtlas.findRegion("player"));
         this.game = game;
         this.manager = game.manager;
@@ -67,11 +68,26 @@ public class Player extends Sprite {
         playerDie = new Animation(0.1f, frames);
         frames.clear();
 
-        definePlayer();
+        definePlayer(playerX, playerY);
         setBounds(0, 0, 64 / game.GAME_PPM, 64 / game.GAME_PPM);
         setRegion((TextureRegion) playerIdle.getKeyFrame(stateTimer, true));
 
     }//constructor
+
+    public void jump(){
+        b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+        if (!game.soundsMuted) {
+            game.playSound(game.jumpSound);
+        }
+    }//jump
+
+    public void moveRight(){
+        b2body.applyLinearImpulse(new Vector2(0.4f, 0), b2body.getWorldCenter(), true);
+    }//moveRight
+
+    public void moveLeft(){
+        b2body.applyLinearImpulse(new Vector2(-0.4f, 0), b2body.getWorldCenter(), true);
+    }//moveLeft
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
@@ -88,7 +104,6 @@ public class Player extends Sprite {
                 game.tasksTracker.update(game.savedGame);
                 game.setScreen(new LevelScreen(game, manager));
             } else {// else flying up the screen
-                game.world.setGravity(new Vector2(0,0));
                 b2body.setActive(false);
                 b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y + dt * 2, 0);
             }//else
@@ -123,8 +138,7 @@ public class Player extends Sprite {
     }
 
         public TextureRegion getFrame ( float dt){
-            currentState = getSate();
-            TextureRegion region;
+            currentState = getState();
             switch (currentState) {
                 case JUMPING:
                     region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
@@ -143,19 +157,23 @@ public class Player extends Sprite {
                     region = (TextureRegion) playerIdle.getKeyFrame(stateTimer, true);
                     break;
             }//switch
-            if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
-                region.flip(true, false);
-                runningRight = false;
-            } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
-                region.flip(true, false);
-                runningRight = true;
-            }
+            updateDirection();
             stateTimer = currentState == previousState ? stateTimer + dt : 0;
             previousState = currentState;
             return region;
         }
 
-        public State getSate () {
+    private void updateDirection() {
+        if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = false;
+        } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = true;
+        }//if
+    }
+
+    public State getState () {
             if (getFilterBit() == game.DESTROYED_BIT)
                 return State.DIEING;
             if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
@@ -165,11 +183,11 @@ public class Player extends Sprite {
             else if (b2body.getLinearVelocity().x != 0)
                 return State.RUNNING;
             else return State.STANDING;
-        }
+        }//getState
 
-        private void definePlayer () {
+        private void definePlayer (float x, float y) {
             bdef = new BodyDef();
-            bdef.position.set(game.levelData.start.x / game.GAME_PPM, game.levelData.start.y / game.GAME_PPM);
+            bdef.position.set(x / game.GAME_PPM, y / game.GAME_PPM);
             bdef.type = BodyDef.BodyType.DynamicBody;
             b2body = game.world.createBody(bdef);
             //fixture definition

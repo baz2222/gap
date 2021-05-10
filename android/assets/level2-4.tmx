@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="135">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="139">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
@@ -63,5 +63,10 @@
  </objectgroup>
  <objectgroup id="8" name="SpikesObjectsLayer" locked="1"/>
  <objectgroup id="9" name="CrumbleObjectsLayer" locked="1"/>
- <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1"/>
+ <objectgroup id="10" name="ChangeEnemyDirectionObjectsLayer" locked="1">
+  <object id="135" x="541.932" y="97.2699" width="10.8078" height="62.5307"/>
+  <object id="136" x="799.775" y="416.099" width="10.0358" height="63.3026"/>
+  <object id="137" x="128.149" y="289.494" width="7.71983" height="30.8793"/>
+  <object id="138" x="93.41" y="256.299" width="7.71983" height="31.6513"/>
+ </objectgroup>
 </map>
