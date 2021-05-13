@@ -37,11 +37,13 @@ public class GapGame extends Game {
     public final short ENEMY_BIT = 64;
     public final short CHANGE_DIRECTION_BOX_BIT = 128;
     public final short SPIKE_ENEMY_BIT = 256;
+    public final short SWITCH_BIT = 1024;
 
     public TextureAtlas spikeEnemyAtlas;
     public TextureAtlas playerAtlas;
     public TextureAtlas enemyAtlas;
     public TextureAtlas doorAtlas;
+    public TextureAtlas switchAtlas;
 
     public World world;
     public WorldContactListener contactListener;

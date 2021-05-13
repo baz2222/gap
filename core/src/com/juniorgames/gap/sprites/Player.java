@@ -70,12 +70,11 @@ public class Player extends Sprite {
 
         definePlayer(playerX, playerY);
         setBounds(0, 0, 64 / game.GAME_PPM, 64 / game.GAME_PPM);
-        setRegion((TextureRegion) playerIdle.getKeyFrame(stateTimer, true));
 
     }//constructor
 
     public void jump(){
-        b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+        b2body.applyLinearImpulse(new Vector2(0, 6f), b2body.getWorldCenter(), true);
         if (!game.soundsMuted) {
             game.playSound(game.jumpSound);
         }
@@ -194,10 +193,11 @@ public class Player extends Sprite {
             fdef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(20 / game.GAME_PPM,28 / game.GAME_PPM);
-            //CircleShape shape = new CircleShape();
-            //shape.setRadius(26 / game.GAME_PPM);
             fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
             fdef.shape = shape;
+            fdef.restitution = 0f;
+            fdef.friction = 0.5f;
+            fdef.density = 0f;
             fixture = b2body.createFixture(fdef);
             setFilterBit(game.PLAYER_BIT);
             fixture.setUserData(this);

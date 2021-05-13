@@ -24,6 +24,7 @@ public class Door extends Sprite {
     private Filter filter;
 
     private float stateTimer = 0;
+    public boolean isVisible = false;
 
     public Door(GapGame game) {
         super(game.doorAtlas.findRegion("door"));
@@ -39,12 +40,20 @@ public class Door extends Sprite {
         doorFramesRegion.clear();
 
         setBounds(0, 0, 64 / game.GAME_PPM, 96 / game.GAME_PPM);
-        setRegion((TextureRegion) doorAnimation.getKeyFrame(stateTimer, true));//looping = true
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
     }//constructor
 
     public void update(float dt) {
-        setRegion(getFrame(dt));
+        if (isVisible) {
+            setRegion(getFrame(dt));
+            if (!b2body.isActive()){
+                b2body.setActive(true);
+            }//inner if
+        }else{
+            if (b2body.isActive()){
+                b2body.setActive(false);
+            }//inner if
+        }
     }
 
     public TextureRegion getFrame(float dt) {
@@ -61,20 +70,12 @@ public class Door extends Sprite {
         doorShape = new PolygonShape();
         doorShape.setAsBox(20 / game.GAME_PPM, 45 / game.GAME_PPM);
         fdef = new FixtureDef();
-        fdef.filter.maskBits = (short) (game.PLAYER_BIT);//with what fixtures door can collide with
-
         fdef.shape = doorShape;
-        fixture = b2body.createFixture(fdef);
-
-        //create sensor
-        sensor = new PolygonShape();
-        sensor.setAsBox(22 / game.GAME_PPM, 47 / game.GAME_PPM);
-        fdef.shape = sensor;
         fdef.isSensor = true;
-        sensorFixture = b2body.createFixture(fdef);
-        sensorFixture.setUserData(this);
+        fdef.filter.maskBits = (short) (game.PLAYER_BIT);//with what fixtures door can collide with
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData(this);
         setFilter(game.DOOR_BIT);
-
     }
 
     public void onHit() {
@@ -101,6 +102,6 @@ public class Door extends Sprite {
 
     public void setFilter(short bit) {
         filter.categoryBits = bit;
-        sensorFixture.setFilterData(filter);
+        fixture.setFilterData(filter);
     }
 }

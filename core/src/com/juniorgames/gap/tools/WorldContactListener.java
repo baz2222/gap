@@ -40,6 +40,18 @@ public class WorldContactListener implements ContactListener {
             }
         }//if=================================================================================================
 
+        //==================HANDLE PLAYER COLLISION WITH SWITCH=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Switch.class) {
+                ((Switch) fixB.getUserData()).isChecked = true;
+                ((Switch) fixB.getUserData()).target.isVisible = true;
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Switch.class) {
+                ((Switch) fixA.getUserData()).isChecked = true;
+                ((Switch) fixA.getUserData()).target.isVisible = true;
+            }
+        }//if=================================================================================================
+
         //==================HANDLE ENEMY COLLISION WITH CHANGE_DIRECTION_BOX=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Enemy.class && fixB.getUserData().getClass() == ChangeDirectionBox.class) {

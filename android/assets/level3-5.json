@@ -1,1 +1,1 @@
-{"world":3,"level":5,"start":{"x":448.0,"y":176.0},"exit":{"x":224.5,"y":496.5},"switches":[{"x":106.0,"y":-4.0}],"enemies":[],"spikeEnemies":[{"x":128.0,"y":112.0}],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[{"x":289.0,"y":63.0}],"tutorial":""}
+{"world":3,"level":5,"start":{"x":448.0,"y":176.0},"exit":{"x":608.5,"y":400.5},"switches":[{"x":224.0,"y":486.0}],"enemies":[],"spikeEnemies":[{"x":128.0,"y":112.0}],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[{"x":289.0,"y":63.0}],"tutorial":""}

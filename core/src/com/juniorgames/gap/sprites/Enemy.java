@@ -58,11 +58,11 @@ public class Enemy extends Sprite {
     }//jump
 
     public void runRight() {
-        body.applyLinearImpulse(new Vector2(0.05f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(0.14f, 0), body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        body.applyLinearImpulse(new Vector2(-0.05f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(-0.14f, 0), body.getWorldCenter(), true);
     }//moveLeft
 
     public void run(){
@@ -181,6 +181,9 @@ public class Enemy extends Sprite {
         shape.setAsBox(20 / game.GAME_PPM, 28 / game.GAME_PPM);
         fixtureDef.filter.maskBits = (short) (game.GROUND_BIT | game.DEFAULT_BIT | game.PLAYER_BIT);
         fixtureDef.shape = shape;
+        fixtureDef.restitution = 0f;
+        fixtureDef.friction = 0.6f;
+        fixtureDef.density = 0f;
         fixture = body.createFixture(fixtureDef);
         setFilterBit(game.ENEMY_BIT);
         fixture.setUserData(this);

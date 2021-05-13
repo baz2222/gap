@@ -43,6 +43,7 @@ public class LevelScreen extends ScreenAdapter {
     public Door door;
     public Array<Enemy> enemies;
     public Array<SpikeEnemy> spikeEnemies;
+    public Array<Switch> switches;
     //sfx
     private float timeCount;//to make delay for stepping sounds
 
@@ -53,6 +54,7 @@ public class LevelScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         enemies = new Array<>();
         spikeEnemies = new Array<>();
+        switches = new Array<>();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
@@ -73,6 +75,7 @@ public class LevelScreen extends ScreenAdapter {
         game.enemyAtlas = new TextureAtlas("enemy.pack");
         game.spikeEnemyAtlas = new TextureAtlas("senemy.pack");
         game.doorAtlas = new TextureAtlas("door.pack");
+        game.switchAtlas = new TextureAtlas("switch.pack");
 
         game.world = new World(new Vector2(0, -10), true);
 
@@ -103,12 +106,18 @@ public class LevelScreen extends ScreenAdapter {
         //===================================================================
         door = new Door(game);
         player = new Player(game, game.levelData.start.x, game.levelData.start.y);
-        for(Vector2 v : game.levelData.enemies){
+        for (Vector2 v : game.levelData.enemies) {
             enemies.add(new Enemy(game, v.x, v.y));
         }//for
-        for(Vector2 v : game.levelData.spikeEnemies){
+        for (Vector2 v : game.levelData.spikeEnemies) {
             spikeEnemies.add(new SpikeEnemy(game, v.x, v.y));
         }//for
+        for (Vector2 v : game.levelData.switches) {
+            switches.add(new Switch(game, v.x, v.y, door));
+        }//for
+        if (switches.size == 0) {
+            door.isVisible = true;
+        }// if no switches door is visible at start
 
         game.playMusic(game.savedGame.world);
     }//constructor
@@ -124,6 +133,9 @@ public class LevelScreen extends ScreenAdapter {
         }
         for (SpikeEnemy enemy : spikeEnemies) {
             enemy.update(dt);
+        }
+        for (Switch sw : switches) {// sw = switch
+            sw.update(dt);
         }
         levelHud.update(dt);
         camera.update();
@@ -158,7 +170,9 @@ public class LevelScreen extends ScreenAdapter {
 
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
-            door.draw(batch);
+            if (door.isVisible) {
+                door.draw(batch); //begin draw
+            }
             player.draw(batch);
             for (Enemy enemy : enemies) {
                 enemy.draw(batch);
@@ -166,7 +180,10 @@ public class LevelScreen extends ScreenAdapter {
             for (SpikeEnemy enemy : spikeEnemies) {
                 enemy.draw(batch);
             }//for
-            batch.end();
+            for (Switch sw : switches) {
+                sw.draw(batch);
+            }//for
+            batch.end(); //end draw
 
             batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
             levelHud.stage.draw();

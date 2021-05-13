@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="148">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="149">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
@@ -32,7 +32,7 @@
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJytlIdOAzEQRK0oX0QPLfAN9N577x0CAvLbvBO2tEzs80VipSdFtmYn9o6v7pyrRwgV26tCN/oe6IU+0dn1lLaR0Oe0kzAMIzAqvna9kfBM6e3aWEQXq7bcmfP9rXfwtPUJX/Dte9hqylmP4BhO4NScVX2Dt9Vq6X1MwTTMwKz0PYNzuIBLo0/dReo/FWVn2g9zMA8LsCjaK7iGG7g1vWPnyfnqTJdgGVZgVbR3cA8P8Gh6p6rMV2sN1mEDNr2u6fee4Ble4PWffbdgG3Zg13u2PW/Qgnf4cPEsV/WtGYo+e7APB3BoepehWYz56luo+k3T/A3AIAy5zizGfPUt5PqGfc3fuPudwYTrzGLMV99Crm/Yr7l0aRaLsvMpfutbKJu9zjblrVmMZaJYs28hnDPnab0DoTSLqYy03N+3EMp+q6tkLVTVbHar/wEJ10XR
+   eJytlAdOAzEQRa0oJ6KHFjgDvZeE3nuHgCC5Ns/CFsPEs95IfOlJWVt/fmyPXXXOVRNEpebK0Iu/D/phQPnkuOWtGf6cdxpGYQzGVa4crxmZll+OTSR8KXXUnrlQX2bHTKlP+IJ2qCFVV2s9gmM4gVOxVp0bs6VXS+/HDMzCHMyrumdwDhdwKfzWXlj/yUue6SAswCIswbLyXsE13MCtqJ1aTy5Xn+kKrMIarCvvHdzDAzyK2paKcrU2YBO2YDv46mHuCZ7hBV7/ObcBTdiB3ZDZCbxBC97hw3X3sv9ul8ytCLxvD/bhAA5F7SJiL1rvkJe+C2XfNN1/QzAMI+63F4ty9V3I1Y3zuv8m3c8ZTLnuXkzl6ruQqxvnK86W7kUveT7+t74LRWevz9bK1r2Y6gk/Ju9CXGcuU2ZHonQvWj3Scn/vQpR8q8v0WlTZ3uzV/w0Nf0WQ
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
@@ -66,10 +66,11 @@
   <object id="141" x="256" y="32" width="32" height="96"/>
   <object id="142" x="224" y="160" width="32" height="160"/>
   <object id="143" x="672" y="128" width="128" height="32"/>
+  <object id="148" x="320" y="320" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="8" name="SpikesObjectsLayer">
-  <object id="144" x="672" y="288" width="96" height="32"/>
-  <object id="145" x="96" y="480" width="96" height="32"/>
+ <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
+  <object id="144" x="689.687" y="288" width="78.3128" height="32"/>
+  <object id="145" x="96" y="480" width="75.9546" height="32"/>
   <object id="146" x="64" y="448" width="32" height="32"/>
   <object id="147" x="32" y="416" width="32" height="32"/>
  </objectgroup>

@@ -32,6 +32,8 @@ public class Ground {
 
         shape.setAsBox((game.bounds.getWidth() / 2) / game.GAME_PPM, (game.bounds.getHeight() / 2) / game.GAME_PPM);
         fdef.shape = shape;
+        fdef.friction = 0.8f;
+        fdef.density = 0f;
         fixture = body.createFixture(fdef);
         setFilter(game.GROUND_BIT);
     }
