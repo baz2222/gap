@@ -50,19 +50,19 @@ public class Enemy extends Sprite {
         setRegAndBounds();
     }//constructor
 
-    public void jump() {
-        body.applyLinearImpulse(new Vector2(0, 4f), body.getWorldCenter(), true);
+    public void jump(float jumpImpulse) {
+        body.applyLinearImpulse(new Vector2(0, jumpImpulse), body.getWorldCenter(), true);
         if (!game.soundsMuted) {
             game.playSound(game.jumpSound);
         }
     }//jump
 
     public void runRight() {
-        body.applyLinearImpulse(new Vector2(0.14f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(0.12f, 0), body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        body.applyLinearImpulse(new Vector2(-0.14f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(-0.12f, 0), body.getWorldCenter(), true);
     }//moveLeft
 
     public void run(){

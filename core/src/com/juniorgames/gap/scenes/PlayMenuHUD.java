@@ -132,7 +132,7 @@ public class PlayMenuHUD implements Disposable {
 
     private void onNewGameButtonClicked() {
         game.savedGame.reset();
-        game.tasksTracker.update(game.savedGame);
+        game.tasksTracker.reset();
         game.stopMusic();
         this.game.setScreen(new LevelScreen(game, manager));
     }

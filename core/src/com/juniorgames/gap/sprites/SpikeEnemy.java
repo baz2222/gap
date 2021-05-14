@@ -58,11 +58,11 @@ public class SpikeEnemy extends Sprite {
     }//jump
 
     public void runRight() {
-        body.applyLinearImpulse(new Vector2(0.14f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(0.12f, 0), body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        body.applyLinearImpulse(new Vector2(-0.14f, 0), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(-0.12f, 0), body.getWorldCenter(), true);
     }//moveLeft
 
     public void run() {

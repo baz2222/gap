@@ -1,1 +1,1 @@
-{"world":1,"level":2,"start":{"x":135.0,"y":230.0},"exit":{"x":750.0,"y":80.0},{"x":33.0,"y":162.0},{"x":303.0,"y":175.0}],"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":""}
+{"world":1,"level":2,"start":{"x":135.0,"y":230.0},"exit":{"x":750.0,"y":80.0},"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":"You can warp yourself to the other end of the level screen by walking or falling out of the level edges."}

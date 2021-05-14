@@ -7,20 +7,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
 import com.juniorgames.gap.screens.MenuScreen;
+import com.juniorgames.gap.tools.Task;
 
 public class LevelHUD implements Disposable {
     public Stage stage;
@@ -160,6 +161,49 @@ public class LevelHUD implements Disposable {
         //tutorial label
 
     }//constructor
+
+    public void showTutorial(String text) {
+        Label.LabelStyle textLabelStyle = new Label.LabelStyle();
+        textLabelStyle.font = midFont;
+        textLabelStyle.fontColor = Color.WHITE;
+        Label textLabel = new Label(text, textLabelStyle);
+        textLabel.setWrap(true);
+        textLabel.setWidth(800);
+        textLabel.setAlignment(Align.center);
+        textLabel.setPosition(game.GAME_WIDTH / 2 - textLabel.getWidth() / 2, game.GAME_HEIGHT * 0.75f);
+        stage.addActor(textLabel);
+        Timer timer = new Timer();
+        Timer.Task task = new Timer.Task() {
+            @Override
+            public void run() {
+                hideTutorial(textLabel);
+            }//run
+        };
+        timer.scheduleTask(task, 8);
+    }
+
+    public void showTask(Task task){
+        Image img = new Image(new TextureRegion(manager.get(task.taskImagePath, Texture.class), 0, 0, 256, 128));
+        img.setPosition(game.GAME_WIDTH * 0.85f - img.getWidth() / 2, game.GAME_HEIGHT * 0.6f);
+        stage.addActor(img);
+        System.out.println("task done");
+        Timer timer = new Timer();
+        Timer.Task timerTask = new Timer.Task() {
+            @Override
+            public void run() {
+                hideTask(img);
+            }//run
+        };
+        timer.scheduleTask(timerTask, 5);
+    }
+
+    private void hideTask(Image image){
+        image.remove();
+    }
+
+    private void hideTutorial(Label t){
+        t.remove();
+    }
 
     private void onBackButtonClicked() {
         game.stopMusic();

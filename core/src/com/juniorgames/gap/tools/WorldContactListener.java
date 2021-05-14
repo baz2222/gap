@@ -33,10 +33,26 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH SPIKES=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Spikes.class) {
-                ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
+                ((Player) fixA.getUserData()).die();
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Spikes.class) {
-                ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
+                ((Player) fixB.getUserData()).die();
+            }
+        }//if=================================================================================================
+
+        //==================HANDLE PLAYER COLLISION WITH BUMPS=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Bump.class) {
+                ((Player) fixA.getUserData()).jumpMultiplyer = 2;
+                ((Player) fixA.getUserData()).forceJump();
+                ((Player) fixA.getUserData()).jumpMultiplyer = 1;
+                ((Bump) fixB.getUserData()).isHitted = true;
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Bump.class) {
+                ((Player) fixB.getUserData()).jumpMultiplyer = 2;
+                ((Player) fixB.getUserData()).forceJump();
+                ((Player) fixB.getUserData()).jumpMultiplyer = 1;
+                ((Bump) fixA.getUserData()).isHitted = true;
             }
         }//if=================================================================================================
 

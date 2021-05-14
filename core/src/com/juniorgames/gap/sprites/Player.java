@@ -16,6 +16,7 @@ public class Player extends Sprite {
     public State previousState;
     public State currentState;
     public Body b2body;
+    public float jumpMultiplyer;
     private Filter filter;
     private Fixture fixture;
     private Animation playerIdle;
@@ -40,6 +41,7 @@ public class Player extends Sprite {
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
+        jumpMultiplyer = 1;
         Array<TextureRegion> frames = new Array<>();
         //run animation
         for (int i = 0; i < 13; i++) {
@@ -73,41 +75,55 @@ public class Player extends Sprite {
 
     }//constructor
 
-    public void jump(){
-        b2body.applyLinearImpulse(new Vector2(0, 6f), b2body.getWorldCenter(), true);
-        if (!game.soundsMuted) {
-            game.playSound(game.jumpSound);
-        }
+    public void jump() {
+        if (currentState != State.JUMPING && currentState != State.FALLING) {
+            b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplyer), b2body.getWorldCenter(), true);
+            if (!game.soundsMuted) {
+                game.playSound(game.jumpSound);
+            }//if sounds muted
+        }//if not jumping
     }//jump
 
-    public void moveRight(){
+    public void forceJump() {
+        b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplyer), b2body.getWorldCenter(), true);
+        if (!game.soundsMuted) {
+            game.playSound(game.jumpSound);
+        }//if sounds muted
+    }//jump
+
+    public void moveRight() {
         b2body.applyLinearImpulse(new Vector2(0.4f, 0), b2body.getWorldCenter(), true);
     }//moveRight
 
-    public void moveLeft(){
+    public void moveLeft() {
         b2body.applyLinearImpulse(new Vector2(-0.4f, 0), b2body.getWorldCenter(), true);
     }//moveLeft
+
+    public void die() {
+        game.playSound(game.dieSound);
+        setFilterBit(game.DESTROYED_BIT);
+        filter.maskBits = game.DEFAULT_BIT;
+        fixture.setFilterData(filter);
+        game.savedGame.died++;
+        game.savedGame.save();
+        game.tasksTracker.update(game.savedGame);
+
+    }//die
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
-
         //=======================DIE============================
-        if (getFilterBit() == game.DESTROYED_BIT) {
-            filter.maskBits = game.DEFAULT_BIT;
-            fixture.setFilterData(filter);
+        if (filter.categoryBits == game.DESTROYED_BIT) {
             if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
                 game.stopMusic();
-                game.savedGame.died++;
-                game.savedGame.save();
-                game.tasksTracker.update(game.savedGame);
                 game.setScreen(new LevelScreen(game, manager));
             } else {// else flying up the screen
                 b2body.setActive(false);
                 b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y + dt * 2, 0);
             }//else
-        }//if
-        else {// if not dieing
+        }//if destroyed
+        else {
             //=======================WRAP===========================
             if (b2body.getPosition().x * game.GAME_PPM < 0) {
                 b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
@@ -133,34 +149,34 @@ public class Player extends Sprite {
                 game.playSound(game.warpSound);
                 game.tasksTracker.update(game.savedGame);
             }//if +y
-        }//else
+        }//else if not dead
     }
 
-        public TextureRegion getFrame ( float dt){
-            currentState = getState();
-            switch (currentState) {
-                case JUMPING:
-                    region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
-                    break;
-                case RUNNING:
-                    region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
-                    break;
-                case FALLING:
-                    region = (TextureRegion) playerFall.getKeyFrame(stateTimer);
-                    break;
-                case DIEING:
-                    region = (TextureRegion) playerDie.getKeyFrame(stateTimer, true);
-                    break;
-                case STANDING:
-                default:
-                    region = (TextureRegion) playerIdle.getKeyFrame(stateTimer, true);
-                    break;
-            }//switch
-            updateDirection();
-            stateTimer = currentState == previousState ? stateTimer + dt : 0;
-            previousState = currentState;
-            return region;
-        }
+    public TextureRegion getFrame(float dt) {
+        currentState = getState();
+        switch (currentState) {
+            case JUMPING:
+                region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
+                break;
+            case RUNNING:
+                region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+                break;
+            case FALLING:
+                region = (TextureRegion) playerFall.getKeyFrame(stateTimer);
+                break;
+            case DIEING:
+                region = (TextureRegion) playerDie.getKeyFrame(stateTimer, true);
+                break;
+            case STANDING:
+            default:
+                region = (TextureRegion) playerIdle.getKeyFrame(stateTimer, true);
+                break;
+        }//switch
+        updateDirection();
+        stateTimer = currentState == previousState ? stateTimer + dt : 0;
+        previousState = currentState;
+        return region;
+    }
 
     private void updateDirection() {
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
@@ -172,44 +188,44 @@ public class Player extends Sprite {
         }//if
     }
 
-    public State getState () {
-            if (getFilterBit() == game.DESTROYED_BIT)
-                return State.DIEING;
-            if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
-                return State.JUMPING;
-            else if (b2body.getLinearVelocity().y < 0)
-                return State.FALLING;
-            else if (b2body.getLinearVelocity().x != 0)
-                return State.RUNNING;
-            else return State.STANDING;
-        }//getState
+    public State getState() {
+        if (getFilterBit() == game.DESTROYED_BIT)
+            return State.DIEING;
+        if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
+            return State.JUMPING;
+        else if (b2body.getLinearVelocity().y < 0)
+            return State.FALLING;
+        else if (b2body.getLinearVelocity().x != 0)
+            return State.RUNNING;
+        else return State.STANDING;
+    }//getState
 
-        private void definePlayer (float x, float y) {
-            bdef = new BodyDef();
-            bdef.position.set(x / game.GAME_PPM, y / game.GAME_PPM);
-            bdef.type = BodyDef.BodyType.DynamicBody;
-            b2body = game.world.createBody(bdef);
-            //fixture definition
-            fdef = new FixtureDef();
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(20 / game.GAME_PPM,28 / game.GAME_PPM);
-            fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
-            fdef.shape = shape;
-            fdef.restitution = 0f;
-            fdef.friction = 0.5f;
-            fdef.density = 0f;
-            fixture = b2body.createFixture(fdef);
-            setFilterBit(game.PLAYER_BIT);
-            fixture.setUserData(this);
-        }
-
-        public void setFilterBit ( short bit){
-            filter.categoryBits = bit;
-            fixture.setFilterData(filter);
-        }
-
-        public short getFilterBit () {
-            return fixture.getFilterData().categoryBits;
-        }
-
+    private void definePlayer(float x, float y) {
+        bdef = new BodyDef();
+        bdef.position.set(x / game.GAME_PPM, y / game.GAME_PPM);
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        b2body = game.world.createBody(bdef);
+        //fixture definition
+        fdef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(20 / game.GAME_PPM, 28 / game.GAME_PPM);
+        fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
+        fdef.shape = shape;
+        fdef.restitution = 0f;
+        fdef.friction = 0.5f;
+        fdef.density = 0f;
+        fixture = b2body.createFixture(fdef);
+        setFilterBit(game.PLAYER_BIT);
+        fixture.setUserData(this);
     }
+
+    public void setFilterBit(short bit) {
+        filter.categoryBits = bit;
+        fixture.setFilterData(filter);
+    }
+
+    public short getFilterBit() {
+        return fixture.getFilterData().categoryBits;
+    }
+
+}

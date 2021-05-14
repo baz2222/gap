@@ -1,1 +1,1 @@
-{"world":1,"level":8,"start":{"x":672.0,"y":240.0},"exit":{"x":832.5,"y":464.5},"switches":[{"x":160.0,"y":454.0}],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":""}
+{"world":1,"level":8,"start":{"x":672.0,"y":240.0},"exit":{"x":832.5,"y":464.5},"switches":[{"x":160.0,"y":454.0}],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":"You can interact with switch light to show the door."}

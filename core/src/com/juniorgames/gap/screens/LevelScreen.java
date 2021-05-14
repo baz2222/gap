@@ -25,6 +25,7 @@ import com.juniorgames.gap.scenes.LevelHUD;
 import com.juniorgames.gap.sprites.*;
 import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.LevelData;
+import com.juniorgames.gap.tools.Task;
 import com.juniorgames.gap.tools.WorldContactListener;
 
 public class LevelScreen extends ScreenAdapter {
@@ -44,6 +45,7 @@ public class LevelScreen extends ScreenAdapter {
     public Array<Enemy> enemies;
     public Array<SpikeEnemy> spikeEnemies;
     public Array<Switch> switches;
+    public Array<Bump> bumps;
     //sfx
     private float timeCount;//to make delay for stepping sounds
 
@@ -55,6 +57,7 @@ public class LevelScreen extends ScreenAdapter {
         enemies = new Array<>();
         spikeEnemies = new Array<>();
         switches = new Array<>();
+        bumps = new Array<>();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
@@ -68,6 +71,9 @@ public class LevelScreen extends ScreenAdapter {
         game.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
 
         levelHud = new LevelHUD(this.game, this.manager);
+        if (game.levelData.tutorial != "") {
+            levelHud.showTutorial(game.levelData.tutorial);
+        }//if
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
@@ -76,6 +82,7 @@ public class LevelScreen extends ScreenAdapter {
         game.spikeEnemyAtlas = new TextureAtlas("senemy.pack");
         game.doorAtlas = new TextureAtlas("door.pack");
         game.switchAtlas = new TextureAtlas("switch.pack");
+        game.bumpAtlas = new TextureAtlas("bump.pack");
 
         game.world = new World(new Vector2(0, -10), true);
 
@@ -112,6 +119,9 @@ public class LevelScreen extends ScreenAdapter {
         for (Vector2 v : game.levelData.spikeEnemies) {
             spikeEnemies.add(new SpikeEnemy(game, v.x, v.y));
         }//for
+        for (Vector2 v : game.levelData.bumps) {
+            bumps.add(new Bump(game, v.x, v.y, player));
+        }//for
         for (Vector2 v : game.levelData.switches) {
             switches.add(new Switch(game, v.x, v.y, door));
         }//for
@@ -134,10 +144,17 @@ public class LevelScreen extends ScreenAdapter {
         for (SpikeEnemy enemy : spikeEnemies) {
             enemy.update(dt);
         }
+        for (Bump bump : bumps) {
+            bump.update(dt);
+        }
         for (Switch sw : switches) {// sw = switch
             sw.update(dt);
         }
         levelHud.update(dt);
+        if (game.currentTask != null) {
+            levelHud.showTask(game.currentTask);
+            game.currentTask = null;
+        }
         camera.update();
         game.renderer.setView(camera);
     }//update
@@ -182,6 +199,9 @@ public class LevelScreen extends ScreenAdapter {
             }//for
             for (Switch sw : switches) {
                 sw.draw(batch);
+            }//for
+            for (Bump bump : bumps) {
+                bump.draw(batch);
             }//for
             batch.end(); //end draw
 

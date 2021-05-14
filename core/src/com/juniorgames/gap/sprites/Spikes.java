@@ -39,6 +39,7 @@ public class Spikes extends Sprite {
     }
 
     public void onHit() {
+
     }
 
     public void setFilterBit(short bit) {

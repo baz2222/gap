@@ -1,1 +1,1 @@
-{"world":2,"level":7,"start":{"x":288.0,"y":80.0},"exit":{"x":128.5,"y":304.5},"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[{"x":241.0,"y":193.0}],"buffShields":[],"tutorial":""}
+{"world":2,"level":7,"start":{"x":288.0,"y":80.0},"exit":{"x":128.5,"y":304.5},"switches":[],"enemies":[],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[{"x":241.0,"y":193.0}],"buffShields":[],"tutorial":"That item over there is a buff. Each buff has his own special ability. They last for the whole current level."}

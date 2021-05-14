@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
+import com.juniorgames.gap.tools.Task;
 
 public class Door extends Sprite {
     private GapGame game;
@@ -79,6 +80,7 @@ public class Door extends Sprite {
     }
 
     public void onHit() {
+        game.tasksTracker.update(game.savedGame);
         setFilter(game.DESTROYED_BIT);
         game.playSound(game.exitSound);
         if (game.savedGame.level == 10) {
@@ -95,7 +97,6 @@ public class Door extends Sprite {
             game.savedGame.completed++;
         }//else
         game.savedGame.save();
-        game.tasksTracker.update(game.savedGame);
         game.stopMusic();
         game.setScreen(new LevelScreen(game, manager));
     }

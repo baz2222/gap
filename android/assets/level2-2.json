@@ -1,1 +1,1 @@
-{"world":2,"level":2,"start":{"x":512.0,"y":176.0},"exit":{"x":256.5,"y":80.5},"switches":[{"x":800.0,"y":358.0}],"enemies":[{"x":224.0,"y":80.0}],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":""}
+{"world":2,"level":2,"start":{"x":512.0,"y":176.0},"exit":{"x":256.5,"y":80.5},"switches":[{"x":800.0,"y":358.0}],"enemies":[{"x":224.0,"y":80.0}],"spikeEnemies":[],"bumps":[],"buffBombs":[],"buffJumps":[],"buffShields":[],"tutorial":"Your enemies can also warp. Jump on them to defeat."}

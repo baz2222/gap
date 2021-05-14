@@ -14,10 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.MenuScreen;
-import com.juniorgames.gap.tools.LevelData;
-import com.juniorgames.gap.tools.SavedGame;
-import com.juniorgames.gap.tools.TasksTracker;
-import com.juniorgames.gap.tools.WorldContactListener;
+import com.juniorgames.gap.tools.*;
 
 public class GapGame extends Game {
     //virtual screen width and height
@@ -38,12 +35,14 @@ public class GapGame extends Game {
     public final short CHANGE_DIRECTION_BOX_BIT = 128;
     public final short SPIKE_ENEMY_BIT = 256;
     public final short SWITCH_BIT = 1024;
+    public final short BUMP_BIT = 2048;
 
     public TextureAtlas spikeEnemyAtlas;
     public TextureAtlas playerAtlas;
     public TextureAtlas enemyAtlas;
     public TextureAtlas doorAtlas;
     public TextureAtlas switchAtlas;
+    public TextureAtlas bumpAtlas;
 
     public World world;
     public WorldContactListener contactListener;
@@ -65,21 +64,27 @@ public class GapGame extends Game {
     public Sound stepSound;
     public Sound warpSound;
     public Sound exitSound;
+    public Sound dieSound;
 
     public boolean soundsMuted = false;//sound off
     public boolean musicMuted = false;//music off
     public boolean gamePaused = false;//game paused
 
     public AssetManager manager;
+    public Task currentTask;
 
     @Override
     public void create() {
         savedGame = new SavedGame();
         savedGame.load();
-        tasksTracker = new TasksTracker();
+        tasksTracker = new TasksTracker(this);
         tasksTracker.update(savedGame);
+        currentTask = null;
 
         manager = new AssetManager();
+        for (Task task : tasksTracker.tasks) {
+            manager.load(task.taskImagePath, Texture.class);
+        }//for
         manager.load("audio/music/world1-music.mp3", Music.class);
         manager.load("audio/music/world2-music.mp3", Music.class);
         manager.load("audio/music/world3-music.mp3", Music.class);
@@ -89,6 +94,7 @@ public class GapGame extends Game {
         manager.load("audio/sounds/warp.mp3", Sound.class);
         manager.load("audio/sounds/step.mp3", Sound.class);
         manager.load("audio/sounds/land.mp3", Sound.class);
+        manager.load("audio/sounds/die.mp3", Sound.class);
         manager.load("fonts/big-font.fnt", BitmapFont.class);
         manager.load("fonts/mid-font.fnt", BitmapFont.class);
         manager.load("menu-btn.png", Texture.class);
@@ -111,6 +117,7 @@ public class GapGame extends Game {
         stepSound = manager.get("audio/sounds/step.mp3", Sound.class);
         warpSound = manager.get("audio/sounds/warp.mp3", Sound.class);
         exitSound = manager.get("audio/sounds/exit.mp3", Sound.class);
+        dieSound = manager.get("audio/sounds/die.mp3", Sound.class);
         playMusic(0);
 
         this.setScreen(new MenuScreen(this, manager));
