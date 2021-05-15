@@ -31,6 +31,7 @@ public class Player extends Sprite {
     private BodyDef bdef;
     private FixtureDef fdef;
     private TextureRegion region;
+    public Buff.BuffType buff;
 
     public Player(GapGame game, float playerX, float playerY) {
         super(game.playerAtlas.findRegion("player"));
@@ -111,7 +112,7 @@ public class Player extends Sprite {
     }//die
 
     public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() * 0.4f);
         setRegion(getFrame(dt));
         //=======================DIE============================
         if (filter.categoryBits == game.DESTROYED_BIT) {
@@ -208,7 +209,7 @@ public class Player extends Sprite {
         //fixture definition
         fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(20 / game.GAME_PPM, 28 / game.GAME_PPM);
+        shape.setAsBox(14 / game.GAME_PPM, 24 / game.GAME_PPM);
         fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
         fdef.shape = shape;
         fdef.restitution = 0f;

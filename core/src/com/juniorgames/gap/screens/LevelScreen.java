@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -25,7 +24,6 @@ import com.juniorgames.gap.scenes.LevelHUD;
 import com.juniorgames.gap.sprites.*;
 import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.LevelData;
-import com.juniorgames.gap.tools.Task;
 import com.juniorgames.gap.tools.WorldContactListener;
 
 public class LevelScreen extends ScreenAdapter {
@@ -41,13 +39,16 @@ public class LevelScreen extends ScreenAdapter {
     private Box2DDebugRenderer b2dr;
     //sprites
     public Player player;
+    public Trail playerTrail;
     public Door door;
     public Array<Enemy> enemies;
     public Array<SpikeEnemy> spikeEnemies;
     public Array<Switch> switches;
     public Array<Bump> bumps;
+    public Array<Buff> buffs;
     //sfx
-    private float timeCount;//to make delay for stepping sounds
+    private float stepTime;//to make delay for stepping sounds
+    private float trailTime;//to make delay for stepping sounds
 
     public LevelScreen(GapGame game, AssetManager manager) {
         this.game = game;
@@ -58,6 +59,7 @@ public class LevelScreen extends ScreenAdapter {
         spikeEnemies = new Array<>();
         switches = new Array<>();
         bumps = new Array<>();
+        buffs = new Array<>();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
@@ -83,6 +85,7 @@ public class LevelScreen extends ScreenAdapter {
         game.doorAtlas = new TextureAtlas("door.pack");
         game.switchAtlas = new TextureAtlas("switch.pack");
         game.bumpAtlas = new TextureAtlas("bump.pack");
+        game.buffAtlas = new TextureAtlas("buffs.pack");
 
         game.world = new World(new Vector2(0, -10), true);
 
@@ -125,11 +128,21 @@ public class LevelScreen extends ScreenAdapter {
         for (Vector2 v : game.levelData.switches) {
             switches.add(new Switch(game, v.x, v.y, door));
         }//for
+        for (Vector2 buffBomb : game.levelData.buffBombs) {
+            buffs.add(new Buff(game, buffBomb.x, buffBomb.y, Buff.BuffType.BOMB));
+        }//for
+        for (Vector2 buffJump : game.levelData.buffJumps) {
+            buffs.add(new Buff(game, buffJump.x, buffJump.y, Buff.BuffType.JUMP));
+        }//for
+        for (Vector2 buffShield : game.levelData.buffShields) {
+            buffs.add(new Buff(game, buffShield.x, buffShield.y, Buff.BuffType.SHIELD));
+        }//for
         if (switches.size == 0) {
             door.isVisible = true;
         }// if no switches door is visible at start
 
         game.playMusic(game.savedGame.world);
+
     }//constructor
 
     public void update(float dt) {
@@ -138,6 +151,14 @@ public class LevelScreen extends ScreenAdapter {
         game.world.step(1 / 60f, 6, 4);//60 times per second 60 6 4
         door.update(dt);
         player.update(dt);
+        if (player.buff != null && trailTime >= 0.2) {
+            playerTrail = null;
+            playerTrail = new Trail(game, player);
+            trailTime = 0;
+        }//if
+        if (playerTrail!=null){
+            playerTrail.update(dt);
+        }//if
         for (Enemy enemy : enemies) {
             enemy.update(dt);
         }
@@ -146,6 +167,9 @@ public class LevelScreen extends ScreenAdapter {
         }
         for (Bump bump : bumps) {
             bump.update(dt);
+        }
+        for (Buff buff : buffs) {
+            buff.update(dt);
         }
         for (Switch sw : switches) {// sw = switch
             sw.update(dt);
@@ -190,7 +214,6 @@ public class LevelScreen extends ScreenAdapter {
             if (door.isVisible) {
                 door.draw(batch); //begin draw
             }
-            player.draw(batch);
             for (Enemy enemy : enemies) {
                 enemy.draw(batch);
             }//for
@@ -203,15 +226,25 @@ public class LevelScreen extends ScreenAdapter {
             for (Bump bump : bumps) {
                 bump.draw(batch);
             }//for
+            for (Buff buff : buffs) {
+                if(buff.isVisible) {
+                    buff.draw(batch);
+                }//if
+            }//for
+            if (playerTrail!=null) {
+                playerTrail.draw(batch);
+            }
+            player.draw(batch);
             batch.end(); //end draw
 
             batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
             levelHud.stage.draw();
 
-            timeCount += delta;
-            if (timeCount >= 0.3 && player.getState() == State.RUNNING && !game.soundsMuted) {
+            stepTime += delta;
+            trailTime += delta;
+            if (stepTime >= 0.3 && player.getState() == State.RUNNING && !game.soundsMuted) {
                 game.playSound(game.stepSound);
-                timeCount = 0;
+                stepTime = 0;
             }//end if
         } else {//if game paused
             levelHud.stage.draw();

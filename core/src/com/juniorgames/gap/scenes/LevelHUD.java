@@ -33,8 +33,6 @@ public class LevelHUD implements Disposable {
     private float timeCount;
     private static Integer score;
 
-    private Label countdownLabel;
-    private static Label scoreLabel;
     private Label levelNameLabel;
     private ImageButton backButton;
     private TextButton continueButton, exitButton, restartButton;
@@ -52,9 +50,6 @@ public class LevelHUD implements Disposable {
         batch = new SpriteBatch();
         tableHUD = new Table();
         pauseTable = new Table();
-        levelTimer = 300;
-        timeCount = 0;
-        score = 0;
 
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -62,9 +57,6 @@ public class LevelHUD implements Disposable {
         Gdx.input.setInputProcessor(this.stage);
 
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
-
-        countdownLabel = new Label(String.format("%03d", levelTimer), new Label.LabelStyle(midFont, Color.WHITE));
-        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(midFont, Color.WHITE));
         levelNameLabel = new Label("World " + game.savedGame.world + "-" + game.savedGame.level, new Label.LabelStyle(midFont, Color.WHITE));
 
         backButtonTexture = manager.get("left-arrow-btn.png", Texture.class);
@@ -142,11 +134,10 @@ public class LevelHUD implements Disposable {
         exitButton.addListener(exitButtonInputListener);//listener - exitButton
 
         tableHUD.top();
+        tableHUD.padTop(20);
         tableHUD.setFillParent(true);
-        tableHUD.add(backButton).padRight(150);
-        tableHUD.add(scoreLabel).padRight(150);
-        tableHUD.add(levelNameLabel).padRight(150);
-        tableHUD.add(countdownLabel).padRight(120);
+        tableHUD.add(backButton).padLeft(10).padRight(320);
+        tableHUD.add(levelNameLabel).padRight(380);
 
         stage.addActor(tableHUD);
 
@@ -233,17 +224,6 @@ public class LevelHUD implements Disposable {
     }
 
     public void update(float dt) {
-        timeCount += dt;
-        if (timeCount >= 1) {//one second
-            levelTimer--;
-            countdownLabel.setText(String.format("%03d", levelTimer));
-            timeCount = 0;
-        }
-    }
-
-    public static void addScore(int value) {
-        score += value;
-        scoreLabel.setText(String.format("%06d", score));
     }
 
     @Override

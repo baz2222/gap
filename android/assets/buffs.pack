@@ -1,0 +1,47 @@
+
+buffs.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bomb-trail
+  rotate: false
+  xy: 0, 256
+  size: 960, 64
+  orig: 960, 64
+  offset: 0, 0
+  index: -1
+jump-trail
+  rotate: false
+  xy: 0, 192
+  size: 960, 64
+  orig: 960, 64
+  offset: 0, 0
+  index: -1
+shield-trail
+  rotate: false
+  xy: 0, 128
+  size: 960, 64
+  orig: 960, 64
+  offset: 0, 0
+  index: -1
+bomb-buff
+  rotate: false
+  xy: 0, 64
+  size: 448, 64
+  orig: 448, 64
+  offset: 0, 0
+  index: -1
+jump-buff
+  rotate: false
+  xy: 0, 0
+  size: 448, 64
+  orig: 448, 64
+  offset: 0, 0
+  index: -1
+shield-buff
+  rotate: false
+  xy: 448, 64
+  size: 448, 64
+  orig: 448, 64
+  offset: 0, 0
+  index: -1

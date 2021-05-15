@@ -49,7 +49,7 @@ public class Bump extends Sprite {
         bumpFramesRegion.clear();
 
         setBounds(0, 0, 64 / game.GAME_PPM, 64 / game.GAME_PPM);
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() * 0.12f);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() * 0.03f);
     }//constructor
 
     public void update(float dt) {
@@ -79,7 +79,7 @@ public class Bump extends Sprite {
         b2body = game.world.createBody(bdef);
 
         bumpShape = new PolygonShape();
-        bumpShape.setAsBox(24 / game.GAME_PPM, 8 / game.GAME_PPM);
+        bumpShape.setAsBox(24 / game.GAME_PPM, 2 / game.GAME_PPM);
         fdef = new FixtureDef();
         fdef.filter.maskBits = (short) (game.PLAYER_BIT);//with what fixtures can collide with
 

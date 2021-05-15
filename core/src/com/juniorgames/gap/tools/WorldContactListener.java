@@ -20,6 +20,18 @@ public class WorldContactListener implements ContactListener {
         fixA = contact.getFixtureA();
         fixB = contact.getFixtureB();
 
+        //==================HANDLE PLAYER COLLISION WITH BUFF=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Buff.class) {
+                ((Player) fixA.getUserData()).buff = ((Buff) fixB.getUserData()).type;
+                ((Buff) fixB.getUserData()).onHit();
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Buff.class) {
+                ((Player) fixB.getUserData()).buff = ((Buff) fixA.getUserData()).type;
+                ((Buff) fixA.getUserData()).onHit();
+            }
+        }//if=================================================================================================
+
         //==================HANDLE PLAYER COLLISION WITH DOOR=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Door.class) {
@@ -92,7 +104,6 @@ public class WorldContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-
     }
 
     @Override
