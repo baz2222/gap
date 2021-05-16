@@ -29,20 +29,19 @@ public class LevelHUD implements Disposable {
     private SpriteBatch batch;
     public AssetManager manager;
     private Viewport viewport;
-    private Integer levelTimer;
-    private float timeCount;
-    private static Integer score;
 
     private Label levelNameLabel;
     private ImageButton backButton;
+    private TextButton jumpButton, moveRightButton, moveLeftButton;
     private TextButton continueButton, exitButton, restartButton;
     private ImageButton.ImageButtonStyle backButtonStyle;
-    private Texture backButtonTexture, pauseButtonTexture;
+    private Texture backButtonTexture, pauseButtonTexture, gamePadHUDButtonTexture;
     private InputListener backButtonInputListener, continueButtonInputListener, exitButtonInputListener, restartButtonListener;
+    private InputListener moveRightInputListener, jumpButtonInputListener, moveLeftInputListener;
     private BitmapFont midFont;
-    private Table tableHUD, pauseTable;
+    private Table tableHUD, pauseTable, gamePadTable;
 
-    private TextButton.TextButtonStyle pauseButtonStyle;
+    private TextButton.TextButtonStyle pauseButtonStyle, gamePadHUDButtonStyle;
 
     public LevelHUD(GapGame game, AssetManager manager) {
         this.game = game;
@@ -50,6 +49,7 @@ public class LevelHUD implements Disposable {
         batch = new SpriteBatch();
         tableHUD = new Table();
         pauseTable = new Table();
+        gamePadTable = new Table();
 
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -61,6 +61,7 @@ public class LevelHUD implements Disposable {
 
         backButtonTexture = manager.get("left-arrow-btn.png", Texture.class);
         pauseButtonTexture = manager.get("menu-btn.png", Texture.class);
+        gamePadHUDButtonTexture = manager.get("jump-btn.png", Texture.class);
 
         backButtonStyle = new ImageButton.ImageButtonStyle();
         backButtonStyle.down = new TextureRegionDrawable(backButtonTexture);
@@ -133,6 +134,58 @@ public class LevelHUD implements Disposable {
         };//exitButtonInputListener
         exitButton.addListener(exitButtonInputListener);//listener - exitButton
 
+        gamePadHUDButtonStyle = new TextButton.TextButtonStyle();
+        gamePadHUDButtonStyle.font = midFont;
+        gamePadHUDButtonStyle.fontColor = Color.BLACK;
+        gamePadHUDButtonStyle.down = new TextureRegionDrawable(gamePadHUDButtonTexture);
+        gamePadHUDButtonStyle.up = new TextureRegionDrawable(gamePadHUDButtonTexture);
+        gamePadHUDButtonStyle.checked = new TextureRegionDrawable(gamePadHUDButtonTexture);
+
+        jumpButton = new TextButton("JUMP",gamePadHUDButtonStyle);
+        jumpButtonInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onJumpButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//jumpButtonInputListener
+        jumpButton.addListener(jumpButtonInputListener);
+
+        moveLeftButton = new TextButton("LEFT",gamePadHUDButtonStyle);
+        moveLeftInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onMoveLeftButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//jumpButtonInputListener
+        moveLeftButton.addListener(moveLeftInputListener);
+
+        moveRightButton = new TextButton("RIGHT",gamePadHUDButtonStyle);
+        moveRightInputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                onMoveRightButtonClicked();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+            }
+        };//jumpButtonInputListener
+        moveRightButton.addListener(moveRightInputListener);
+
         tableHUD.top();
         tableHUD.padTop(20);
         tableHUD.setFillParent(true);
@@ -149,9 +202,26 @@ public class LevelHUD implements Disposable {
         pauseTable.row();
         pauseTable.add(exitButton).pad(10);
 
-        //tutorial label
+        gamePadTable.setFillParent(true);
+        gamePadTable.bottom();
+        gamePadTable.add(moveLeftButton).pad(20);
+        gamePadTable.add(moveRightButton).pad(20).padRight(260);
+        gamePadTable.add(jumpButton).pad(20).padLeft(260);
 
+        stage.addActor(gamePadTable);
     }//constructor
+
+    private void onMoveLeftButtonClicked() {
+            game.player.moveLeft();
+    }
+
+    private void onMoveRightButtonClicked() {
+        game.player.moveRight();
+    }
+
+    private void onJumpButtonClicked() {
+            game.player.jump();
+    }
 
     public void showTutorial(String text) {
         Label.LabelStyle textLabelStyle = new Label.LabelStyle();

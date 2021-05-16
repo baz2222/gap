@@ -93,11 +93,11 @@ public class Player extends Sprite {
     }//jump
 
     public void moveRight() {
-        b2body.applyLinearImpulse(new Vector2(0.4f, 0), b2body.getWorldCenter(), true);
+        b2body.applyLinearImpulse(new Vector2(3f, 0), b2body.getWorldCenter(), true);
     }//moveRight
 
     public void moveLeft() {
-        b2body.applyLinearImpulse(new Vector2(-0.4f, 0), b2body.getWorldCenter(), true);
+        b2body.applyLinearImpulse(new Vector2(-3f, 0), b2body.getWorldCenter(), true);
     }//moveLeft
 
     public void die() {

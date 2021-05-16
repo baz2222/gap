@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.MenuScreen;
+import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.tools.*;
 
 public class GapGame extends Game {
@@ -75,6 +76,8 @@ public class GapGame extends Game {
     public AssetManager manager;
     public Task currentTask;
 
+    public Player player;
+
     @Override
     public void create() {
         savedGame = new SavedGame();
@@ -104,6 +107,7 @@ public class GapGame extends Game {
         manager.load("select-world-btn.png", Texture.class);
         manager.load("select-level-btn.png", Texture.class);
         manager.load("back-btn.png", Texture.class);
+        manager.load("jump-btn.png", Texture.class);
         manager.load("left-arrow-btn.png", Texture.class);
         manager.load("right-arrow-btn.png", Texture.class);
         manager.load("bg1.png", Texture.class);

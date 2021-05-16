@@ -38,7 +38,6 @@ public class LevelScreen extends ScreenAdapter {
 
     private Box2DDebugRenderer b2dr;
     //sprites
-    public Player player;
     public Trail playerTrail;
     public Door door;
     public Array<Enemy> enemies;
@@ -48,7 +47,7 @@ public class LevelScreen extends ScreenAdapter {
     public Array<Buff> buffs;
     //sfx
     private float stepTime;//to make delay for stepping sounds
-    private float trailTime;//to make delay for stepping sounds
+    private float trailTime;//to make delay for player trail
 
     public LevelScreen(GapGame game, AssetManager manager) {
         this.game = game;
@@ -87,7 +86,7 @@ public class LevelScreen extends ScreenAdapter {
         game.bumpAtlas = new TextureAtlas("bump.pack");
         game.buffAtlas = new TextureAtlas("buffs.pack");
 
-        game.world = new World(new Vector2(0, -10), true);
+        game.world = new World(new Vector2(0, -20), true);
 
         game.contactListener = new WorldContactListener(game);
         game.world.setContactListener(game.contactListener);
@@ -115,7 +114,7 @@ public class LevelScreen extends ScreenAdapter {
         }//for
         //===================================================================
         door = new Door(game);
-        player = new Player(game, game.levelData.start.x, game.levelData.start.y);
+        game.player = new Player(game, game.levelData.start.x, game.levelData.start.y);
         for (Vector2 v : game.levelData.enemies) {
             enemies.add(new Enemy(game, v.x, v.y));
         }//for
@@ -123,7 +122,7 @@ public class LevelScreen extends ScreenAdapter {
             spikeEnemies.add(new SpikeEnemy(game, v.x, v.y));
         }//for
         for (Vector2 v : game.levelData.bumps) {
-            bumps.add(new Bump(game, v.x, v.y, player));
+            bumps.add(new Bump(game, v.x, v.y, game.player));
         }//for
         for (Vector2 v : game.levelData.switches) {
             switches.add(new Switch(game, v.x, v.y, door));
@@ -150,10 +149,10 @@ public class LevelScreen extends ScreenAdapter {
         //camera.position.x = player.b2body.getPosition().x; //move camera with the character
         game.world.step(1 / 60f, 6, 4);//60 times per second 60 6 4
         door.update(dt);
-        player.update(dt);
-        if (player.buff != null && trailTime >= 0.2) {
+        game.player.update(dt);
+        if (game.player.buff != null && trailTime >= 0.2) {
             playerTrail = null;
-            playerTrail = new Trail(game, player);
+            playerTrail = new Trail(game, game.player);
             trailTime = 0;
         }//if
         if (playerTrail!=null){
@@ -185,16 +184,16 @@ public class LevelScreen extends ScreenAdapter {
 
     private void handleInput(float dt) {
         //jump
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || (Gdx.input.isTouched() && Gdx.input.getDeltaY() < -20 && Math.abs(Gdx.input.getDeltaX()) < 30)) {
-            player.jump();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            game.player.jump();
         }
         //move right
-        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 0)) && player.b2body.getLinearVelocity().x <= 2) {
-            player.moveRight();
+        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 0)) && game.player.b2body.getLinearVelocity().x <= 2) {
+            game.player.moveRight();
         }
         //move left
-        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() < 0)) && player.b2body.getLinearVelocity().x >= -2) {
-            player.moveLeft();
+        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() < 0)) && game.player.b2body.getLinearVelocity().x >= -2) {
+            game.player.moveLeft();
         }
     }//handleInput
 
@@ -234,7 +233,7 @@ public class LevelScreen extends ScreenAdapter {
             if (playerTrail!=null) {
                 playerTrail.draw(batch);
             }
-            player.draw(batch);
+            game.player.draw(batch);
             batch.end(); //end draw
 
             batch.setProjectionMatrix(levelHud.stage.getCamera().combined);
@@ -242,7 +241,7 @@ public class LevelScreen extends ScreenAdapter {
 
             stepTime += delta;
             trailTime += delta;
-            if (stepTime >= 0.3 && player.getState() == State.RUNNING && !game.soundsMuted) {
+            if (stepTime >= 0.3 && game.player.getState() == State.RUNNING && !game.soundsMuted) {
                 game.playSound(game.stepSound);
                 stepTime = 0;
             }//end if
