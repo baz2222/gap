@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="96">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="96">
  <tileset firstgid="1" name="Ground" tilewidth="32" tileheight="32" tilecount="7" columns="7">
   <image source="ground-tile-set.png" trans="ff00ff" width="224" height="32"/>
  </tileset>
@@ -26,7 +26,7 @@
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJy9lVlvwjAQhP3ASwItR0/OR642UCj5/3+NieSRBsu7BHqs9Alrbe9momHTCSF0/hBGmq/AEqzAGmzAFnyAT6ce9737lfRNz9RgB/bgCxzAEXyDk1OT+979WvqmZ66FVfO3ooiUd94t5bcLenHvATwm5zRyXtAYg4mx53mqDwbJuVv6TsEs5N+L13cIRnHdeEW9xtxK8qm+OVgYz5fzHus8gee4bryiXmNuL3nq8zSld9V7rPMCXkM+1A9cU5+liXrUN7mab+A9XHrN03JNE/Wob9rUvLWvFeob9USbem3mnBXqG/UE+9DDub7enPNmQhPqG3qikD70MPt7cyBIH+t98X9M3/SMc6qtDpdzoEy0FEaNn3wHy1g7Nwf+8/t7BohAG7o=
+   eJy9lVtTwkAMhfPQF2pVFES5+VgBbb3R///XPJ3ZDMe4iYVBz8w3wG42ITunaSEixR+isusNqMET2IAt2IFn8BLk0/3ofEN1bUwHWvAK3sA7+ACfYB/k1P3ofEd1bcxv8nKeS6NEeeLZkj4vQJV+X4IrE8fKeYE1BwtnL/LVNRibuGPqLsFK8vcS1b0Btymu9wl7rVdt1m1/a/Do/L+c99TnEzBNcb1P2Gu9WrOu/UU92bPsPfX5HZhJXuwH/a79eT3pvbBvcjnvwYMcvMYaMm9sT3ov7JshOY+t64l9w54Ykm/InPPEvmFPaJ065cnVjeacNxNU7Bv1xIjqtCmP1o/mgFAd7770OVbfVE4c99bJ9zlQys/5du73YJly5+bAf75/vwBDOhwh
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
@@ -35,7 +35,7 @@
   <object id="41" x="832" y="0" width="128" height="32"/>
   <object id="42" x="832" y="512" width="128" height="32"/>
   <object id="43" x="915.709" y="599.653"/>
-  <object id="44" x="544" y="160" width="192" height="64"/>
+  <object id="44" x="544" y="160" width="224" height="64"/>
   <object id="45" x="864" y="160" width="64" height="32"/>
   <object id="46" x="256" y="32" width="192" height="32"/>
   <object id="47" x="64" y="160" width="96" height="64"/>

@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.LevelHUD;
 import com.juniorgames.gap.sprites.*;
-import com.juniorgames.gap.sprites.Player.State;
 import com.juniorgames.gap.tools.LevelData;
 import com.juniorgames.gap.tools.WorldContactListener;
 
@@ -66,9 +65,9 @@ public class LevelScreen extends ScreenAdapter {
         game.levelData = new LevelData();
         game.levelData.loadLevel(game.savedGame.world, game.savedGame.level);
 
-        game.maploader = new TmxMapLoader();
+        game.mapLoader = new TmxMapLoader();
         game.bounds = new Rectangle();
-        game.platformMap = game.maploader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
+        game.platformMap = game.mapLoader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
         game.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
 
         levelHud = new LevelHUD(this.game, this.manager);
@@ -184,16 +183,16 @@ public class LevelScreen extends ScreenAdapter {
 
     private void handleInput(float dt) {
         //jump
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || (Gdx.input.isTouched() && Gdx.input.getDeltaY() < -10)) {
             game.player.jump();
         }
         //move right
-        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 0)) && game.player.b2body.getLinearVelocity().x <= 2) {
-            game.player.moveRight();
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 10)) {
+            game.player.runRight();
         }
         //move left
-        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() < 0)) && game.player.b2body.getLinearVelocity().x >= -2) {
-            game.player.moveLeft();
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && Gdx.input.getDeltaX() < -10)) {
+            game.player.runLeft();
         }
     }//handleInput
 
@@ -241,7 +240,7 @@ public class LevelScreen extends ScreenAdapter {
 
             stepTime += delta;
             trailTime += delta;
-            if (stepTime >= 0.3 && game.player.getState() == State.RUNNING && !game.soundsMuted) {
+            if (stepTime >= 0.3 && (game.player.getState() == GapGame.State.RUNNING_LEFT || game.player.getState() == GapGame.State.RUNNING_RIGHT) && !game.soundsMuted) {
                 game.playSound(game.stepSound);
                 stepTime = 0;
             }//end if

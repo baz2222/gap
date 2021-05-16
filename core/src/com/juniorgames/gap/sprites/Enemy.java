@@ -12,9 +12,8 @@ import com.juniorgames.gap.GapGame;
 import java.util.HashMap;
 
 public class Enemy extends Sprite {
-    public enum State {FALLING, JUMPING, STANDING, RUNNING_RIGHT, RUNNING_LEFT, DIEING}
 
-    public State prevState, currState;
+    public GapGame.State prevState, currState;
     public Body body;
     private Filter filter;
     private Fixture fixture;
@@ -35,8 +34,8 @@ public class Enemy extends Sprite {
         this.game = game;
         this.manager = game.manager;
         filter = new Filter();
-        currState = State.STANDING;
-        prevState = State.STANDING;
+        currState = GapGame.State.STANDING;
+        prevState = GapGame.State.STANDING;
         stateTimer = 0;
         runRight = true;
         region = new TextureRegion();
@@ -155,18 +154,18 @@ public class Enemy extends Sprite {
         return fixture.getFilterData().categoryBits;
     }
 
-    private State getState() {
+    private GapGame.State getState() {
         if (getFilterBit() == game.DESTROYED_BIT)
-            return State.DIEING;
-        if (body.getLinearVelocity().y > 0 || (body.getLinearVelocity().y > 0 && prevState == State.JUMPING))
-            return State.JUMPING;
+            return GapGame.State.DIEING;
+        if (body.getLinearVelocity().y > 0 || (body.getLinearVelocity().y > 0 && prevState == GapGame.State.JUMPING))
+            return GapGame.State.JUMPING;
         else if (body.getLinearVelocity().y < 0)
-            return State.FALLING;
+            return GapGame.State.FALLING;
         else if (body.getLinearVelocity().x > 0)
-            return State.RUNNING_RIGHT;
+            return GapGame.State.RUNNING_RIGHT;
         else if (body.getLinearVelocity().x < 0)
-            return State.RUNNING_LEFT;
-        else return State.STANDING;
+            return GapGame.State.RUNNING_LEFT;
+        else return GapGame.State.STANDING;
     }//getState
 
     private void setRegAndBounds() {

@@ -18,6 +18,7 @@ import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.tools.*;
 
 public class GapGame extends Game {
+    public enum State {FALLING, JUMPING, STANDING, RUNNING_RIGHT, RUNNING_LEFT, DIEING}
     //virtual screen width and height
     public final int GAME_WIDTH = 960;
     public final int GAME_HEIGHT = 544;
@@ -57,7 +58,7 @@ public class GapGame extends Game {
     public int selectedWorld;
     public int selectedLevel;
 
-    public TmxMapLoader maploader;
+    public TmxMapLoader mapLoader;
     public TiledMap platformMap;
     public OrthogonalTiledMapRenderer renderer;
     public Rectangle bounds;
@@ -107,7 +108,6 @@ public class GapGame extends Game {
         manager.load("select-world-btn.png", Texture.class);
         manager.load("select-level-btn.png", Texture.class);
         manager.load("back-btn.png", Texture.class);
-        manager.load("jump-btn.png", Texture.class);
         manager.load("left-arrow-btn.png", Texture.class);
         manager.load("right-arrow-btn.png", Texture.class);
         manager.load("bg1.png", Texture.class);

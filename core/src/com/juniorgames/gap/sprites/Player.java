@@ -11,12 +11,11 @@ import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.screens.LevelScreen;
 
 public class Player extends Sprite {
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, DIEING}
 
-    public State previousState;
-    public State currentState;
+    public GapGame.State previousState;
+    public GapGame.State currentState;
     public Body b2body;
-    public float jumpMultiplyer;
+    public float jumpMultiplier;
     private Filter filter;
     private Fixture fixture;
     private Animation playerIdle;
@@ -32,17 +31,19 @@ public class Player extends Sprite {
     private FixtureDef fdef;
     private TextureRegion region;
     public Buff.BuffType buff;
+    public boolean isRunningRight;
+    public boolean isRunningLeft;
 
     public Player(GapGame game, float playerX, float playerY) {
         super(game.playerAtlas.findRegion("player"));
         this.game = game;
         this.manager = game.manager;
         filter = new Filter();
-        currentState = State.STANDING;
-        previousState = State.STANDING;
+        currentState = GapGame.State.STANDING;
+        previousState = GapGame.State.STANDING;
         stateTimer = 0;
         runningRight = true;
-        jumpMultiplyer = 1;
+        jumpMultiplier = 1;
         Array<TextureRegion> frames = new Array<>();
         //run animation
         for (int i = 0; i < 13; i++) {
@@ -77,27 +78,21 @@ public class Player extends Sprite {
     }//constructor
 
     public void jump() {
-        if (currentState != State.JUMPING && currentState != State.FALLING) {
-            b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplyer), b2body.getWorldCenter(), true);
+        if (currentState != GapGame.State.JUMPING && currentState != GapGame.State.FALLING) {
+            b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplier), b2body.getWorldCenter(), true);
             if (!game.soundsMuted) {
                 game.playSound(game.jumpSound);
             }//if sounds muted
         }//if not jumping
     }//jump
-
-    public void forceJump() {
-        b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplyer), b2body.getWorldCenter(), true);
-        if (!game.soundsMuted) {
-            game.playSound(game.jumpSound);
-        }//if sounds muted
-    }//jump
-
-    public void moveRight() {
-        b2body.applyLinearImpulse(new Vector2(3f, 0), b2body.getWorldCenter(), true);
+    public void runRight() {
+        if (game.player.b2body.getLinearVelocity().x <= 2)
+            b2body.applyLinearImpulse(new Vector2(1f, 0), b2body.getWorldCenter(), true);
     }//moveRight
 
-    public void moveLeft() {
-        b2body.applyLinearImpulse(new Vector2(-3f, 0), b2body.getWorldCenter(), true);
+    public void runLeft() {
+        if (game.player.b2body.getLinearVelocity().x >= -2)
+            b2body.applyLinearImpulse(new Vector2(-1f, 0), b2body.getWorldCenter(), true);
     }//moveLeft
 
     public void die() {
@@ -151,6 +146,12 @@ public class Player extends Sprite {
                 game.tasksTracker.update(game.savedGame);
             }//if +y
         }//else if not dead
+        //====================RUN==RIGHT=========================
+        if (isRunningRight)
+            runRight();
+        //====================RUN===LEFT=========================
+        if (isRunningLeft)
+            runLeft();
     }
 
     public TextureRegion getFrame(float dt) {
@@ -159,7 +160,10 @@ public class Player extends Sprite {
             case JUMPING:
                 region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
                 break;
-            case RUNNING:
+            case RUNNING_LEFT:
+                region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
+                break;
+            case RUNNING_RIGHT:
                 region = (TextureRegion) playerRun.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
@@ -189,16 +193,18 @@ public class Player extends Sprite {
         }//if
     }
 
-    public State getState() {
+    public GapGame.State getState() {
         if (getFilterBit() == game.DESTROYED_BIT)
-            return State.DIEING;
-        if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == State.JUMPING))
-            return State.JUMPING;
+            return GapGame.State.DIEING;
+        if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y > 0 && previousState == GapGame.State.JUMPING))
+            return GapGame.State.JUMPING;
         else if (b2body.getLinearVelocity().y < 0)
-            return State.FALLING;
-        else if (b2body.getLinearVelocity().x != 0)
-            return State.RUNNING;
-        else return State.STANDING;
+            return GapGame.State.FALLING;
+        else if (b2body.getLinearVelocity().x > 0)
+            return GapGame.State.RUNNING_RIGHT;
+        else if (b2body.getLinearVelocity().x < 0)
+            return GapGame.State.RUNNING_LEFT;
+        else return GapGame.State.STANDING;
     }//getState
 
     private void definePlayer(float x, float y) {
