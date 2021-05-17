@@ -27,6 +27,7 @@ public class Enemy extends Sprite {
     private Array<TextureRegion> frames;
     private TextureRegion region;
     private PolygonShape shape;
+    public boolean isVisible;
 
     public Enemy(GapGame game, float enemyX, float enemyY) {
         super(game.enemyAtlas.findRegion("enemy"));
@@ -43,6 +44,7 @@ public class Enemy extends Sprite {
         bodyDef = new BodyDef();
         fixtureDef = new FixtureDef();
         shape = new PolygonShape();
+        isVisible = true;
         //
         defineAnimation();
         defineEnemy(enemyX, enemyY);
@@ -55,42 +57,40 @@ public class Enemy extends Sprite {
             game.playSound(game.jumpSound);
         }
     }//jump
-
     public void runRight() {
-        body.applyLinearImpulse(new Vector2(0.12f, 0), body.getWorldCenter(), true);
+        if (body.getLinearVelocity().x <= 2)
+            body.applyLinearImpulse(new Vector2(0.5f, 0), body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        body.applyLinearImpulse(new Vector2(-0.12f, 0), body.getWorldCenter(), true);
+        if (body.getLinearVelocity().x >= -2)
+            body.applyLinearImpulse(new Vector2(-0.5f, 0), body.getWorldCenter(), true);
     }//moveLeft
 
-    public void run(){
+    public void run() {
         if (runRight) {
             runRight();
-        }else{
+        } else {
             runLeft();
         }
     }//run
 
     public void update(float dt) {
+        setRegion(getFrame(dt));
         setRegAndPos(dt);
         //=================MOVING===============================
         run();
         //=======================DIE============================
         if (getFilterBit() == game.DESTROYED_BIT) {
-            filter.maskBits = game.DEFAULT_BIT;
-            fixture.setFilterData(filter);
-            if (body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
-                game.savedGame.killed++;
-                game.savedGame.save();
-                game.tasksTracker.update(game.savedGame);
-                game.world.destroyBody(body);
-            } else {// else flying up the screen
+            if(body.getPosition().y * game.GAME_PPM < game.GAME_HEIGHT){
                 body.setActive(false);
                 body.setTransform(body.getPosition().x, body.getPosition().y + dt * 2, 0);
-            }//else
-        }//if
-        else {// if not dieing
+            }else{
+                isVisible = false;
+                die();
+            }
+        }//if destroyed
+        if (getFilterBit() != game.DESTROYED_BIT) {
             //=======================WRAP===========================
             if (body.getPosition().x * game.GAME_PPM < 0) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
@@ -108,7 +108,7 @@ public class Enemy extends Sprite {
                 body.setTransform(body.getPosition().x, (body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
                 game.playSound(game.warpSound);
             }//if +y
-        }//else
+        }// if not dieing
     }//update
 
     private void setRegAndPos(float dt) {
@@ -181,7 +181,7 @@ public class Enemy extends Sprite {
         fixtureDef.filter.maskBits = (short) (game.GROUND_BIT | game.DEFAULT_BIT | game.PLAYER_BIT);
         fixtureDef.shape = shape;
         fixtureDef.restitution = 0f;
-        fixtureDef.friction = 0.6f;
+        fixtureDef.friction = 0.5f;
         fixtureDef.density = 0f;
         fixture = body.createFixture(fixtureDef);
         setFilterBit(game.ENEMY_BIT);
@@ -194,7 +194,7 @@ public class Enemy extends Sprite {
         for (int i = 0; i < 13; i++) {
             frames.add(new TextureRegion(getTexture(), i * 64, 0, 64, 64));
         }
-        animations.put("enemyRun", new Animation(0.05f, frames));
+        animations.put("enemyRun", new Animation(0.1f, frames));
         frames.clear();
         //jump
         frames.add(new TextureRegion(getTexture(), 14 * 64, 0, 64, 64));
@@ -229,10 +229,6 @@ public class Enemy extends Sprite {
     }//updateDirection
 
     public void die() {
-        game.playSound(game.dieSound);
-        setFilterBit(game.DESTROYED_BIT);
-        filter.maskBits = game.DEFAULT_BIT;
-        fixture.setFilterData(filter);
         game.savedGame.killed++;
         game.savedGame.save();
         game.tasksTracker.update(game.savedGame);

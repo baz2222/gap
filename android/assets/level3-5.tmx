@@ -41,7 +41,7 @@
  </imagelayer>
  <layer id="1" name="GroundTilesLayer" width="30" height="17" locked="1">
   <data encoding="base64" compression="zlib">
-   eJytlFsOAyEIRflga+007rh2Fjd8SGJueUU1IcwAehAVJiIeUhnsyKq/FbntEPcl8p7sX5Eu8hO54TtiV7nIo8Hw5vHwIxvX0X8e+hL5kD8ypsWO7sTufcnOSoeezyp3rpNns9aOfFZeOK/Tf83RtsL13upunfF+zT4r512uVbtuxHlcPMMG2noz2R4qXCvG2yfmmtmj/jTH4F5V4xztY3fiw5yt826J1txW+yTGRH0ZfSe5u1LlVvvxaa7+P5ELMPs=
+   eJy1lFsOxCAIRflga/OIO67TxQ0fkphbXmMdEkIL6FFBmYh4aEXY0dV4K3LbJu5D9Dn5D9Eu+hE94TtiV7nIo8HwxvGIIxvn0X8e9iX6Jl8ypsWOeuJuv2S1UtH6RDGt1wl587lx4LPmrsSifuh0PXP0/YO7es7YX97cKKvcTlfpRp7HxRo2sNadyfZQ4Vo53j5xrZk/ep/mHNyrWhxj3Qsrhmu2erQlVtf2a3+SkxO9yxjbyb2rVW71Pd7N1f8vhvkymA==
   </data>
  </layer>
  <objectgroup id="7" name="GroundObjectsLayer" locked="1">
@@ -58,8 +58,8 @@
   <object id="121" x="576" y="192" width="64" height="64"/>
   <object id="122" x="480" y="96" width="32" height="224"/>
   <object id="123" x="480" y="320" width="64" height="32"/>
-  <object id="124" x="832" y="224" width="64" height="64"/>
-  <object id="125" x="800" y="288" width="96" height="64"/>
+  <object id="124" x="896" y="192" width="64" height="64"/>
+  <object id="125" x="800" y="192" width="96" height="160"/>
   <object id="126" x="800" y="352" width="32" height="64"/>
   <object id="127" x="928" y="416" width="32" height="96"/>
   <object id="128" x="896" y="512" width="64" height="32"/>

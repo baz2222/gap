@@ -107,7 +107,7 @@ public class Player extends Sprite {
 
     public void jump() {
         if (currentState != GapGame.State.JUMPING && currentState != GapGame.State.FALLING) {
-            b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplier), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0, 6.5f * jumpMultiplier), b2body.getWorldCenter(), true);
             if (!game.soundsMuted) {
                 game.playSound(game.jumpSound);
             }//if sounds muted
@@ -115,20 +115,16 @@ public class Player extends Sprite {
     }//jump
 
     public void runRight() {
-        if (game.player.b2body.getLinearVelocity().x <= 2)
+        if (b2body.getLinearVelocity().x <= 2)
             b2body.applyLinearImpulse(new Vector2(1f, 0), b2body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        if (game.player.b2body.getLinearVelocity().x >= -2)
+        if (b2body.getLinearVelocity().x >= -2)
             b2body.applyLinearImpulse(new Vector2(-1f, 0), b2body.getWorldCenter(), true);
     }//moveLeft
 
     public void die() {
-        game.playSound(game.dieSound);
-        setFilterBit(game.DESTROYED_BIT);
-        filter.maskBits = game.DEFAULT_BIT;
-        fixture.setFilterData(filter);
         game.savedGame.died++;
         game.savedGame.save();
         game.tasksTracker.update(game.savedGame);
@@ -141,13 +137,14 @@ public class Player extends Sprite {
         if (filter.categoryBits == game.DESTROYED_BIT) {
             if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
                 game.stopMusic();
+                die();
                 game.setScreen(new LevelScreen(game, manager));
             } else {// else flying up the screen
                 b2body.setActive(false);
                 b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y + dt * 2, 0);
             }//else
         }//if destroyed
-        else {
+        if(filter.categoryBits != game.DESTROYED_BIT) {
             //=======================WRAP===========================
             if (b2body.getPosition().x * game.GAME_PPM < 0) {
                 b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
@@ -173,7 +170,7 @@ public class Player extends Sprite {
                 game.playSound(game.warpSound);
                 game.tasksTracker.update(game.savedGame);
             }//if +y
-        }//else if not dead
+        }//if not dead
     }
 
     public TextureRegion getFrame(float dt) {
@@ -238,7 +235,7 @@ public class Player extends Sprite {
         fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(14 / game.GAME_PPM, 24 / game.GAME_PPM);
-        fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT);//with what fixtures player can collide with
+        fdef.filter.maskBits = (short) (game.GROUND_BIT | game.DOOR_BIT | game.DEFAULT_BIT | game.SPIKES_BIT | game.CRUMBLES_BIT);//with what fixtures player can collide with
         fdef.shape = shape;
         fdef.restitution = 0f;
         fdef.friction = 0.5f;

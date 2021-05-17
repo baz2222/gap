@@ -1,16 +1,17 @@
 package com.juniorgames.gap.sprites;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.juniorgames.gap.GapGame;
 
 public class Crumbles {
-    private Body body;
-    private BodyDef bdef;
-    private FixtureDef fdef;
-    private PolygonShape shape;
-    private Fixture fixture;
-    private Filter filter;
+    public Body body;
+    public BodyDef bdef;
+    public FixtureDef fdef;
+    public PolygonShape shape;
+    public Fixture fixture;
+    public Filter filter;
     private GapGame game;
     private AssetManager manager;
 
@@ -35,15 +36,19 @@ public class Crumbles {
         fdef.friction = 0.8f;
         fdef.density = 0f;
         fixture = body.createFixture(fdef);
-        setFilter(game.CRUMBLES_BIT);
+        fixture.setUserData(this);
+        setFilterBit(game.CRUMBLES_BIT);
     }
 
     public void onHit() {
+        setFilterBit(game.DESTROYED_BIT);
+        for(JointEdge edge : body.getJointList())
+            game.world.destroyJoint(edge.joint);
+        //game.world.destroyBody(body);
     }
 
-    public void setFilter(short bit) {
+    public void setFilterBit(short bit) {
         filter.categoryBits = bit;
         fixture.setFilterData(filter);
     }
-
 }

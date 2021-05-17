@@ -54,7 +54,7 @@
   <object id="108" x="0" y="512" width="480" height="32"/>
  </objectgroup>
  <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
-  <object id="109" x="544" y="480" width="224" height="32"/>
+  <object id="109" x="561.687" y="480" width="206.313" height="32"/>
   <object id="110" x="896" y="480" width="64" height="32"/>
  </objectgroup>
  <objectgroup id="9" name="CrumbleObjectsLayer" locked="1"/>

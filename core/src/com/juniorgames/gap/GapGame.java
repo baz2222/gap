@@ -69,6 +69,7 @@ public class GapGame extends Game {
     public Sound warpSound;
     public Sound exitSound;
     public Sound dieSound;
+    public Sound breakSound;
 
     public boolean soundsMuted = false;//sound off
     public boolean musicMuted = false;//music off
@@ -101,6 +102,7 @@ public class GapGame extends Game {
         manager.load("audio/sounds/step.mp3", Sound.class);
         manager.load("audio/sounds/land.mp3", Sound.class);
         manager.load("audio/sounds/die.mp3", Sound.class);
+        manager.load("audio/sounds/break.mp3", Sound.class);
         manager.load("fonts/big-font.fnt", BitmapFont.class);
         manager.load("fonts/mid-font.fnt", BitmapFont.class);
         manager.load("menu-btn.png", Texture.class);
@@ -124,6 +126,7 @@ public class GapGame extends Game {
         warpSound = manager.get("audio/sounds/warp.mp3", Sound.class);
         exitSound = manager.get("audio/sounds/exit.mp3", Sound.class);
         dieSound = manager.get("audio/sounds/die.mp3", Sound.class);
+        breakSound = manager.get("audio/sounds/break.mp3", Sound.class);
         playMusic(0);
 
         this.setScreen(new MenuScreen(this, manager));

@@ -154,7 +154,7 @@ public class LevelScreen extends ScreenAdapter {
             playerTrail = new Trail(game);
             trailTime = 0;
         }//if
-        if (playerTrail!=null){
+        if (playerTrail != null) {
             playerTrail.update(dt);
         }//if
         for (Enemy enemy : enemies) {
@@ -213,10 +213,12 @@ public class LevelScreen extends ScreenAdapter {
                 door.draw(batch); //begin draw
             }
             for (Enemy enemy : enemies) {
-                enemy.draw(batch);
+                if (enemy.isVisible)
+                    enemy.draw(batch);
             }//for
             for (SpikeEnemy enemy : spikeEnemies) {
-                enemy.draw(batch);
+                if (enemy.isVisible)
+                    enemy.draw(batch);
             }//for
             for (Switch sw : switches) {
                 sw.draw(batch);
@@ -225,11 +227,11 @@ public class LevelScreen extends ScreenAdapter {
                 bump.draw(batch);
             }//for
             for (Buff buff : buffs) {
-                if(buff.isVisible) {
+                if (buff.isVisible) {
                     buff.draw(batch);
                 }//if
             }//for
-            if (playerTrail!=null) {
+            if (playerTrail != null) {
                 playerTrail.draw(batch);
             }
             game.player.draw(batch);

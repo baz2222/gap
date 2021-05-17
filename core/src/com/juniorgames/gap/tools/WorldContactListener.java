@@ -45,27 +45,47 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH SPIKES=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Spikes.class) {
-                ((Player) fixA.getUserData()).die();
+                game.playSound(game.dieSound);
+                ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Spikes.class) {
-                ((Player) fixB.getUserData()).die();
+                game.playSound(game.dieSound);
+                ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
+            }
+        }//if=================================================================================================
+
+        //==================HANDLE PLAYER COLLISION WITH CRUMBLES=================================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Crumbles.class) {
+                if(((Player) fixA.getUserData()).buff == Buff.BuffType.BOMB) {
+                    game.playSound(game.breakSound);
+                    ((Crumbles) fixB.getUserData()).onHit();
+                }
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Crumbles.class) {
+                if (((Player) fixB.getUserData()).buff == Buff.BuffType.BOMB) {
+                    game.playSound(game.breakSound);
+                    ((Crumbles) fixA.getUserData()).onHit();
+                }
             }
         }//if=================================================================================================
 
         //==================HANDLE PLAYER COLLISION WITH ENEMIES==============================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Enemy.class) {
+                game.playSound(game.dieSound);
                 if (((Player) fixA.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
-                    ((Enemy) fixB.getUserData()).die();
+                    ((Enemy) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
-                    ((Player) fixA.getUserData()).die();
+                    ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Enemy.class) {
+                game.playSound(game.dieSound);
                 if (((Player) fixB.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
-                    ((Enemy) fixA.getUserData()).die();
+                    ((Enemy) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
-                    ((Player) fixB.getUserData()).die();
+                    ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }
             }
         }//if=================================================================================================
@@ -73,17 +93,19 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH SPIKE_ENEMIES========================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == SpikeEnemy.class) {
+                game.playSound(game.dieSound);
                 if (((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
-                    ((SpikeEnemy) fixB.getUserData()).die();
+                    ((SpikeEnemy) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
-                    ((Player) fixA.getUserData()).die();
+                    ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }
             }
-            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Enemy.class) {
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == SpikeEnemy.class) {
+                game.playSound(game.dieSound);
                 if (((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
-                    ((SpikeEnemy) fixA.getUserData()).die();
+                    ((SpikeEnemy) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
-                    ((Player) fixB.getUserData()).die();
+                    ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }
             }
         }//if=================================================================================================
@@ -152,21 +174,12 @@ public class WorldContactListener implements ContactListener {
             contact.setEnabled(false);
         }//if
 
-        //prevent collision for crumbles and player
-        if ((firstBit | secondBit) == (game.PLAYER_BIT | game.CRUMBLES_BIT)) {
-            contact.setEnabled(false);
-        }//if
-
         //prevent collision between enemies
         if ((firstBit | secondBit) == (game.ENEMY_BIT | game.ENEMY_BIT)) {
             contact.setEnabled(false);
         }//if
 
         if ((firstBit | secondBit) == (game.SPIKE_ENEMY_BIT | game.ENEMY_BIT)) {
-            contact.setEnabled(false);
-        }//if
-
-        if ((firstBit | secondBit) == (game.SPIKE_ENEMY_BIT | game.PLAYER_BIT)) {
             contact.setEnabled(false);
         }//if
 
@@ -177,11 +190,6 @@ public class WorldContactListener implements ContactListener {
 
         //prevent collision between spike enemies and spikes
         if ((firstBit | secondBit) == (game.SPIKES_BIT | game.SPIKE_ENEMY_BIT)) {
-            contact.setEnabled(false);
-        }//if
-
-        //prevent collision between enemies and player
-        if ((firstBit | secondBit) == (game.ENEMY_BIT | game.PLAYER_BIT)) {
             contact.setEnabled(false);
         }//if
     }

@@ -27,6 +27,7 @@ public class SpikeEnemy extends Sprite {
     private Array<TextureRegion> frames;
     private TextureRegion region;
     private PolygonShape shape;
+    public boolean isVisible;
 
     public SpikeEnemy(GapGame game, float enemyX, float enemyY) {
         super(game.spikeEnemyAtlas.findRegion("senemy"));
@@ -43,6 +44,7 @@ public class SpikeEnemy extends Sprite {
         bodyDef = new BodyDef();
         fixtureDef = new FixtureDef();
         shape = new PolygonShape();
+        isVisible = true;
         //
         defineAnimation();
         defineSpikeEnemy(enemyX, enemyY);
@@ -55,13 +57,14 @@ public class SpikeEnemy extends Sprite {
             game.playSound(game.jumpSound);
         }
     }//jump
-
     public void runRight() {
-        body.applyLinearImpulse(new Vector2(0.12f, 0), body.getWorldCenter(), true);
+        if (body.getLinearVelocity().x <= 2)
+            body.applyLinearImpulse(new Vector2(0.5f, 0), body.getWorldCenter(), true);
     }//moveRight
 
     public void runLeft() {
-        body.applyLinearImpulse(new Vector2(-0.12f, 0), body.getWorldCenter(), true);
+        if (body.getLinearVelocity().x >= -2)
+            body.applyLinearImpulse(new Vector2(-0.5f, 0), body.getWorldCenter(), true);
     }//moveLeft
 
     public void run() {
@@ -78,19 +81,15 @@ public class SpikeEnemy extends Sprite {
         run();
         //=======================DIE============================
         if (getFilterBit() == game.DESTROYED_BIT) {
-            filter.maskBits = game.DEFAULT_BIT;
-            fixture.setFilterData(filter);
-            if (body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
-                game.savedGame.killed++;
-                game.savedGame.save();
-                game.tasksTracker.update(game.savedGame);
-                game.world.destroyBody(body);
-            } else {// else flying up the screen
+            if(body.getPosition().y * game.GAME_PPM < game.GAME_HEIGHT){
                 body.setActive(false);
                 body.setTransform(body.getPosition().x, body.getPosition().y + dt * 2, 0);
-            }//else
-        }//if
-        else {// if not dieing
+            }else{
+                isVisible = false;
+                die();
+            }
+        }//if destroyed
+        if (getFilterBit() != game.DESTROYED_BIT) {
             //=======================WRAP===========================
             if (body.getPosition().x * game.GAME_PPM < 0) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
@@ -181,7 +180,7 @@ public class SpikeEnemy extends Sprite {
         fixtureDef.filter.maskBits = (short) (game.GROUND_BIT | game.DEFAULT_BIT | game.PLAYER_BIT);
         fixtureDef.shape = shape;
         fixtureDef.restitution = 0f;
-        fixtureDef.friction = 0.6f;
+        fixtureDef.friction = 0.5f;
         fixtureDef.density = 0f;
         fixture = body.createFixture(fixtureDef);
         setFilterBit(game.SPIKE_ENEMY_BIT);
@@ -194,7 +193,7 @@ public class SpikeEnemy extends Sprite {
         for (int i = 0; i < 13; i++) {
             frames.add(new TextureRegion(getTexture(), i * 64, 0, 64, 96));
         }
-        animations.put("enemyRun", new Animation(0.05f, frames));
+        animations.put("enemyRun", new Animation(0.1f, frames));
         frames.clear();
         //jump
         frames.add(new TextureRegion(getTexture(), 14 * 64, 0, 64, 96));
@@ -229,10 +228,6 @@ public class SpikeEnemy extends Sprite {
     }//updateDirection
 
     public void die() {
-        game.playSound(game.dieSound);
-        setFilterBit(game.DESTROYED_BIT);
-        filter.maskBits = game.DEFAULT_BIT;
-        fixture.setFilterData(filter);
         game.savedGame.killed++;
         game.savedGame.save();
         game.tasksTracker.update(game.savedGame);

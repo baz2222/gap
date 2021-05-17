@@ -69,7 +69,7 @@
   <object id="148" x="320" y="320" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="8" name="SpikesObjectsLayer" locked="1">
-  <object id="144" x="689.687" y="288" width="78.3128" height="32"/>
+  <object id="144" x="689.687" y="288" width="59.4465" height="32"/>
   <object id="145" x="96" y="480" width="75.9546" height="32"/>
   <object id="146" x="64" y="448" width="32" height="32"/>
   <object id="147" x="32" y="416" width="32" height="32"/>
