@@ -95,6 +95,16 @@ public class Buff extends Sprite {
 
     public void onHit() {
         isVisible = false;
+        game.player.removeAllBuffAbility();
+        if (type == BuffType.JUMP){
+            game.player.setBuffJumpAbility();
+        }
+        if (type == BuffType.BOMB){
+            game.player.setBuffBombAbility();
+        }
+        if (type == BuffType.SHIELD){
+            game.player.setBuffShieldAbility();
+        }
     }//onHit
 
     public void setFilter(short bit) {

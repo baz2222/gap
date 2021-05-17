@@ -19,8 +19,8 @@ public class Trail extends Sprite {
     private float stateTimer = 0;
     private Buff.BuffType type;
 
-    public Trail(GapGame game, Player player) {
-        this.player = player;
+    public Trail(GapGame game) {
+        this.player = game.player;
         type = player.buff;
         //============begin Sprite super()=====================
         if (type == Buff.BuffType.BOMB) {

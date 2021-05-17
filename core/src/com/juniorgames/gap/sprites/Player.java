@@ -15,7 +15,6 @@ public class Player extends Sprite {
     public GapGame.State previousState;
     public GapGame.State currentState;
     public Body b2body;
-    public float jumpMultiplier;
     private Filter filter;
     private Fixture fixture;
     private Animation playerIdle;
@@ -31,6 +30,7 @@ public class Player extends Sprite {
     private FixtureDef fdef;
     private TextureRegion region;
     public Buff.BuffType buff;
+    public float jumpMultiplier;
     public boolean isRunningRight;
     public boolean isRunningLeft;
 
@@ -77,6 +77,34 @@ public class Player extends Sprite {
 
     }//constructor
 
+    public void setBuffJumpAbility() {
+        buff = Buff.BuffType.JUMP;
+        jumpMultiplier = jumpMultiplier * 2;
+    }
+
+    public void setBuffShieldAbility() {
+        buff = Buff.BuffType.SHIELD;
+    }
+
+    public void setBuffBombAbility() {
+        buff = Buff.BuffType.BOMB;
+    }
+
+    public void removeAllBuffAbility() {
+        if (buff != null) {
+            if (buff == Buff.BuffType.JUMP) {
+                jumpMultiplier = 1;
+                buff = null;
+            }//if jump
+            if (buff == Buff.BuffType.BOMB){
+                buff = null;
+            }//if bomb
+            if (buff == Buff.BuffType.SHIELD){
+                buff = null;
+            }//if shield
+        }// if not null
+    }
+
     public void jump() {
         if (currentState != GapGame.State.JUMPING && currentState != GapGame.State.FALLING) {
             b2body.applyLinearImpulse(new Vector2(0, 6f * jumpMultiplier), b2body.getWorldCenter(), true);
@@ -85,6 +113,7 @@ public class Player extends Sprite {
             }//if sounds muted
         }//if not jumping
     }//jump
+
     public void runRight() {
         if (game.player.b2body.getLinearVelocity().x <= 2)
             b2body.applyLinearImpulse(new Vector2(1f, 0), b2body.getWorldCenter(), true);
@@ -103,7 +132,6 @@ public class Player extends Sprite {
         game.savedGame.died++;
         game.savedGame.save();
         game.tasksTracker.update(game.savedGame);
-
     }//die
 
     public void update(float dt) {
@@ -146,12 +174,6 @@ public class Player extends Sprite {
                 game.tasksTracker.update(game.savedGame);
             }//if +y
         }//else if not dead
-        //====================RUN==RIGHT=========================
-        if (isRunningRight)
-            runRight();
-        //====================RUN===LEFT=========================
-        if (isRunningLeft)
-            runLeft();
     }
 
     public TextureRegion getFrame(float dt) {

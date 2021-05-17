@@ -151,7 +151,7 @@ public class LevelScreen extends ScreenAdapter {
         game.player.update(dt);
         if (game.player.buff != null && trailTime >= 0.2) {
             playerTrail = null;
-            playerTrail = new Trail(game, game.player);
+            playerTrail = new Trail(game);
             trailTime = 0;
         }//if
         if (playerTrail!=null){

@@ -23,11 +23,11 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH BUFF=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Buff.class) {
-                ((Player) fixA.getUserData()).buff = ((Buff) fixB.getUserData()).type;
+                //((Player) fixA.getUserData()).buff = ((Buff) fixB.getUserData()).type;
                 ((Buff) fixB.getUserData()).onHit();
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Buff.class) {
-                ((Player) fixB.getUserData()).buff = ((Buff) fixA.getUserData()).type;
+                //((Player) fixB.getUserData()).buff = ((Buff) fixA.getUserData()).type;
                 ((Buff) fixA.getUserData()).onHit();
             }
         }//if=================================================================================================
@@ -52,18 +52,54 @@ public class WorldContactListener implements ContactListener {
             }
         }//if=================================================================================================
 
+        //==================HANDLE PLAYER COLLISION WITH ENEMIES==============================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Enemy.class) {
+                if (((Player) fixA.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
+                    ((Enemy) fixB.getUserData()).die();
+                }else{
+                    ((Player) fixA.getUserData()).die();
+                }
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Enemy.class) {
+                if (((Player) fixB.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
+                    ((Enemy) fixA.getUserData()).die();
+                }else{
+                    ((Player) fixB.getUserData()).die();
+                }
+            }
+        }//if=================================================================================================
+
+        //==================HANDLE PLAYER COLLISION WITH SPIKE_ENEMIES========================================
+        if (fixA.getUserData() != null && fixB.getUserData() != null) {
+            if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == SpikeEnemy.class) {
+                if (((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
+                    ((SpikeEnemy) fixB.getUserData()).die();
+                }else{
+                    ((Player) fixA.getUserData()).die();
+                }
+            }
+            if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Enemy.class) {
+                if (((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
+                    ((SpikeEnemy) fixA.getUserData()).die();
+                }else{
+                    ((Player) fixB.getUserData()).die();
+                }
+            }
+        }//if=================================================================================================
+
         //==================HANDLE PLAYER COLLISION WITH BUMPS=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Bump.class) {
-                ((Player) fixA.getUserData()).jumpMultiplyer = 2;
-                ((Player) fixA.getUserData()).forceJump();
-                ((Player) fixA.getUserData()).jumpMultiplyer = 1;
+                ((Player) fixA.getUserData()).jumpMultiplier = 2;
+                ((Player) fixA.getUserData()).jump();
+                ((Player) fixA.getUserData()).jumpMultiplier = 1;
                 ((Bump) fixB.getUserData()).isHitted = true;
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Bump.class) {
-                ((Player) fixB.getUserData()).jumpMultiplyer = 2;
-                ((Player) fixB.getUserData()).forceJump();
-                ((Player) fixB.getUserData()).jumpMultiplyer = 1;
+                ((Player) fixB.getUserData()).jumpMultiplier = 2;
+                ((Player) fixB.getUserData()).jump();
+                ((Player) fixB.getUserData()).jumpMultiplier = 1;
                 ((Bump) fixA.getUserData()).isHitted = true;
             }
         }//if=================================================================================================

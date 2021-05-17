@@ -227,4 +227,14 @@ public class SpikeEnemy extends Sprite {
             runRight = true;
         }//if
     }//updateDirection
+
+    public void die() {
+        game.playSound(game.dieSound);
+        setFilterBit(game.DESTROYED_BIT);
+        filter.maskBits = game.DEFAULT_BIT;
+        fixture.setFilterData(filter);
+        game.savedGame.killed++;
+        game.savedGame.save();
+        game.tasksTracker.update(game.savedGame);
+    }//die
 }
