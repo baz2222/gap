@@ -40,7 +40,7 @@ public class KeysMenuScreen extends ScreenAdapter {
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
-        renderer = game.renderer;
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
     }//constructor

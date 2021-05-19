@@ -27,6 +27,7 @@ public class GameOverHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
+    private OrthographicCamera camera;
     private BitmapFont midFont;
     private Table table;
     private Texture backButtonTexture;
@@ -42,7 +43,9 @@ public class GameOverHUD implements Disposable {
         this.game = game;
         this.manager = game.manager;
         batch = new SpriteBatch();
-        viewport = game.viewport;
+        this.camera = new OrthographicCamera();
+        viewport = new FitViewport(this.game.GAME_WIDTH / this.game.GAME_PPM, this.game.GAME_HEIGHT / this.game.GAME_PPM, camera);
+        this.camera.position.set(this.game.GAME_WIDTH / 2, this.game.GAME_HEIGHT / 2, 0);
         stage = new Stage(viewport, batch);
 
         Gdx.input.setInputProcessor(this.stage);

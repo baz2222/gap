@@ -36,6 +36,7 @@ public class LevelScreen extends ScreenAdapter {
     private LevelHUD levelHud;
 
     private Box2DDebugRenderer b2dr;
+    private OrthogonalTiledMapRenderer renderer;
     //sprites
     public Trail playerTrail;
     public Door door;
@@ -68,7 +69,7 @@ public class LevelScreen extends ScreenAdapter {
         game.mapLoader = new TmxMapLoader();
         game.bounds = new Rectangle();
         game.platformMap = game.mapLoader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
-        game.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
+        this.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
 
         levelHud = new LevelHUD(this.game);
         if (game.levelData.tutorial != "") {
@@ -178,7 +179,7 @@ public class LevelScreen extends ScreenAdapter {
             game.currentTask = null;
         }
         camera.update();
-        game.renderer.setView(camera);
+        renderer.setView(camera);
     }//update
 
     private void handleInput(float dt) {
@@ -203,7 +204,7 @@ public class LevelScreen extends ScreenAdapter {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             //render game map
-            game.renderer.render();
+            renderer.render();
             //render Box2DDebugLines
             b2dr.render(game.world, camera.combined);
 

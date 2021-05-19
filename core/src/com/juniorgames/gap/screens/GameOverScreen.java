@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
@@ -28,18 +29,22 @@ public class GameOverScreen extends ScreenAdapter {
     private TmxMapLoader maploader;
     private TiledMap platformMap;
     private OrthogonalTiledMapRenderer renderer;
+    private Stage stage;
 
     public GameOverScreen(GapGame game) {
         this.game = game;
         this.manager = game.manager;
-        this.batch = game.batch;
-        this.viewport = game.viewport;
-        this.camera = game.camera;
+        batch = new SpriteBatch();
+        this.camera = new OrthographicCamera();
+        viewport = new FitViewport(this.game.GAME_WIDTH / this.game.GAME_PPM, this.game.GAME_HEIGHT / this.game.GAME_PPM, camera);
+        this.camera.position.set(this.game.GAME_WIDTH / 2, this.game.GAME_HEIGHT / 2, 0);
+        this.stage = new Stage(viewport, batch);
+
         gameOverHUD = new GameOverHUD(this.game);
 
         this.maploader = game.mapLoader;
         this.platformMap = maploader.load("level0-0.tmx");
-        this.renderer = game.renderer;
+        this.renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / game.GAME_PPM);
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         game.playMusic(0);
