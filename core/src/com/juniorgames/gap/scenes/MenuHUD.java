@@ -40,9 +40,9 @@ public class MenuHUD implements Disposable {
     private AssetManager manager;
     private InputListener playButtonListener, keysButtonListener, tasksButtonListener;
 
-    public MenuHUD(GapGame game, AssetManager manager) {
+    public MenuHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -112,7 +112,7 @@ public class MenuHUD implements Disposable {
     }
 
     private void onKeysButtonClicked() {
-        this.game.setScreen(new KeysMenuScreen(game, manager));
+        this.game.setScreen(new KeysMenuScreen(game));
     }
 
     private void onTasksButtonClicked() {

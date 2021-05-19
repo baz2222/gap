@@ -38,11 +38,11 @@ public class GameOverHUD implements Disposable {
     private Label label;
     private Label.LabelStyle labelStyle;
 
-    public GameOverHUD(GapGame game, AssetManager manager) {
+    public GameOverHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
-        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
+        viewport = game.viewport;
         stage = new Stage(viewport, batch);
 
         Gdx.input.setInputProcessor(this.stage);
@@ -77,7 +77,7 @@ public class GameOverHUD implements Disposable {
 
     private void onBackButtonClicked() {
         game.stopMusic();
-        this.game.setScreen(new MenuScreen(game, manager));
+        this.game.setScreen(new MenuScreen(game));
     }
 
     private void initTable() {

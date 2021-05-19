@@ -42,9 +42,9 @@ public class LevelHUD implements Disposable {
 
     private TextButton.TextButtonStyle pauseButtonStyle;
 
-    public LevelHUD(GapGame game, AssetManager manager) {
+    public LevelHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
         tableHUD = new Table();
         pauseTable = new Table();
@@ -210,7 +210,7 @@ public class LevelHUD implements Disposable {
         game.gamePaused = false;
         game.savedGame.save();
         game.stopMusic();
-        game.setScreen(new MenuScreen(game, manager));
+        game.setScreen(new MenuScreen(game));
     }
 
     private void onRestartButtonClicked() {

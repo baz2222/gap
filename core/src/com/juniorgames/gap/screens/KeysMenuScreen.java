@@ -28,19 +28,19 @@ public class KeysMenuScreen extends ScreenAdapter {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
-    public KeysMenuScreen(GapGame game, AssetManager manager) {
+    public KeysMenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
-        keysMenuHud = new KeysMenuHUD(this.game, this.manager);
+        keysMenuHud = new KeysMenuHUD(game);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
+        renderer = game.renderer;
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
     }//constructor

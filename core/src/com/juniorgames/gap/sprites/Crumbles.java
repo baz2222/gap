@@ -41,9 +41,9 @@ public class Crumbles {
     }
 
     public void onHit() {
-        setFilterBit(game.DESTROYED_BIT);
-        for(JointEdge edge : body.getJointList())
-            game.world.destroyJoint(edge.joint);
+        //setFilterBit(game.DESTROYED_BIT);
+        //for(JointEdge edge : body.getJointList())
+         //   game.world.destroyJoint(edge.joint);
         //game.world.destroyBody(body);
     }
 

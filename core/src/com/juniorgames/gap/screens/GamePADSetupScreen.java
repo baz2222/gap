@@ -10,44 +10,50 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
+import com.juniorgames.gap.scenes.GameOverHUD;
+import com.juniorgames.gap.scenes.GamePADSetupHUD;
+import com.juniorgames.gap.scenes.KeysMenuHUD;
 import com.juniorgames.gap.scenes.PlayMenuHUD;
 
-public class PlayMenuScreen extends ScreenAdapter {
+public class GamePADSetupScreen extends ScreenAdapter {
     private GapGame game;
     private AssetManager manager;
     private SpriteBatch batch;
-    private OrthographicCamera camera;
     private Viewport viewport;
-    private PlayMenuHUD playMenuHud;
+    private GamePADSetupHUD gamePADSetupHUD;
+    private OrthographicCamera camera;
     //tiled map values
-    private TmxMapLoader maploader;
-    private TiledMap map;
+    private TmxMapLoader mapLoader;
+    private TiledMap platformMap;
     private OrthogonalTiledMapRenderer renderer;
-    //sfx
-    public PlayMenuScreen(GapGame game, AssetManager manager) {
+    private Stage stage;
+
+    public GamePADSetupScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
-        batch = new SpriteBatch();
-
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
-
-        playMenuHud = new PlayMenuHUD(this.game);
-
-        maploader = new TmxMapLoader();
-        map = maploader.load("level0-0.tmx");//default
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
+        this.manager = game.manager;
+        this.batch = game.batch;
+        this.viewport = game.viewport;
+        this.camera = game.camera;
+        this.stage = game.stage;
+        //gamePADSetupHUD = new GamePADSetupHUD(this.game);
+        this.mapLoader = game.mapLoader;
+        this.platformMap = game.mapLoader.load("level0-0.tmx");
+        //this.renderer = this.game.renderer;
+        this.renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / this.game.GAME_PPM);
+        //this.renderer.setMap(platformMap);
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        game.playMusic(0);
 
     }//constructor
 
     public void update(float dt) {
         handleInput(dt);
-        playMenuHud.update(dt);
+        //gamePADSetupHUD.update(dt);
         camera.update();
         renderer.setView(camera);
     }
@@ -63,22 +69,18 @@ public class PlayMenuScreen extends ScreenAdapter {
         //render screen map
         renderer.render();
         //render HUD
-        batch.setProjectionMatrix(camera.combined);
-        batch.setProjectionMatrix(playMenuHud.stage.getCamera().combined);
-        playMenuHud.stage.draw();
+        batch.setProjectionMatrix(this.stage.getCamera().combined);
+        //gamePADSetupHUD.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        playMenuHud.resize(width, height);
+        //gamePADSetupHUD.resize(width, height);
     }
 
     @Override
     public void dispose() {
-        map.dispose();
-        renderer.dispose();
-        playMenuHud.dispose();
-        manager.dispose();
+        //gamePADSetupHUD.dispose();
     }
 }

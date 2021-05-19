@@ -21,27 +21,25 @@ public class GameOverScreen extends ScreenAdapter {
     private GapGame game;
     private AssetManager manager;
     private SpriteBatch batch;
-    private OrthographicCamera camera;
     private Viewport viewport;
     private GameOverHUD gameOverHUD;
+    private OrthographicCamera camera;
     //tiled map values
     private TmxMapLoader maploader;
-    private TiledMap map;
+    private TiledMap platformMap;
     private OrthogonalTiledMapRenderer renderer;
 
-    public GameOverScreen(GapGame game, AssetManager manager) {
+    public GameOverScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
-        batch = new SpriteBatch();
+        this.manager = game.manager;
+        this.batch = game.batch;
+        this.viewport = game.viewport;
+        this.camera = game.camera;
+        gameOverHUD = new GameOverHUD(this.game);
 
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
-
-        gameOverHUD = new GameOverHUD(this.game, this.manager);
-
-        maploader = new TmxMapLoader();
-        map = maploader.load("level0-0.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
+        this.maploader = game.mapLoader;
+        this.platformMap = maploader.load("level0-0.tmx");
+        this.renderer = game.renderer;
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         game.playMusic(0);
@@ -79,7 +77,7 @@ public class GameOverScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        map.dispose();
+        platformMap.dispose();
         renderer.dispose();
         gameOverHUD.dispose();
         manager.dispose();

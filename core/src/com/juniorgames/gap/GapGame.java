@@ -4,15 +4,23 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.screens.GameOverScreen;
+import com.juniorgames.gap.screens.GamePADSetupScreen;
 import com.juniorgames.gap.screens.MenuScreen;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.tools.*;
@@ -58,7 +66,6 @@ public class GapGame extends Game {
     public int selectedWorld;
     public int selectedLevel;
 
-    public TmxMapLoader mapLoader;
     public TiledMap platformMap;
     public OrthogonalTiledMapRenderer renderer;
     public Rectangle bounds;
@@ -76,12 +83,26 @@ public class GapGame extends Game {
     public boolean gamePaused = false;//game paused
 
     public AssetManager manager;
+    public SpriteBatch batch;
+    public Viewport viewport;
+    public Stage stage;
     public Task currentTask;
+    public TmxMapLoader mapLoader;
+    public OrthographicCamera camera;
+    public Controller controller;
 
     public Player player;
 
     @Override
     public void create() {
+        this.mapLoader = new TmxMapLoader();
+        this.camera = new OrthographicCamera();
+        this.viewport =  new FitViewport(GAME_WIDTH, GAME_HEIGHT, camera);
+        this.batch = new SpriteBatch();
+        this.stage = new Stage(viewport, batch);
+        this.platformMap = new TiledMap();
+        this.renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / GAME_PPM);
+
         savedGame = new SavedGame();
         savedGame.load();
         tasksTracker = new TasksTracker(this);
@@ -129,12 +150,22 @@ public class GapGame extends Game {
         breakSound = manager.get("audio/sounds/break.mp3", Sound.class);
         playMusic(0);
 
-        this.setScreen(new MenuScreen(this, manager));
+        detectGamePAD();
     }//create()
+
+    private void detectGamePAD() {
+        if (Controllers.getControllers().size!=0){
+            controller = Controllers.getControllers().first();
+            System.out.println(controller.getName());
+            this.setScreen(new GamePADSetupScreen(this));
+        }else{
+            this.setScreen(new MenuScreen(this));
+        }
+    }
 
     public void gameOver() {
         savedGame.reset();
-        this.setScreen(new GameOverScreen(this, manager));
+        this.setScreen(new GameOverScreen(this));
     }
 
     public void playSound(Sound sound) {
@@ -162,11 +193,6 @@ public class GapGame extends Game {
 
     @Override
     public void dispose() {
-        music.dispose();
-        world.dispose();
-        manager.dispose();
-        platformMap.dispose();
-        renderer.dispose();
     }
 
     @Override

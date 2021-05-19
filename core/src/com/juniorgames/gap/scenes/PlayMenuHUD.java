@@ -37,12 +37,12 @@ public class PlayMenuHUD implements Disposable {
     private AssetManager manager;
     private InputListener newGameButtonInputListener, selectLevelButtonInputListener, loadGameButtonInputListener, backButtonInputListener;
 
-    public PlayMenuHUD(GapGame game, AssetManager manager) {
+    public PlayMenuHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
-        batch = new SpriteBatch();
-        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, batch);
+        this.manager = game.manager;
+        this.batch = game.batch;
+        this.viewport = game.viewport;
+        this.stage = game.stage;
 
         Gdx.input.setInputProcessor(this.stage);
 
@@ -127,7 +127,7 @@ public class PlayMenuHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new MenuScreen(game, manager));
+        this.game.setScreen(new MenuScreen(game));
     }
 
     private void onNewGameButtonClicked() {

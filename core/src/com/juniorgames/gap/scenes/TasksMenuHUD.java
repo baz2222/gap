@@ -77,7 +77,7 @@ public class TasksMenuHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new MenuScreen(game, manager));
+        this.game.setScreen(new MenuScreen(game));
     }
 
     private void initTable() {

@@ -23,7 +23,7 @@ import com.juniorgames.gap.screens.MenuScreen;
 
 import java.util.ArrayList;
 
-public class KeysMenuHUD implements Disposable {
+public class GamePADSetupHUD implements Disposable {
     public Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
@@ -38,27 +38,25 @@ public class KeysMenuHUD implements Disposable {
     private Label label;
     private Label.LabelStyle labelStyle;
 
-    private ArrayList<String> labelsText;
-
-    public KeysMenuHUD(GapGame game) {
+    public GamePADSetupHUD(GapGame game) {
         this.game = game;
         this.manager = game.manager;
-        batch = new SpriteBatch();
-        viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, batch);
+        this.batch = game.batch;
+        this.viewport = game.viewport;
+        stage = game.stage;
 
         Gdx.input.setInputProcessor(this.stage);
 
         midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
 
-        backButtonTexture = manager.get("back-btn.png", Texture.class);
+        backButtonTexture = manager.get("menu-btn.png", Texture.class);
         backButtonStyle = new TextButtonStyle();
         backButtonStyle.font = midFont;
         backButtonStyle.down = new TextureRegionDrawable(backButtonTexture);
         backButtonStyle.up = new TextureRegionDrawable(backButtonTexture);
         backButtonStyle.checked = new TextureRegionDrawable(backButtonTexture);
 
-        backButton = new TextButton("BACK", backButtonStyle);
+        backButton = new TextButton("BACK TO MENU", backButtonStyle);
 
         backButtonInputListener = new InputListener() {
             @Override
@@ -74,31 +72,23 @@ public class KeysMenuHUD implements Disposable {
         };//backButtonInputListener
         backButton.addListener(backButtonInputListener);//listener - backButton
 
-        initLabelsText();
         initTable();
     }//constructor
 
-    private void initLabelsText() {
-        labelsText = new ArrayList<>();
-        labelsText.add("LEFT/RIGHT ARROW or LEFT/RIGHT SWIPE - Move");
-        labelsText.add("UP ARROW or TAP - Jump");
-    }
-
     private void onBackButtonClicked() {
+        game.stopMusic();
         this.game.setScreen(new MenuScreen(game));
     }
 
     private void initTable() {
         labelStyle = new Label.LabelStyle(midFont, Color.WHITE);
+        label = new Label("Congratulations! You are finish the game!", labelStyle);
         table = new Table();
-        table.bottom();
+        table.center();
         table.setFillParent(true);
-        for (String s : labelsText) {
-            label = new Label(s, labelStyle);
-            table.add(label).padLeft(90).padRight(90).padTop(20).left();
-            table.row();
-        }
-        table.add(backButton).right().padTop(300);
+        table.add(label).padLeft(90).padRight(90).padTop(20);
+        table.row();
+        table.add(backButton).padTop(100);
 
         stage.addActor(table);
     }
@@ -108,11 +98,9 @@ public class KeysMenuHUD implements Disposable {
 
     @Override
     public void dispose() {
-        backButton.removeListener(backButtonInputListener);
-        stage.dispose();
     }
 
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, false);
+        viewport.update(width, height, false);
     }
 }

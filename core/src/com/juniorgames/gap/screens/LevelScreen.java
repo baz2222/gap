@@ -70,7 +70,7 @@ public class LevelScreen extends ScreenAdapter {
         game.platformMap = game.mapLoader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
         game.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
 
-        levelHud = new LevelHUD(this.game, this.manager);
+        levelHud = new LevelHUD(this.game);
         if (game.levelData.tutorial != "") {
             levelHud.showTutorial(game.levelData.tutorial);
         }//if
@@ -260,5 +260,6 @@ public class LevelScreen extends ScreenAdapter {
     public void dispose() {
         b2dr.dispose();
         levelHud.dispose();
+        game.world.dispose();
     }
 }
