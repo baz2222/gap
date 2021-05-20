@@ -35,10 +35,10 @@ public class PlayMenuScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
-        playMenuHud = new PlayMenuHUD(this.game, this.manager);
+        playMenuHud = new PlayMenuHUD(this.game);
 
         maploader = new TmxMapLoader();
-        map = maploader.load("level0-0.tmx");
+        map = maploader.load("level0-0.tmx");//default
         renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);

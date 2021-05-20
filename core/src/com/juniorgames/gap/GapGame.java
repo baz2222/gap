@@ -1,18 +1,33 @@
 package com.juniorgames.gap;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.screens.GameOverScreen;
+import com.juniorgames.gap.screens.GamePADSetupScreen;
 import com.juniorgames.gap.screens.MenuScreen;
 import com.juniorgames.gap.sprites.Player;
 import com.juniorgames.gap.tools.*;
@@ -58,9 +73,7 @@ public class GapGame extends Game {
     public int selectedWorld;
     public int selectedLevel;
 
-    public TmxMapLoader mapLoader;
     public TiledMap platformMap;
-    public OrthogonalTiledMapRenderer renderer;
     public Rectangle bounds;
 
     private Music music;
@@ -77,11 +90,18 @@ public class GapGame extends Game {
 
     public AssetManager manager;
     public Task currentTask;
+    public TmxMapLoader mapLoader;
+    public Controller controller;
 
     public Player player;
 
+    public BitmapFont font;
+    public Texture menuButtonTexture;
+    public Label.LabelStyle labelStyle;
+
     @Override
     public void create() {
+        this.mapLoader = new TmxMapLoader();
         savedGame = new SavedGame();
         savedGame.load();
         tasksTracker = new TasksTracker(this);
@@ -127,15 +147,54 @@ public class GapGame extends Game {
         exitSound = manager.get("audio/sounds/exit.mp3", Sound.class);
         dieSound = manager.get("audio/sounds/die.mp3", Sound.class);
         breakSound = manager.get("audio/sounds/break.mp3", Sound.class);
+
+        font = manager.get("fonts/mid-font.fnt", BitmapFont.class);
+        menuButtonTexture = manager.get("menu-btn.png", Texture.class);
+        labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
         playMusic(0);
 
-        this.setScreen(new MenuScreen(this, manager));
+        detectGamePAD();
     }//create()
+
+    private void detectGamePAD() {
+        if (Controllers.getControllers().size!=0){
+            controller = Controllers.getControllers().first();
+            System.out.println(controller.getName());
+            this.setScreen(new GamePADSetupScreen(this));
+        }else{
+            this.setScreen(new MenuScreen(this));
+        }
+    }
 
     public void gameOver() {
         savedGame.reset();
-        this.setScreen(new GameOverScreen(this, manager));
+        this.setScreen(new GameOverScreen(this));
     }
+//==========================tools=============================================
+public TextButton createTextMenuButton(String text, Texture texture, ScreenAdapter screen) {
+    TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+    style.font = font;
+    style.down = new TextureRegionDrawable(texture);
+    style.up = new TextureRegionDrawable(texture);
+    style.checked = new TextureRegionDrawable(texture);
+    InputListener listener = new InputListener() {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            stopMusic();
+            setScreen(screen);
+            return super.touchDown(event, x, y, pointer, button);
+        }
+
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchUp(event, x, y, pointer, button);
+        }
+    };//listener
+    TextButton button = new TextButton(text, style);
+    button.addListener(listener);
+    return button;
+}//==================createTextMenuButton========================
 
     public void playSound(Sound sound) {
         if (!soundsMuted) {
@@ -162,17 +221,11 @@ public class GapGame extends Game {
 
     @Override
     public void dispose() {
-        music.dispose();
-        world.dispose();
-        manager.dispose();
-        platformMap.dispose();
-        renderer.dispose();
     }
 
     @Override
     public void render() {
         super.render();
-        manager.update();
     }
 
     @Override

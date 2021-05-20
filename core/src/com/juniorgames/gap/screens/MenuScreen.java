@@ -28,15 +28,15 @@ public class MenuScreen extends ScreenAdapter {
     private OrthogonalTiledMapRenderer renderer;
 
     //sfx
-    public MenuScreen(GapGame game, AssetManager manager) {
+    public MenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
-        menuHud = new MenuHUD(this.game, this.manager);
+        menuHud = new MenuHUD(this.game);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");

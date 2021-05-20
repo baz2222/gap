@@ -40,9 +40,9 @@ public class KeysMenuHUD implements Disposable {
 
     private ArrayList<String> labelsText;
 
-    public KeysMenuHUD(GapGame game, AssetManager manager) {
+    public KeysMenuHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -85,7 +85,7 @@ public class KeysMenuHUD implements Disposable {
     }
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new MenuScreen(game, manager));
+        this.game.setScreen(new MenuScreen(game));
     }
 
     private void initTable() {
