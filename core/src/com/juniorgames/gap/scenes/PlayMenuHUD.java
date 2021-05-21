@@ -159,7 +159,7 @@ public class PlayMenuHUD implements Disposable {
         table.row();
         table.add(backButton).colspan(3).right();
 
-        stage.addActor(table);
+        this.stage.addActor(table);
     }
 
     public void update(float dt) {

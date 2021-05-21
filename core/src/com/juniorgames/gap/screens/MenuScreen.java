@@ -38,6 +38,7 @@ public class MenuScreen extends ScreenAdapter {
 
         menuHud = new MenuHUD(this.game);
 
+
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM

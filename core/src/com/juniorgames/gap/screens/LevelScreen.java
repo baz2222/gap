@@ -66,9 +66,9 @@ public class LevelScreen extends ScreenAdapter {
         game.levelData = new LevelData();
         game.levelData.loadLevel(game.savedGame.world, game.savedGame.level);
 
-        game.mapLoader = new TmxMapLoader();
+        game.loader = new TmxMapLoader();
         game.bounds = new Rectangle();
-        game.platformMap = game.mapLoader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
+        game.platformMap = game.loader.load("level" + game.savedGame.world + "-" + game.savedGame.level + ".tmx");
         this.renderer = new OrthogonalTiledMapRenderer(game.platformMap, 1 / game.GAME_PPM);//scaling map with PPM
 
         levelHud = new LevelHUD(this.game);
@@ -86,12 +86,6 @@ public class LevelScreen extends ScreenAdapter {
         game.bumpAtlas = new TextureAtlas("bump.pack");
         game.buffAtlas = new TextureAtlas("buffs.pack");
 
-        game.world = new World(new Vector2(0, -20), true);
-
-        game.contactListener = new WorldContactListener(game);
-        game.world.setContactListener(game.contactListener);
-        //===================================================================
-        b2dr = new Box2DDebugRenderer();
         //===================================================================
         for (MapObject object : game.platformMap.getLayers().get("GroundObjectsLayer").getObjects().getByType(RectangleMapObject.class)) {
             game.bounds = ((RectangleMapObject) object).getRectangle();

@@ -42,7 +42,7 @@ public class GameOverScreen extends ScreenAdapter {
 
         gameOverHUD = new GameOverHUD(this.game);
 
-        this.maploader = game.mapLoader;
+        this.maploader = game.loader;
         this.platformMap = maploader.load("level0-0.tmx");
         this.renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / game.GAME_PPM);
 
