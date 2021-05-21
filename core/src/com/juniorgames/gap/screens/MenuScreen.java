@@ -65,7 +65,7 @@ public class MenuScreen extends ScreenAdapter {
         //render screen map
         renderer.render();
         //render HUD
-        batch.setProjectionMatrix(camera.combined);
+        //batch.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(menuHud.stage.getCamera().combined);
         menuHud.stage.draw();
     }
