@@ -12,18 +12,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.GPADSetupScreen;
@@ -96,6 +100,9 @@ public class GapGame extends Game {
     public Viewport viewport;
     public Batch batch;
     public OrthographicCamera cam;
+    public TiledMap map;
+    public OrthogonalTiledMapRenderer renderer;
+    public Stage stage;
 
     public Player player;
 
@@ -155,6 +162,13 @@ public class GapGame extends Game {
         font = manager.get("fonts/mid-font.fnt", BitmapFont.class);
         menuBtnTex = manager.get("menu-btn.png", Texture.class);
         lStyle = new Label.LabelStyle(font, Color.WHITE);
+        cam = new OrthographicCamera();
+        viewport = new FitViewport(GAME_WIDTH, GAME_HEIGHT, cam);
+        batch = new SpriteBatch();
+        map = loader.load("level0-0.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1);
+        cam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        stage = new Stage(viewport,batch);
 
         createBox2DWorld();
         detectGamePAD();
@@ -170,7 +184,6 @@ public class GapGame extends Game {
     private void detectGamePAD() {
         if (Controllers.getControllers().size != 0) {
             controller = Controllers.getControllers().first();
-            System.out.println(controller.getName());
             this.setScreen(new GPADSetupScreen(this));
         } else {
             this.setScreen(new MenuScreen(this));
@@ -229,7 +242,7 @@ public class GapGame extends Game {
 
     public void stopMusic() {
         music.stop();
-    }//=======================stopMusic==============================
+    }
 
     @Override
     public void dispose() {
