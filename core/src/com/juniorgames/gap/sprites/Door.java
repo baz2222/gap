@@ -82,10 +82,9 @@ public class Door extends Sprite {
     public void onHit() {
         game.tasksTracker.update(game.savedGame);
         setFilter(game.DESTROYED_BIT);
-        game.playSound(game.exitSound);
+        game.playSound("exit", false);
         if (game.savedGame.level == 10) {
             if (game.savedGame.world == 3) {
-                game.stopMusic();
                 game.gameOver();
                 return;
             } else {
@@ -97,8 +96,7 @@ public class Door extends Sprite {
             game.savedGame.completed++;
         }//else
         game.savedGame.save();
-        game.stopMusic();
-        game.setScreen(new LevelScreen(game, manager));
+        game.setScreen(new LevelScreen(game, false));
     }
 
     public void setFilter(short bit) {

@@ -26,9 +26,9 @@ public class TasksMenuScreen extends ScreenAdapter {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
-    public TasksMenuScreen(GapGame game, AssetManager manager) {
+    public TasksMenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();

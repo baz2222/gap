@@ -53,10 +53,9 @@ public class SpikeEnemy extends Sprite {
 
     public void jump() {
         body.applyLinearImpulse(new Vector2(0, 4f), body.getWorldCenter(), true);
-        if (!game.soundsMuted) {
-            game.playSound(game.jumpSound);
-        }
+        game.playSound("jump", false);
     }//jump
+
     public void runRight() {
         if (body.getLinearVelocity().x <= 2)
             body.applyLinearImpulse(new Vector2(0.5f, 0), body.getWorldCenter(), true);
@@ -81,10 +80,10 @@ public class SpikeEnemy extends Sprite {
         run();
         //=======================DIE============================
         if (getFilterBit() == game.DESTROYED_BIT) {
-            if(body.getPosition().y * game.GAME_PPM < game.GAME_HEIGHT){
+            if (body.getPosition().y * game.GAME_PPM < game.GAME_HEIGHT) {
                 body.setActive(false);
                 body.setTransform(body.getPosition().x, body.getPosition().y + dt * 2, 0);
-            }else{
+            } else {
                 isVisible = false;
                 die();
             }
@@ -93,19 +92,19 @@ public class SpikeEnemy extends Sprite {
             //=======================WRAP===========================
             if (body.getPosition().x * game.GAME_PPM < 0) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
             }//if -x
             if (body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
                 body.setTransform((body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, body.getPosition().y, 0);
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
             }//if +x
             if (body.getPosition().y * game.GAME_PPM < 0) {
                 body.setTransform(body.getPosition().x, (body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
             }//if -y
             if (body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
                 body.setTransform(body.getPosition().x, (body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
             }//if +y
         }//else
     }//update

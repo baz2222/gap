@@ -3,7 +3,6 @@ package com.juniorgames.gap.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,8 +14,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.GameOverHUD;
-import com.juniorgames.gap.scenes.KeysMenuHUD;
-import com.juniorgames.gap.scenes.PlayMenuHUD;
 
 public class GameOverScreen extends ScreenAdapter {
     private GapGame game;
@@ -47,7 +44,7 @@ public class GameOverScreen extends ScreenAdapter {
         this.renderer = new OrthogonalTiledMapRenderer(platformMap, 1 / game.GAME_PPM);
 
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        game.playMusic(0);
+        game.playSound("menu", true);
 
     }//constructor
 

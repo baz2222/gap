@@ -45,11 +45,11 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH SPIKES=================================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Spikes.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 ((Player) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Spikes.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 ((Player) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
             }
         }//if=================================================================================================
@@ -58,13 +58,13 @@ public class WorldContactListener implements ContactListener {
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Crumbles.class) {
                 if(((Player) fixA.getUserData()).buff == Buff.BuffType.BOMB) {
-                    game.playSound(game.breakSound);
+                    game.playSound("break", false);
                     ((Crumbles) fixB.getUserData()).onHit();
                 }
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Crumbles.class) {
                 if (((Player) fixB.getUserData()).buff == Buff.BuffType.BOMB) {
-                    game.playSound(game.breakSound);
+                    game.playSound("break", false);
                     ((Crumbles) fixA.getUserData()).onHit();
                 }
             }
@@ -73,7 +73,7 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH ENEMIES==============================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == Enemy.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 if (((Player) fixA.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
                     ((Enemy) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
@@ -81,7 +81,7 @@ public class WorldContactListener implements ContactListener {
                 }
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == Enemy.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 if (((Player) fixB.getUserData()).currentState == GapGame.State.FALLING || ((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
                     ((Enemy) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
@@ -93,7 +93,7 @@ public class WorldContactListener implements ContactListener {
         //==================HANDLE PLAYER COLLISION WITH SPIKE_ENEMIES========================================
         if (fixA.getUserData() != null && fixB.getUserData() != null) {
             if (fixA.getUserData().getClass() == Player.class && fixB.getUserData().getClass() == SpikeEnemy.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 if (((Player) fixA.getUserData()).buff == Buff.BuffType.SHIELD){
                     ((SpikeEnemy) fixB.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{
@@ -101,7 +101,7 @@ public class WorldContactListener implements ContactListener {
                 }
             }
             if (fixB.getUserData().getClass() == Player.class && fixA.getUserData().getClass() == SpikeEnemy.class) {
-                game.playSound(game.dieSound);
+                game.playSound("die", false);
                 if (((Player) fixB.getUserData()).buff == Buff.BuffType.SHIELD){
                     ((SpikeEnemy) fixA.getUserData()).setFilterBit(game.DESTROYED_BIT);
                 }else{

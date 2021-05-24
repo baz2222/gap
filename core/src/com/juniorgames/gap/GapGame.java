@@ -27,12 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.GPADSetupScreen;
+import com.juniorgames.gap.screens.GameOverScreen;
 import com.juniorgames.gap.screens.MenuScreen;
-import com.juniorgames.gap.sprites.Player;
+import com.juniorgames.gap.sprites.*;
 import com.juniorgames.gap.tools.*;
 
 public class GapGame extends Game {
@@ -42,8 +43,7 @@ public class GapGame extends Game {
     public final int GAME_WIDTH = 960;
     public final int GAME_HEIGHT = 544;
     public final float GAME_PPM = 100; //pixels per meter for Box2D
-    public final float MUSIC_VOLUME = 0.2f;
-    public final float SOUND_VOLUME = 0.2f;
+    public final float VOLUME = 0.2f;
 
     public final short DEFAULT_BIT = 1;
     public final short PLAYER_BIT = 2;//must be power of two for binary operations with fixtures filters
@@ -72,24 +72,17 @@ public class GapGame extends Game {
 
     public SavedGame savedGame;
     public TasksTracker tasksTracker;
-    public LevelData levelData;
+    public LevelData levelData = new LevelData();
 
     public int selectedWorld;
     public int selectedLevel;
 
-    public TiledMap platformMap;
-    public Rectangle bounds;
+    public Rectangle bounds = new Rectangle();
 
-    private Music music;
-    public Sound jumpSound;
-    public Sound stepSound;
-    public Sound warpSound;
-    public Sound exitSound;
-    public Sound dieSound;
-    public Sound breakSound;
+    public Sound sound;
+    public Music music;
 
-    public boolean soundsMuted = false;//sound off
-    public boolean musicMuted = false;//music off
+    public boolean muted = false;//sound off
     public boolean gamePaused = false;//game paused
 
     public AssetManager manager;
@@ -105,10 +98,18 @@ public class GapGame extends Game {
     public Stage stage;
 
     public Player player;
+    public Door door;
+    public Trail playerTrail;
+    public Array<Enemy> enemies = new Array<>();
+    public Array<SpikeEnemy> spikeEnemies = new Array<>();
+    public Array<Switch> switches = new Array<>();
+    public Array<Bump> bumps = new Array<>();
+    public Array<Buff> buffs = new Array<>();
 
-    public BitmapFont font;
-    public Texture menuBtnTex;
-    public Label.LabelStyle lStyle;
+    public BitmapFont midFont, bigFont;
+    public Texture menuBtnTex, playMenuBtnTex, backBtnTex;
+    public Label.LabelStyle labelStyle, bigLabelStyle;
+    public InputListener listener;
 
     @Override
     public void create() {
@@ -123,17 +124,17 @@ public class GapGame extends Game {
         for (Task task : tasksTracker.tasks) {
             manager.load(task.taskImagePath, Texture.class);
         }//for
-        manager.load("audio/music/world1-music.mp3", Music.class);
-        manager.load("audio/music/world2-music.mp3", Music.class);
-        manager.load("audio/music/world3-music.mp3", Music.class);
-        manager.load("audio/music/menu-music.mp3", Music.class);
-        manager.load("audio/sounds/jump.mp3", Sound.class);
-        manager.load("audio/sounds/exit.mp3", Sound.class);
-        manager.load("audio/sounds/warp.mp3", Sound.class);
-        manager.load("audio/sounds/step.mp3", Sound.class);
-        manager.load("audio/sounds/land.mp3", Sound.class);
-        manager.load("audio/sounds/die.mp3", Sound.class);
-        manager.load("audio/sounds/break.mp3", Sound.class);
+        manager.load("sounds/world1.mp3", Music.class);
+        manager.load("sounds/world2.mp3", Music.class);
+        manager.load("sounds/world3.mp3", Music.class);
+        manager.load("sounds/menu.mp3", Music.class);
+        manager.load("sounds/jump.mp3", Sound.class);
+        manager.load("sounds/exit.mp3", Sound.class);
+        manager.load("sounds/warp.mp3", Sound.class);
+        manager.load("sounds/step.mp3", Sound.class);
+        manager.load("sounds/land.mp3", Sound.class);
+        manager.load("sounds/die.mp3", Sound.class);
+        manager.load("sounds/break.mp3", Sound.class);
         manager.load("fonts/big-font.fnt", BitmapFont.class);
         manager.load("fonts/mid-font.fnt", BitmapFont.class);
         manager.load("menu-btn.png", Texture.class);
@@ -152,29 +153,40 @@ public class GapGame extends Game {
         }
         manager.finishLoading();
 
-        jumpSound = manager.get("audio/sounds/jump.mp3", Sound.class);
-        stepSound = manager.get("audio/sounds/step.mp3", Sound.class);
-        warpSound = manager.get("audio/sounds/warp.mp3", Sound.class);
-        exitSound = manager.get("audio/sounds/exit.mp3", Sound.class);
-        dieSound = manager.get("audio/sounds/die.mp3", Sound.class);
-        breakSound = manager.get("audio/sounds/break.mp3", Sound.class);
+        midFont = manager.get("fonts/mid-font.fnt", BitmapFont.class);
+        bigFont = manager.get("fonts/big-font.fnt", BitmapFont.class);
 
-        font = manager.get("fonts/mid-font.fnt", BitmapFont.class);
         menuBtnTex = manager.get("menu-btn.png", Texture.class);
-        lStyle = new Label.LabelStyle(font, Color.WHITE);
+        playMenuBtnTex = manager.get("play-menu-btn.png", Texture.class);
+        backBtnTex = manager.get("back-btn.png", Texture.class);
+
+        labelStyle = new Label.LabelStyle(midFont, Color.WHITE);
+        bigLabelStyle = new Label.LabelStyle(bigFont, Color.WHITE);
+
         cam = new OrthographicCamera();
         viewport = new FitViewport(GAME_WIDTH, GAME_HEIGHT, cam);
         batch = new SpriteBatch();
         map = loader.load("level0-0.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1);
         cam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        stage = new Stage(viewport,batch);
+        stage = new Stage(viewport, batch);
 
+        loadAtlases();
         createBox2DWorld();
         detectGamePAD();
     }//create()
 
-    private void createBox2DWorld(){
+    private void loadAtlases(){
+        playerAtlas = new TextureAtlas("player.pack");
+        enemyAtlas = new TextureAtlas("enemy.pack");
+        spikeEnemyAtlas = new TextureAtlas("senemy.pack");
+        doorAtlas = new TextureAtlas("door.pack");
+        switchAtlas = new TextureAtlas("switch.pack");
+        bumpAtlas = new TextureAtlas("bump.pack");
+        buffAtlas = new TextureAtlas("buffs.pack");
+    }
+
+    private void createBox2DWorld() {
         world = new World(new Vector2(0, -20), true);
         contactListener = new WorldContactListener(this);
         world.setContactListener(contactListener);
@@ -195,18 +207,16 @@ public class GapGame extends Game {
         this.setScreen(new GameOverScreen(this));
     }
 
-    //==========================tools=============================================
-
     public TextButton createTextMenuButton(String text, Texture texture, ScreenAdapter screen) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.font = font;
+        style.font = midFont;
         style.down = new TextureRegionDrawable(texture);
         style.up = new TextureRegionDrawable(texture);
         style.checked = new TextureRegionDrawable(texture);
-        InputListener listener = new InputListener() {
+        TextButton button = new TextButton(text, style);
+        button.addListener( new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                stopMusic();
                 setScreen(screen);
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -215,33 +225,25 @@ public class GapGame extends Game {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
             }
-        };//listener
-        TextButton button = new TextButton(text, style);
-        button.addListener(listener);
+        });//listener
         return button;
-    }//==================createTextMenuButton========================
+    }
 
-    public void playSound(Sound sound) {
-        if (!soundsMuted) {
-            sound.setLooping(sound.play(SOUND_VOLUME), false);
-        }//if
-    }//====================playSound=================================
+    public void playSound(String soundName, boolean looping) {
+        sound = manager.get("sounds/" + soundName + ".mp3", Sound.class);
+        sound.setLooping(sound.play(VOLUME), looping);
+    }
 
-    public void playMusic(int world) {
-        if (world > 0) {
-            music = manager.get("audio/music/world" + world + "-music.mp3", Music.class);
-        } else {
-            music = manager.get("audio/music/menu-music.mp3", Music.class);
-        }
-        music.setLooping(true);
-        music.setVolume(MUSIC_VOLUME);//0-1 range
-        if (!musicMuted) {
-            music.play();
-        }//end if
-    }//=======================playMusic==============================
+    public void playBackgroundMusic(String musicName, boolean looping) {
+        music = manager.get("sounds/" + musicName + ".mp3", Music.class);
+        music.setLooping(looping);
+        music.setVolume(VOLUME);
+        music.play();
+    }
 
-    public void stopMusic() {
-        music.stop();
+    public void stopBackgroundMusic() {
+        if (music != null)
+            music.stop();
     }
 
     @Override

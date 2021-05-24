@@ -27,15 +27,15 @@ public class SelectLevelMenuScreen extends ScreenAdapter {
     private OrthogonalTiledMapRenderer renderer;
 
     //sfx
-    public SelectLevelMenuScreen(GapGame game, AssetManager manager) {
+    public SelectLevelMenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
-        selectLevelMenuHUD = new SelectLevelMenuHUD(this.game, this.manager);
+        selectLevelMenuHUD = new SelectLevelMenuHUD(this.game);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");

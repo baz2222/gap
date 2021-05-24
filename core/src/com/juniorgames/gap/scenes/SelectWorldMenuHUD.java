@@ -38,9 +38,9 @@ public class SelectWorldMenuHUD implements Disposable {
     private AssetManager manager;
     private InputListener world1ButtonInputListener, world2ButtonInputListener, world3ButtonInputListener, backButtonInputListener;
 
-    public SelectWorldMenuHUD(GapGame game, AssetManager manager) {
+    public SelectWorldMenuHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -128,22 +128,22 @@ public class SelectWorldMenuHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new PlayMenuScreen(game, manager));
+        this.game.setScreen(new PlayMenuScreen(game));
     }
 
     private void onWorld1ButtonClicked() {
         game.selectedWorld = 1;
-        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
+        this.game.setScreen(new SelectLevelMenuScreen(game));
     }
 
     private void onWorld2ButtonClicked() {
         game.selectedWorld = 2;
-        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
+        this.game.setScreen(new SelectLevelMenuScreen(game));
     }
 
     private void onWorld3ButtonClicked() {
         game.selectedWorld = 3;
-        this.game.setScreen(new SelectLevelMenuScreen(game, manager));
+        this.game.setScreen(new SelectLevelMenuScreen(game));
     }
 
     private void initTable() {

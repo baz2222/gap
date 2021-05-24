@@ -3,7 +3,6 @@ package com.juniorgames.gap.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,9 +13,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.juniorgames.gap.GapGame;
 import com.juniorgames.gap.scenes.KeysMenuHUD;
-import com.juniorgames.gap.scenes.PlayMenuHUD;
 
-public class KeysMenuScreen extends ScreenAdapter {
+public class InputMenuScreen extends ScreenAdapter {
     private GapGame game;
     private AssetManager manager;
     private SpriteBatch batch;
@@ -28,7 +26,7 @@ public class KeysMenuScreen extends ScreenAdapter {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
-    public KeysMenuScreen(GapGame game) {
+    public InputMenuScreen(GapGame game) {
         this.game = game;
         this.manager = game.manager;
         batch = new SpriteBatch();

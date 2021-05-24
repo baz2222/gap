@@ -27,15 +27,15 @@ public class SelectWorldMenuScreen extends ScreenAdapter {
     private OrthogonalTiledMapRenderer renderer;
 
     //sfx
-    public SelectWorldMenuScreen(GapGame game, AssetManager manager) {
+    public SelectWorldMenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
 
-        selectWorldMenuHUD = new SelectWorldMenuHUD(this.game, this.manager);
+        selectWorldMenuHUD = new SelectWorldMenuHUD(this.game);
 
         maploader = new TmxMapLoader();
         map = maploader.load("level0-0.tmx");

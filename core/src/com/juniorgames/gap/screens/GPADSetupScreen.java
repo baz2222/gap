@@ -15,7 +15,6 @@ public class GPADSetupScreen extends ScreenAdapter {
 
     public GPADSetupScreen(GapGame game) {
         this.game = game;
-        game.playMusic(0);
         backBtn = game.createTextMenuButton("BACK TO MENU", game.menuBtnTex, new MenuScreen(game));
         createHUD();
         Gdx.input.setInputProcessor(game.stage);
@@ -25,12 +24,11 @@ public class GPADSetupScreen extends ScreenAdapter {
         hud = new Table();
         hud.setFillParent(true);
         hud.center();
-        hud.add(new Label("Congratulations! You are finish the game!", game.lStyle)).padLeft(90).padRight(90).padTop(20);
+        hud.add(new Label("GamePad Connected!", game.labelStyle)).padLeft(90).padRight(90).padTop(20);
         hud.row();
         hud.add(backBtn).padTop(100);
         game.stage.addActor(hud);
     }
-
 
     public void update(float dt) {
         handleInput(dt);
@@ -49,7 +47,6 @@ public class GPADSetupScreen extends ScreenAdapter {
         game.renderer.render();
         game.batch.setProjectionMatrix(game.cam.combined);
         game.stage.draw();
-
     }
 
     @Override

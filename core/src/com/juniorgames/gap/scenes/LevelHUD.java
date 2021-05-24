@@ -193,7 +193,6 @@ public class LevelHUD implements Disposable {
     }
 
     private void onBackButtonClicked() {
-        game.stopMusic();
         tableHUD.remove();
         stage.addActor(pauseTable);
         game.gamePaused = true;
@@ -203,20 +202,18 @@ public class LevelHUD implements Disposable {
         pauseTable.remove();
         stage.addActor(tableHUD);
         game.gamePaused = false;
-        game.playMusic(game.savedGame.world);
+        game.playSound("world" + game.savedGame.world, true);
     }
 
     private void onExitButtonClicked() {
         game.gamePaused = false;
         game.savedGame.save();
-        game.stopMusic();
         game.setScreen(new MenuScreen(game));
     }
 
     private void onRestartButtonClicked() {
         game.gamePaused = false;
-        game.stopMusic();
-        game.setScreen(new LevelScreen(game, manager));
+        game.setScreen(new LevelScreen(game, false));
     }
 
     public void update(float dt) {

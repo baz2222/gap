@@ -37,9 +37,9 @@ public class SelectLevelMenuHUD implements Disposable {
     private InputListener levelButtonInputListener, backButtonInputListener;
     private int i;
 
-    public SelectLevelMenuHUD(GapGame game, AssetManager manager) {
+    public SelectLevelMenuHUD(GapGame game) {
         this.game = game;
-        this.manager = manager;
+        this.manager = game.manager;
         batch = new SpriteBatch();
         viewport = new FitViewport(game.GAME_WIDTH, game.GAME_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -87,13 +87,11 @@ public class SelectLevelMenuHUD implements Disposable {
         levelButtonInputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println();
                 game.selectedLevel = Integer.parseInt(event.getTarget().getName());
-                game.stopMusic();
                 game.savedGame.world = game.selectedWorld;
                 game.savedGame.level = game.selectedLevel;
                 game.savedGame.save();
-                game.setScreen(new LevelScreen(game, manager));
+                game.setScreen(new LevelScreen(game, false));
                 return super.touchDown(event, x, y, pointer, button);
             }
 
@@ -121,7 +119,7 @@ public class SelectLevelMenuHUD implements Disposable {
     }//constructor
 
     private void onBackButtonClicked() {
-        this.game.setScreen(new SelectWorldMenuScreen(game, manager));
+        this.game.setScreen(new SelectWorldMenuScreen(game));
     }
 
     public void update(float dt) {

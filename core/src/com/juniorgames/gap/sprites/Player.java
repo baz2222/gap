@@ -108,9 +108,7 @@ public class Player extends Sprite {
     public void jump() {
         if (currentState != GapGame.State.JUMPING && currentState != GapGame.State.FALLING) {
             b2body.applyLinearImpulse(new Vector2(0, 6.5f * jumpMultiplier), b2body.getWorldCenter(), true);
-            if (!game.soundsMuted) {
-                game.playSound(game.jumpSound);
-            }//if sounds muted
+                game.playSound("jump", false);
         }//if not jumping
     }//jump
 
@@ -136,9 +134,8 @@ public class Player extends Sprite {
         //=======================DIE============================
         if (filter.categoryBits == game.DESTROYED_BIT) {
             if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
-                game.stopMusic();
                 die();
-                game.setScreen(new LevelScreen(game, manager));
+                game.setScreen(new LevelScreen(game, false));
             } else {// else flying up the screen
                 b2body.setActive(false);
                 b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y + dt * 2, 0);
@@ -149,25 +146,25 @@ public class Player extends Sprite {
             if (b2body.getPosition().x * game.GAME_PPM < 0) {
                 b2body.setTransform((b2body.getPosition().x * game.GAME_PPM + game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
                 game.savedGame.wrapped++;
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
                 game.tasksTracker.update(game.savedGame);
             }//if -x
             if (b2body.getPosition().x * game.GAME_PPM > game.GAME_WIDTH) {
                 b2body.setTransform((b2body.getPosition().x * game.GAME_PPM - game.GAME_WIDTH) / game.GAME_PPM, b2body.getPosition().y, 0);
                 game.savedGame.wrapped++;
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
                 game.tasksTracker.update(game.savedGame);
             }//if +x
             if (b2body.getPosition().y * game.GAME_PPM < 0) {
                 b2body.setTransform(b2body.getPosition().x, (b2body.getPosition().y * game.GAME_PPM + game.GAME_HEIGHT) / game.GAME_PPM, 0);
                 game.savedGame.wrapped++;
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
                 game.tasksTracker.update(game.savedGame);
             }//if -y
             if (b2body.getPosition().y * game.GAME_PPM > game.GAME_HEIGHT) {
                 b2body.setTransform(b2body.getPosition().x, (b2body.getPosition().y * game.GAME_PPM - game.GAME_HEIGHT) / game.GAME_PPM, 0);
                 game.savedGame.wrapped++;
-                game.playSound(game.warpSound);
+                game.playSound("warp", false);
                 game.tasksTracker.update(game.savedGame);
             }//if +y
         }//if not dead

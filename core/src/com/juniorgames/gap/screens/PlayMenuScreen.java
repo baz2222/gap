@@ -2,83 +2,69 @@ package com.juniorgames.gap.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.juniorgames.gap.GapGame;
-import com.juniorgames.gap.scenes.PlayMenuHUD;
 
 public class PlayMenuScreen extends ScreenAdapter {
     private GapGame game;
-    private AssetManager manager;
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private PlayMenuHUD playMenuHud;
-    //tiled map values
-    private TmxMapLoader maploader;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
-    //sfx
-    public PlayMenuScreen(GapGame game, AssetManager manager) {
+    private Table hud;
+    private TextButton newBtn, selectBtn, loadBtn, backBtn;
+
+    public PlayMenuScreen(GapGame game) {
         this.game = game;
-        this.manager = manager;
-        batch = new SpriteBatch();
-
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(game.GAME_WIDTH / game.GAME_PPM, game.GAME_HEIGHT / game.GAME_PPM, camera);
-
-        playMenuHud = new PlayMenuHUD(this.game);
-
-        maploader = new TmxMapLoader();
-        map = maploader.load("level0-0.tmx");//default
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / game.GAME_PPM);//scaling map with PPM
-
-        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-
+        game.stage = new Stage(game.viewport, game.batch);
+        //newBtn = game.createTextMenuButton("NEW GAME", game.menuBtnTex, new LevelScreen(game, true));
+        //selectBtn = game.createTextMenuButton("  SELECT LEVEL  ", game.menuBtnTex, new SelectWorldMenuScreen(game));
+        //loadBtn = game.createTextMenuButton("CONTINUE", game.menuBtnTex, new LevelScreen(game, false));
+        //backBtn = game.createTextMenuButton("BACK", game.backBtnTex, new MenuScreen(game));
+        createHUD();
+        Gdx.input.setInputProcessor(game.stage);
     }//constructor
+
+    private void createHUD() {
+        hud = new Table();
+        hud.bottom();
+        hud.setFillParent(true);
+        hud.add(newBtn).pad(20).padBottom(160).padLeft(115);
+        hud.add(selectBtn).pad(20).padBottom(160);
+        hud.add(loadBtn).pad(20).padBottom(160).padRight(115);
+        hud.row();
+        hud.add(backBtn).colspan(3).right();
+        game.stage.addActor(hud);
+    }
 
     public void update(float dt) {
         handleInput(dt);
-        playMenuHud.update(dt);
-        camera.update();
-        renderer.setView(camera);
+        game.cam.update();
+        game.renderer.setView(game.cam);
     }
 
     private void handleInput(float dt) {
     }
 
     @Override
-    public void render(float delta) {
-        update(delta);
+    public void render(float dt) {
+        update(dt);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //render screen map
-        renderer.render();
-        //render HUD
-        batch.setProjectionMatrix(camera.combined);
-        batch.setProjectionMatrix(playMenuHud.stage.getCamera().combined);
-        playMenuHud.stage.draw();
+        game.renderer.render();
+        game.batch.setProjectionMatrix(game.cam.combined);
+        game.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        playMenuHud.resize(width, height);
+        game.viewport.update(width, height);
     }
 
     @Override
     public void dispose() {
-        map.dispose();
-        renderer.dispose();
-        playMenuHud.dispose();
-        manager.dispose();
+        game.map.dispose();
+        game.renderer.dispose();
+        game.stage.dispose();
     }
 }
